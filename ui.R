@@ -4,7 +4,7 @@ library(ggvis)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel('Farts'),
+  titlePanel('NeuroElectro Visuals'),
   
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
