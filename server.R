@@ -36,21 +36,30 @@ library(dplyr)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
    
-  values <- reactiveValues(selected = rep(1, nrow(bigData)),wait = FALSE)
+  values <- reactiveValues(selected = rep(1, nrow(bigData)))
+  removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
+  
   observeEvent(input$clearance, {
     values$selected <- rep(1,nrow(bigData))
   })
-
+  observeEvent(input$restoreRemoved, {
+    removed$selected <- rep(FALSE,nrow(bigData))
+  })
+  do_remove <- reactive({input$remove})
+  
+  
   make_main_plot <- function(df, x_axis, y_axis){
     
     data_frame <- df()
     data_frame$col <- reactive({as.factor(values$selected[data_frame$key])})() 
-    #filter out NA values
-    data_frame <- data_frame %>%  
-      filter((!is.na(data_frame[,as.character(x_axis())]))&
-               (!is.na(data_frame[,as.character(y_axis())]))) 
+    data_frame$remove <- reactive({removed$selected[data_frame$key]})()
     
-    data_frame %>%
+    #filter out NA values
+    
+    data_frame <- data_frame%>%filter((!is.na(data_frame[,as.character(x_axis())]))&
+               (!is.na(data_frame[,as.character(y_axis())])))
+    
+    data_frame[!data_frame$remove,] %>%
       ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col) %>% 
       hide_legend(scales = 'fill') %>%
       layer_points(size.hover:=200) %>%
@@ -60,7 +69,13 @@ shinyServer(function(input, output,session) {
                  "ID: ", as.character(data$key),"<br>",
                       x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
       }, "hover")%>%set_options(renderer = "canvas") %>% handle_click(on_click = function(data,...){
-             isolate(values$selected[data$key] <- 2)     
+              
+              if (do_remove()){
+                isolate(removed$selected[data$key] <- TRUE)
+              } else {
+              
+             isolate(values$selected[data$key] <- 2)
+              }
         }          
       
       )

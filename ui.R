@@ -32,7 +32,10 @@ shinyUI(fluidPage(
    
     # Show a plot of the generated distribution
     mainPanel(
-      fluidRow(actionButton('toggle1','Toggle Show/Edit', icon = icon("cog", lib = "glyphicon")),actionButton('clearance','Clear Highlighting', icon = icon("cog", lib = "glyphicon"))),
+      fluidRow(style='width:1200',column(3,style='width:25%',actionButton('toggle1','Toggle Show/Edit', icon = icon("cog", lib = "glyphicon"))),
+               column(3,style='width:25%',actionButton('clearance','Clear Highlighting', icon = icon("undo", lib = "font-awesome"))),
+               column(3,style='width:25%',actionButton('restoreRemoved','Restore Removed', icon = icon("undo", lib = "font-awesome"))),
+               column(3,style='width:25%',checkboxInput('remove','Remove on click', value = FALSE))),
        fluidRow(style = 'height: 800px; width: 1200px',column(12,
                conditionalPanel(condition = 'input.toggle1 % 2 == 0',
                                 fluidRow(style="padding: 0px 0px 0px 40px;",h2('Select variables to plot')),
