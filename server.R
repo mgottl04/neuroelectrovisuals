@@ -51,7 +51,7 @@ shinyServer(function(input, output,session) {
   make_main_plot <- function(df, x_axis, y_axis){
     
     data_frame <- df()
-    data_frame$col <- reactive({as.factor(values$selected[data_frame$key])})() 
+    data_frame$col <- reactive({values$selected[data_frame$key]})() 
     data_frame$remove <- reactive({removed$selected[data_frame$key]})()
     
     #filter out NA values
@@ -60,9 +60,11 @@ shinyServer(function(input, output,session) {
                (!is.na(data_frame[,as.character(y_axis())])))
     
     data_frame[!data_frame$remove,] %>%
-      ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col) %>% 
-      hide_legend(scales = 'fill') %>%
-      layer_points(size.hover:=200) %>%
+      ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
+      hide_legend(scales = c('fill','size')) %>%
+      add_axis('y', properties = axis_props(labels=list(fontSize=12),title=list(fontSize=16,dy = -25)))%>%
+      add_axis('x', properties = axis_props(labels=list(fontSize=12),title=list(fontSize=16,dx = -25)))%>%
+      layer_points() %>%
       set_options(height = 400, width = 600) %>%
       add_tooltip(function(data){
         paste0(       
@@ -75,10 +77,15 @@ shinyServer(function(input, output,session) {
               } else {
               
              isolate(values$selected[data$key] <- 2)
-              }
-        }          
+              } 
+        }  
       
-      )
+      )%>% handle_hover(on_mouse_over = function(data,...){
+        isolate(values$selected[data$key] <- 2)
+      }, on_mouse_out = function(session,...){
+        
+        isolate(values$selected <- rep(1,nrow(bigData)))
+      }) 
     
   }
  
