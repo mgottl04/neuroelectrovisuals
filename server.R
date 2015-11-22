@@ -46,7 +46,7 @@ shinyServer(function(input, output,session) {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
   do_remove <- reactive({input$remove})
-  
+  mode <- reactive({input$mode})
   
   make_main_plot <- function(df, x_axis, y_axis){
     
@@ -71,20 +71,23 @@ shinyServer(function(input, output,session) {
                  "ID: ", as.character(data$key),"<br>",
                       x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
       }, "hover")%>%set_options(renderer = "canvas") %>% handle_click(on_click = function(data,...){
-              
+             
               if (do_remove()){
                 isolate(removed$selected[data$key] <- TRUE)
-              } else {
+              } else if (mode() == 'click') {
               
              isolate(values$selected[data$key] <- 2)
               } 
         }  
       
       )%>% handle_hover(on_mouse_over = function(data,...){
+        if (mode() == 'hover'){
         isolate(values$selected[data$key] <- 2)
+        }
       }, on_mouse_out = function(session,...){
-        
-        isolate(values$selected <- rep(1,nrow(bigData)))
+        if (mode() == 'hover'){
+        isolate(values$selected[values$selected == 2] <- 1)
+        }
       }) 
     
   }
