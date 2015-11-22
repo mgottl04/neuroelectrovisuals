@@ -53,7 +53,6 @@ shinyServer(function(input, output,session) {
     data_frame %>%
       ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col) %>% 
       hide_legend(scales = 'fill') %>%
-      add_axis("x",title=as.character(nrow(data_frame)))%>% 
       layer_points(size.hover:=200) %>%
       set_options(height = 400, width = 600) %>%
       add_tooltip(function(data){
