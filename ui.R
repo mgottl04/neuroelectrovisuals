@@ -36,7 +36,7 @@ shinyUI(fluidPage(
               
                column(2,actionButton('clearance','Clear Highlighting', width = 150, icon = icon("undo", lib = "font-awesome")),actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome"))),
                column(2, radioButtons('mode', 'Highlight on:', c('Hover' = 'hover', 'Click' = 'click'),width = 150) ),
-               column(2,checkboxInput('remove','Remove on click', value = FALSE))),
+               column(2,checkboxInput('remove','Remove on Click', value = FALSE),'*Overrides Highlight on Click')),
        fluidRow(style = 'height: 800px; width: 1200px',column(12,
                conditionalPanel(condition = 'input.toggle1 % 2 == 0',
                                 fluidRow(style="padding: 0px 0px 0px 40px;",h2('Select variables to plot')),
