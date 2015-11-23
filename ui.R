@@ -24,11 +24,7 @@ shinyUI(fluidPage(
   
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
-    sidebarPanel(h5('filter menu here'), width = 2
-                
-         
-       
-    ),
+    sidebarPanel(h5('filter menu here'), width = 2, uiOutput("treeview")),
    
     # Show a plot of the generated distribution
     mainPanel(

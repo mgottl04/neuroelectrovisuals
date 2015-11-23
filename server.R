@@ -35,6 +35,33 @@ library(dplyr)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
+  
+  ### Filter menu code ###
+  
+  expandedBop <- reactiveValues(expanded = expanded_init)
+  
+  observe({ lapply(names(all_nodes), function(x) {
+    observeEvent(
+      input[[x]],
+      {expandedBop$expanded[[x]] <- if (expandedBop$expanded[[x]]) FALSE else TRUE}
+    )
+  }) })
+  
+  output$treeview <- renderUI({
+    renderTreeNode(directory,0)
+  })
+  
+  renderTreeNode <- function(node, currOffset) {
+    if (expandedBop$expanded[[node$id]]) {
+      toRender = fluidRow(column(1, offset = currOffset, actionLink(node$id, '-')), column(3,h5(node$id)))
+      if (node$is_leaf) {  }
+      else { toRender = list(toRender, lapply(node$children,renderTreeNode,currOffset = currOffset + 1)) }
+    }
+    else { toRender = fluidRow(column(1, offset = currOffset + 1, actionLink(node$id, '+')), column(3,h5(node$id))) }
+    toRender
+  }
+  
+  ### End filter menu code ###
    
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
