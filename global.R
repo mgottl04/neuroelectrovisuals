@@ -1,4 +1,4 @@
-bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = TRUE, na.strings = c('NA',''))
+bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 bigData <- bigData[,unlist(lapply(bigData, function(x){length(levels(x)) < 20}))]
 
 
