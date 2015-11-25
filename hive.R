@@ -2,18 +2,54 @@ library("igraph")
 library("plyr")
 library("HiveR")
 library("RColorBrewer")
+library("grDevices")
 ############################################################################################
-rm(list = ls())
 
-dataSet <- read.table("lesmis.txt", header = FALSE, sep = "\t")
+dataSet <- data.frame(src = character(), sink = character(), count = numeric(), stringsAsFactors = FALSE)
+
+ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold","spike.amplitude","spike.half.width","membrane.time.constant",
+                 "AHP.amplitude","spike.width","cell.capacitance","AHP.duration","rheobase","firing.frequency",
+                 "adaptation.ratio","sag.ratio","fast.AHP.amplitude","spike.peak","maximum.firing.rate","other",
+                 "spontaneous.firing.rate","FI.slope","first.spike.latency","slow.AHP.amplitude","spike.max.rise.slope","ADP.amplitude",
+                 "sag.amplitude","spike.max.decay.slope","spike.rise.time","fast.AHP.duration","spike.decay.time","access.resistance",
+                 "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
+metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
+
+for (nt in unique(bigData[,"NeuronName"])) {
+  for (ep in ephys_props) {
+    dataSet[nrow(dataSet) + 1,] <- list(nt, ep, 0)
+  }
+}
+
+for (ep in ephys_props) {
+  for (meta in metadata) {
+    dataSet[nrow(dataSet) + 1,] <- list(ep, meta, 0)
+  }
+}
+
+increment_count <- function(src_ob, sink_ob) {
+  dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count <<- dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count + 1
+}
+
+for (i in 1 : nrow(bigData)) {
+  for (ep in ephys_props) {
+    if (!is.na(bigData[i, ep])) {
+      increment_count(bigData[i, "NeuronName"], ep)
+      for (meta in metadata) {
+        if (!is.na(bigData[i, meta])) {
+          increment_count(ep, meta)
+        }
+      }
+    }
+  }
+}
 
 ############################################################################################
 # Create a graph. Use simplify to ensure that there are no duplicated edges or self loops
-gD <- simplify(graph.data.frame(dataSet, directed=FALSE))
+colnames(dataSet) <- c("V1","V2","V3")
+dataSet <- subset(dataSet, V3 > 0)
 
-# Print number of nodes and edges
-# vcount(gD)
-# ecount(gD)
+gD <- simplify(graph.data.frame(dataSet, directed=FALSE))
 
 # Calculate some node properties and node similarities that will be used to illustrate
 # different plotting abilities
@@ -48,8 +84,7 @@ rm(approxVals, nodes_size)
 
 # Define node color
 # We'll interpolate node colors based on the node degree using the "colorRampPalette" function from the "grDevices" library
-library("grDevices")
-# This function returns a function corresponding to a collor palete of "bias" number of elements
+# This function returns a function corresponding to a color pallete of "bias" number of elements
 F2 <- colorRampPalette(c("#F5DEB3", "#FF0000"), bias = length(unique(node.list$degree)), space = "rgb", interpolate = "linear")
 # Now we'll create a color for each degree
 colCodes <- F2(length(unique(node.list$degree)))
@@ -68,8 +103,11 @@ rm(F2, colCodes, edges_col)
 ############################################################################################
 # Assign nodes to axes
 
-# Randomly
-nodeAxis <- sample(3, nrow(node.list), replace = TRUE )
+num_neurons <- length(unique(bigData[,"NeuronName"]))
+nodeAxis <- integer(nrow(node.list))
+nodeAxis[1 : num_neurons] <- as.integer(1)
+nodeAxis[(num_neurons + 1) : (num_neurons + length(ephys_props))] <- as.integer(2)
+nodeAxis[(num_neurons + length(ephys_props) + 1) : nrow(node.list)] <- as.integer(3)
 node.list <- cbind(node.list, axis = nodeAxis)
 rm(nodeAxis)
 
@@ -77,27 +115,28 @@ rm(nodeAxis)
 #Create a hive plot
 
 source("mod.edge2HPD.R")
+source("mod.mineHPD.R")
 
-hive1 <- mod.edge2HPD(edge_df = dataSet.ext[, 1:2], edge.weight = dataSet.ext[, 3], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.radius = node.list[,c("name", "degree")], node.axis = node.list[,c("name", "axis")])
+#hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2], edge.weight = dataSet.ext[, 3], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.radius = node.list[,c("name", "degree")], node.axis = node.list[,c("name", "axis")])
 #sumHPD(hive1)
 
-hive2 <- mineHPD(hive1, option = "remove zero edge")
+hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.axis = node.list[,c("name", "axis")])
 
-plotHive(hive2, method = "abs", bkgnd = "white",  axLab.pos = 1)
+plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Neuron Type", "Ephys. property", "Metadata"), axLab.pos = 1)
 
 
 ########################################
 # Based on hierarchical cluestering
-d <- dist(dsAll)
-hc <- hclust(d)
+#d <- dist(dsAll)
+#hc <- hclust(d)
 #plot(hc)
-nodeAxis <- cutree(hc, k = 6)
-node.list <- cbind(node.list, axisCl = nodeAxis)
-rm(nodeAxis)
+#nodeAxis <- cutree(hc, k = 6)
+#node.list <- cbind(node.list, axisCl = nodeAxis)
+#rm(nodeAxis)
 
-hive1 <- mod.edge2HPD(edge_df = dataSet.ext[, 1:2], edge.weight = dataSet.ext[, 3], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.radius = node.list[,c("name", "degree")], node.axis = node.list[,c("name", "axisCl")])
+#hive1 <- mod.edge2HPD(edge_df = dataSet.ext[, 1:2], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.axis = node.list[,c("name", "axisCl")])
 #sumHPD(hive1)
 
-hive2 <- mineHPD(hive1, option = "remove zero edge")
+#hive2 <- mineHPD(hive1, option = "remove zero edge")
 
-plotHive(hive2, method = "abs", bkgnd = "white",  axLab.pos = 1)
+#plotHive(hive2, method = "abs", bkgnd = "black",  axLab.pos = 1)
