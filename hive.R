@@ -19,6 +19,9 @@ for (nt in unique(bigData[,"NeuronName"])) {
   for (ep in ephys_props) {
     dataSet[nrow(dataSet) + 1,] <- list(nt, ep, 0)
   }
+  for (meta in metadata) {
+    dataSet[nrow(dataSet) + 1,] <- list(nt, meta, 0)
+  }
 }
 
 for (ep in ephys_props) {
@@ -40,6 +43,11 @@ for (i in 1 : nrow(bigData)) {
           increment_count(ep, meta)
         }
       }
+    }
+  }
+  for (meta in metadata) {
+    if (!is.na(bigData[i, meta])) {
+      increment_count(bigData[i, "NeuronName"], meta)
     }
   }
 }
