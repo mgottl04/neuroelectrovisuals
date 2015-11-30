@@ -1,5 +1,6 @@
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 bigData <- bigData[,unlist(lapply(bigData, function(x){length(levels(x)) < 20}))]
+ephys_info <- read.csv('data/ephys_prop_definitions.csv',sep = '\t',row.names = 1)
 
 
 for (i in 1:ncol(bigData)){
@@ -13,7 +14,7 @@ bigData[bigData$key,]
 
 # Emily's Dummy Data
 
-TreeViewNode <- function(id,is_leaf,children) {
+TreeViewNode <- function(id,is_leaf,children=list()) {
   me <- list(id=id,is_leaf=is_leaf,children=children)
   class(me) <- append(class(me),"TreeViewNode")
   return(me)

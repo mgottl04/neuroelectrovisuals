@@ -1,6 +1,22 @@
 library(shiny)
 library(ggvis)
+library(shinyBS)
+library(shinyTree)
 # Define UI for application that draws a histogram
+
+# Control panel
+
+nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
+ephys_panel_contents = sliderInput("integer", "Integer:", 
+                          min=0, max=1000, value=500)
+metadata_panel_contents = list(sliderInput("yoyo", "yoyo:", 
+                           min=0, max=1000, value=500),shinyTree("random_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE))
+
+nt_panel = bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
+ephys_panel = bsCollapsePanel(title = "Ephys Property Filters", ephys_panel_contents, style = "success")
+metadata_panel = bsCollapsePanel(title = "Metadata Filters", metadata_panel_contents, style = "warning")
+
+# End control panel
 
 add_input_selector <- function(x_label,y_label){
   fluidRow(
@@ -24,7 +40,7 @@ shinyUI(fluidPage(
   
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
-    sidebarPanel(h5('filter menu here'), width = 2, uiOutput("treeview")),
+    sidebarPanel(width = 3, bsCollapse(nt_panel, ephys_panel, metadata_panel, id = "filterMenu", multiple = TRUE, open = NULL)),
    
     # Show a plot of the generated distribution
     mainPanel(
