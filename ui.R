@@ -1,7 +1,3 @@
-library(shiny)
-library(ggvis)
-library(shinyBS)
-library(shinyTree)
 # Define UI for application that draws a histogram
 
 # Control panel
