@@ -2,9 +2,15 @@
 
 # Control panel
 
+addSlider <- function(name, units, min, max, step) {
+  sliderInput(name,paste(name, " (", units, ")"),min,max,value = c(min,max))
+}
+
 nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
-ephys_panel_contents = sliderInput("integer", "Integer:", 
-                          min=0, max=1000, value=500)
+
+ephys_panel_contents = stuff <- lapply(seq(1,length(prop_names)), function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
+                                                                           props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])})
+
 metadata_panel_contents = list(sliderInput("yoyo", "yoyo:", 
                            min=0, max=1000, value=500),shinyTree("random_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE))
 

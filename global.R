@@ -24,4 +24,7 @@ region_groups <- lapply(regions, function(x) {
                    neuron_types[neuron_types$BrainRegion == x,c('NeuronName')]))})
 region_groups <- as.list(setNames(region_groups, regions))
 
+# Ephys props
+props <- na.omit(ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range")])
+prop_names <- rownames(props)
 
