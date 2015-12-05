@@ -21,16 +21,17 @@ metadata_panel = bsCollapsePanel(title = "Metadata Filters", metadata_panel_cont
 # End control panel
 
 add_input_selector <- function(x_label,y_label){
+  
   fluidRow(
     selectInput(x_label, 
                 label = "Choose a variable to display on x axis",
-                choices =names(bigData),
-                selected = names(bigData)[[8]]
+                choices =names(bigData)[axis_names],
+                selected = names(bigData)[axis_names][[1]]
     ),
     selectInput(y_label, 
                 label = "Choose a variable to display on y axis",
-                choices =names(bigData),
-                selected = names(bigData)[[2]]
+                choices =names(bigData)[axis_names],
+                selected = names(bigData)[axis_names][[2]]
     )
   )
   

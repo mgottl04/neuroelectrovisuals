@@ -12,7 +12,13 @@ for (i in 1:ncol(bigData)){
   if( is.factor(bigData[,i])){
     levels(bigData[,i]) <- c(levels(bigData[,i]),NA)
     }
-  }
+}
+  
+axis_names <- sapply(colnames(bigData),function(x){
+
+  !(is.character(bigData[,x]) & length(unique(bigData[,x])) > 15)
+})
+
 
 bigData$key <-(1:nrow(bigData))
 bigData[bigData$key,]

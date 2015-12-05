@@ -51,11 +51,8 @@ shinyServer(function(input, output,session) {
       
       )%>% handle_hover(on_mouse_over = function(data,...){
         if (mode() == 'hover'){
-        isolate(values$selected[data$key] <- 2)
-        }
-      }, on_mouse_out = function(session,...){
-        if (mode() == 'hover'){
         isolate(values$selected[values$selected == 2] <- 1)
+        isolate(values$selected[data$key] <- 2)
         }
       }) 
     
