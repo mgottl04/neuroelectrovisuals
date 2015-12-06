@@ -44,12 +44,9 @@ getJSON <- function(node){
   
   # Handle 'opened' attribute
   opened <- attr(node, "stopened")
-  attrib <- c(attrib, "\"opened\": false")
-#   if (!is.null(opened)){
-#     attrib <- c(attrib, {if(opened) "\"opened\": true" else "\"opened\": false"})
-#     print(node[1])
-#     print(attrib)
-#   }
+  if (!is.null(opened) && opened){
+    attrib <- c(attrib, "\"opened\": true")
+  }
   
   # Handle 'selected' attribute
   selected <- attr(node, "stselected")

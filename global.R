@@ -28,7 +28,7 @@ neuron_types <- na.omit(unique(biggerData[,c('NeuronName','BrainRegion')]))
 regions <- levels(as.factor(neuron_types$BrainRegion))
 region_groups <- lapply(regions, function(x) {
   structure(as.list(setNames(neuron_types[neuron_types$BrainRegion == x,c('NeuronName')],
-                   neuron_types[neuron_types$BrainRegion == x,c('NeuronName')])),stselected=TRUE,stopened=FALSE)})
+                   neuron_types[neuron_types$BrainRegion == x,c('NeuronName')])),stselected=TRUE)})
 region_groups <- structure(as.list(setNames(region_groups, regions)),stselected=TRUE)
 
 # Ephys props

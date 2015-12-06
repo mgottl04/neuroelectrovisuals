@@ -6,9 +6,9 @@ shinyServer(function(input, output,session) {
   })
   
   output$species_tree <- renderTree({
-    list(Mice = structure("Mice",stselected=TRUE,stopened=FALSE),
-    Rats = structure("Rats",stselected=TRUE,stopened=FALSE),
-    Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE,stclass="jstree-closed"))
+    list(Mice = structure("Mice",stselected=TRUE),
+    Rats = structure("Rats",stselected=TRUE),
+    Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE))
   })
   
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
