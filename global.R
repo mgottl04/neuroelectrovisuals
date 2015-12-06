@@ -3,6 +3,7 @@ library(shinyBS)
 library(shinyTree)
 library(ggvis)
 library(dplyr)
+library(shinyjs)
 
 biggerData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 bigData <- biggerData[,unlist(lapply(biggerData, function(x){length(levels(x)) < 20}))]
