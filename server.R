@@ -13,9 +13,12 @@ shinyServer(function(input, output,session) {
  
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
-  
+  observeEvent(input$toggle1,{
+    js$removeStuckToolTip()
+  })
   observeEvent(input$clearance, {
     values$selected <- rep(1,nrow(bigData))
+    js$removeStuckToolTip()
   })
   observeEvent(input$restoreRemoved, {
     removed$selected <- rep(FALSE,nrow(bigData))

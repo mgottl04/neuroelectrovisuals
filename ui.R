@@ -40,7 +40,7 @@ shinyUI(fluidPage(
   
   useShinyjs(),
   extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
-#   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
+   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
   
   # Application title
   titlePanel('NeuroElectro Visuals'),
