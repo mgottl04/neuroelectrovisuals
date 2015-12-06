@@ -19,7 +19,6 @@ axis_names <- sapply(colnames(bigData),function(x){
   !(is.character(bigData[,x]) & length(unique(bigData[,x])) > 15)
 })
 
-
 bigData$key <-(1:nrow(bigData))
 bigData[bigData$key,]
 
@@ -31,13 +30,13 @@ region_groups <- lapply(regions, function(x) {
                    neuron_types[neuron_types$BrainRegion == x,c('NeuronName')])),stselected=TRUE)})
 region_groups <- structure(as.list(setNames(region_groups, regions)),stselected=TRUE)
 
-# Ephys props
-props <- na.omit(ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range")])
-prop_names <- rownames(props)
-
 # Organism metadata
 species <- levels(as.factor(biggerData$Species))
 species <- species[!species %in% c("Rats, Mice","Mice, Xenopus","Other")] # Removes garbage levels
 misc_species <- species[!species %in% c("Rats", "Mice")]
 age <- na.omit(biggerData$AnimalAge)
+
+# Ephys props
+props <- na.omit(ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range")])
+prop_names <- rownames(props)
 

@@ -9,7 +9,7 @@ addSlider <- function(name, units, min, max, step) {
 nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
 ephys_panel_contents = stuff <- lapply(seq(1,length(prop_names)), function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
                                                                            props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])})
-organism_panel_contents = list(h3("Species"),shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),
+organism_panel_contents = list(h5("Species"),shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),
                                addSlider("Age","days",min(age),max(age)))
 
 nt_panel = bsCollapsePanel(title = "Neuron Type", nt_panel_contents, style = "info")
