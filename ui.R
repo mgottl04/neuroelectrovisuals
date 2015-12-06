@@ -7,16 +7,14 @@ addSlider <- function(name, units, min, max, step) {
 }
 
 nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
-
 ephys_panel_contents = stuff <- lapply(seq(1,length(prop_names)), function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
                                                                            props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])})
+organism_panel_contents = list(h3("Species"),shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),
+                               addSlider("Age","days",min(age),max(age)))
 
-metadata_panel_contents = list(sliderInput("yoyo", "yoyo:", 
-                           min=0, max=1000, value=500),shinyTree("random_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE))
-
-nt_panel = bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
-ephys_panel = bsCollapsePanel(title = "Ephys Property Filters", ephys_panel_contents, style = "success")
-metadata_panel = bsCollapsePanel(title = "Metadata Filters", metadata_panel_contents, style = "warning")
+nt_panel = bsCollapsePanel(title = "Neuron Type", nt_panel_contents, style = "info")
+organism_panel = bsCollapsePanel(title = "Organism", organism_panel_contents, style = "success")
+ephys_panel = bsCollapsePanel(title = "Ephys Properties", ephys_panel_contents, style = "warning")
 
 # End control panel
 
@@ -42,7 +40,7 @@ shinyUI(fluidPage(
   
   # Sidebar with a slider input for the number of bins
   sidebarLayout(
-    sidebarPanel(width = 3, bsCollapse(nt_panel, ephys_panel, metadata_panel, id = "filterMenu", multiple = TRUE, open = NULL)),
+    sidebarPanel(width = 3, bsCollapse(nt_panel, organism_panel,ephys_panel, id = "filterMenu", multiple = TRUE, open = NULL)),
    
     # Show a plot of the generated distribution
     mainPanel(

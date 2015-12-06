@@ -5,6 +5,12 @@ shinyServer(function(input, output,session) {
     region_groups
   })
   
+  output$species_tree <- renderTree({
+    list(Mice = structure("Mice",stselected=TRUE,stopened=FALSE),
+    Rats = structure("Rats",stselected=TRUE,stopened=FALSE),
+    Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE,stclass="jstree-closed"))
+  })
+  
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
   
