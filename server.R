@@ -1,3 +1,6 @@
+library(shinyjs)
+library(V8)
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
  
@@ -60,12 +63,10 @@ shinyServer(function(input, output,session) {
         isolate(values$selected[values$selected == 2] <- 1)
         isolate(values$selected[data$key] <- 2)
         }
-<<<<<<< HEAD
-      }) 
-=======
+
       }) #ggvis-tooltip 
     
->>>>>>> bcc13095d439875f03777d14fac2bcfe243bb6de
+
   }
  
   mtc <- reactive({
