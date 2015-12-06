@@ -1,3 +1,6 @@
+library(shinyjs)
+library(V8)
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
  
@@ -63,17 +66,20 @@ shinyServer(function(input, output,session) {
         isolate(values$selected[values$selected == 2] <- 1)
         isolate(values$selected[data$key] <- 2)
         }
+
       }) #ggvis-tooltip 
     
+
   }
  
-
-  
   mtc <- reactive({
     #global filtering will occur in this reactive
+    selected_nts <- get_selected(input$species_tree)
     data = bigData 
     data
   })
+  
+  selected_nts <- reactive({get_selected(input$species_tree)})
   
   x1 <- reactive({as.symbol(input$x1)})
   x2 <- reactive({as.symbol(input$x2)})
