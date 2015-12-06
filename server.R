@@ -1,68 +1,16 @@
-library(shiny)
-library(ggvis)
-library(dplyr)
-
-# make_main_plot <- function(df, x_axis, y_axis){
-#   
-#   data_frame <- df()
-#   data_frame <- filter((!is.na(data_frame[,as.character(x_axis())]))&
-#                          (!is.na(data_frame[,as.character(y_axis())])))
-#   data_frame$col <- as.factor(isolate(values$selected)[data_frame$key])
-#   data_frame %>%  
-#      ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col ) %>% hide_legend(scales = 'fill')%>%
-#     layer_points(size.hover:=200) %>%
-#     add_tooltip(function(data){
-#       paste0(as.character(data$key))
-#     
-#       
-#       
-# #         "Pmid: ", as.character(data),"<br>",
-# #              x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
-#     }, "hover")%>%set_options(renderer = "canvas") %>% handle_hover(on_mouse_over = function(data,...){
-#       
-#       #print(data$key)
-#       if (values$restore != -300){
-#         values$selected[values$restore] <- 1
-#         values$restore <- -300
-#       }
-#       values$selected[data$key] <- 2
-#       values$restore <- data$key
-#     }            
-#       
-# )
-# 
-# }
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
   
-  ### Filter menu code ###
-  
-  expandedBop <- reactiveValues(expanded = expanded_init)
-  
-  observe({ lapply(names(all_nodes), function(x) {
-    observeEvent(
-      input[[x]],
-      {expandedBop$expanded[[x]] <- if (expandedBop$expanded[[x]]) FALSE else TRUE}
-    )
-  }) })
-  
-  output$treeview <- renderUI({
-    renderTreeNode(directory,0)
+  output$nt_tree <- renderTree({
+    region_groups
   })
   
-  renderTreeNode <- function(node, currOffset) {
-    if (expandedBop$expanded[[node$id]]) {
-      toRender = fluidRow(column(1, offset = currOffset, actionLink(node$id, '-')), column(3,h5(node$id)))
-      if (node$is_leaf) {  }
-      else { toRender = list(toRender, lapply(node$children,renderTreeNode,currOffset = currOffset + 1)) }
-    }
-    else { toRender = fluidRow(column(1, offset = currOffset + 1, actionLink(node$id, '+')), column(3,h5(node$id))) }
-    toRender
-  }
+  output$species_tree <- renderTree({
+    list(Mice = structure("Mice",stselected=TRUE,stopened=FALSE),
+    Rats = structure("Rats",stselected=TRUE,stopened=FALSE),
+    Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE,stclass="jstree-closed"))
+  })
   
-  ### End filter menu code ###
-   
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
   
@@ -109,11 +57,8 @@ shinyServer(function(input, output,session) {
       
       )%>% handle_hover(on_mouse_over = function(data,...){
         if (mode() == 'hover'){
-        isolate(values$selected[data$key] <- 2)
-        }
-      }, on_mouse_out = function(session,...){
-        if (mode() == 'hover'){
         isolate(values$selected[values$selected == 2] <- 1)
+        isolate(values$selected[data$key] <- 2)
         }
       }) 
     
