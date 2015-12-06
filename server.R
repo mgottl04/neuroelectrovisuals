@@ -1,6 +1,6 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
-  
+ 
   output$nt_tree <- renderTree({
     region_groups
   })
@@ -10,7 +10,7 @@ shinyServer(function(input, output,session) {
     Rats = structure("Rats",stselected=TRUE,stopened=FALSE),
     Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE,stclass="jstree-closed"))
   })
-  
+ 
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
   
@@ -60,7 +60,7 @@ shinyServer(function(input, output,session) {
         isolate(values$selected[values$selected == 2] <- 1)
         isolate(values$selected[data$key] <- 2)
         }
-      }) 
+      }) #ggvis-tooltip 
     
   }
  
@@ -92,5 +92,6 @@ shinyServer(function(input, output,session) {
     bind_shiny('plot3')
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
-
+ 
+ js$collapseNodesOnLoad()
 })
