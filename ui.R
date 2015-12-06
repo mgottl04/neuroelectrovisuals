@@ -1,7 +1,8 @@
 # Define UI for application that draws a histogram
 
 # Control panel
-
+library(shinyjs)
+library(V8)
 addSlider <- function(name, units, min, max, step) {
   sliderInput(name,paste(name, " (", units, ")"),min,max,value = c(min,max))
 }
@@ -34,7 +35,12 @@ add_input_selector <- function(x_label,y_label){
   )
   
 }
+
 shinyUI(fluidPage(
+  
+  useShinyjs(),
+  extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
+#   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
   
   # Application title
   titlePanel('NeuroElectro Visuals'),
@@ -45,11 +51,11 @@ shinyUI(fluidPage(
    
     # Show a plot of the generated distribution
     mainPanel(
-      fluidRow(style='width:1200',column(2,actionButton('toggle1', width = 150,'Toggle Show/Edit', icon = icon("cog", lib = "glyphicon"))),
+      fluidRow(style='width:1200',column(3,actionButton('toggle1','Toggle Show/Edit', icon = icon("cog", lib = "glyphicon"))),
               
-               column(2,actionButton('clearance','Clear Highlighting', width = 150, icon = icon("undo", lib = "font-awesome")),actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome"))),
-               column(2, radioButtons('mode', 'Highlight on:', c('Hover' = 'hover', 'Click' = 'click'),width = 150) ),
-               column(2,checkboxInput('remove','Remove on Click', value = FALSE),'*Overrides Highlight on Click')),
+               column(3,actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome"))),
+               column(3, radioButtons('mode', 'Highlight on:', c('Hover' = 'hover', 'Click' = 'click')) ),
+               column(3,checkboxInput('remove','Remove on Click', value = FALSE),'*Overrides Highlight on Click')),
        fluidRow(style = 'height: 800px; width: 1200px',column(12,
                conditionalPanel(condition = 'input.toggle1 % 2 == 0',
                                 fluidRow(style="padding: 0px 0px 0px 40px;",h2('Select variables to plot')),
@@ -68,3 +74,6 @@ shinyUI(fluidPage(
       ), fluid =TRUE
       
       ))))
+# toggleState
+#runjs(code = "$.jstree.defaults.core.expand_selected_onload = false;")
+

@@ -1,6 +1,6 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
-  
+ 
   output$nt_tree <- renderTree({
     region_groups
   })
@@ -10,7 +10,7 @@ shinyServer(function(input, output,session) {
     Rats = structure("Rats",stselected=TRUE),
     Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE))
   })
-  
+ 
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
   
@@ -37,8 +37,8 @@ shinyServer(function(input, output,session) {
     data_frame[!data_frame$remove,] %>%
       ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
       hide_legend(scales = c('fill','size')) %>%
-      add_axis('y', properties = axis_props(labels=list(fontSize=12),title=list(fontSize=16,dy = -25)))%>%
-      add_axis('x', properties = axis_props(labels=list(fontSize=12),title=list(fontSize=16,dx = -25)))%>%
+      add_axis('y', properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+      add_axis('x', properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
       layer_points() %>%
       set_options(height = 400, width = 600) %>%
       add_tooltip(function(data){
@@ -60,7 +60,12 @@ shinyServer(function(input, output,session) {
         isolate(values$selected[values$selected == 2] <- 1)
         isolate(values$selected[data$key] <- 2)
         }
+<<<<<<< HEAD
       }) 
+=======
+      }) #ggvis-tooltip 
+    
+>>>>>>> bcc13095d439875f03777d14fac2bcfe243bb6de
   }
  
   mtc <- reactive({
@@ -92,5 +97,6 @@ shinyServer(function(input, output,session) {
     bind_shiny('plot3')
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
-
+ 
+ js$collapseNodesOnLoad()
 })
