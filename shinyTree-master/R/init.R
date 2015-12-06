@@ -40,9 +40,7 @@ jsonToAttr <- function(json){
 }
 
 supplementAttr <- function(ret, json){
-  #attr(ret, "stselected") <- json$state$selected
-  #attr(ret, "stdisabled") <- json$state$disabled
-  #attr(ret, "stopened") <- json$state$opened
-  print("Init:")
-  print(json$state$opened)
+  attr(ret, "stselected") <- json$state$selected
+  attr(ret, "stdisabled") <- json$state$disabled
+  attr(ret, "stopened") <- json$state$opened
 }
