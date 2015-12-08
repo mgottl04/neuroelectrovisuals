@@ -76,7 +76,7 @@ shinyUI(fluidPage(
    
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("hivePlot"),
+      plotOutput("hivePlot", height = 1000, width = 1200),
       fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1"), add_input_selector('x2','y2','3px 0px 0px 0px'),ggvisOutput('plot2')),
                                   column(1,style = 'width:5%'),
