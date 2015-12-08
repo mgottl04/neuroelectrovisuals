@@ -110,15 +110,17 @@ shinyServer(function(input, output,session) {
     age_low <- if (age_slider_min == 0) 0 else (2^(age_slider_min - 1))
     age_high <- if (age_slider_max == 0) 0 else (2^(age_slider_max - 1))
     if (age_low > 0 || age_high < age_max) {
-      data <- data[which(!is.null(data$AnimalAge) & data$AnimalAge >= age_low & data$AnimalAge <= age_high),]
+      data <- data[which(!is.na(data$AnimalAge) & data$AnimalAge >= age_low & data$AnimalAge <= age_high),]
     }
     
-    lapply(prop_names, function(x){
-      slider_val = input[[x]]
-      if (slider_val[1] > props[[x,c("Min.Range")]] || slider_val[2] < props[[x,c("Max.Range")]]) {
-        data <- data[which(!is.null(data[[x]]) & data[[x]] >= slider_val[1] & data[[x]] <= slider_val[2]),]
+    for (x in prop_names) {
+      if (!is.null(input[[x]])) {
+        slider_val = input[[x]] 
+        if (slider_val[1] > props[[x,c("Min.Range")]] || slider_val[2] < props[[x,c("Max.Range")]]) {
+          data <- data[which(!is.na(data[[x]]) & data[[x]] >= slider_val[1] & data[[x]] <= slider_val[2]),]
+        }
       }
-    })
+    }
     
     data
   })
