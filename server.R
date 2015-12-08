@@ -1,7 +1,6 @@
 library(shinyjs)
 library(V8)
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
  
   output$nt_tree <- renderTree({
@@ -16,9 +15,11 @@ shinyServer(function(input, output,session) {
  
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
-  observeEvent(input$toggle1,{
+ 
+   observeEvent(input$toggle1,{
     js$removeStuckToolTip()
   })
+  
   observeEvent(input$clearance, {
     values$selected <- rep(1,nrow(bigData))
     js$removeStuckToolTip()
@@ -115,4 +116,5 @@ shinyServer(function(input, output,session) {
     bind_shiny('plot4')
  
  js$collapseNodesOnLoad()
+ js$log2Slider(id = "Age", max_power = ceiling(log2(max(age))))
 })

@@ -4,6 +4,7 @@ library(shinyTree)
 library(ggvis)
 library(dplyr)
 library(shinyjs)
+library(V8)
 
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 ephys_info <- read.csv('data/ephys_prop_definitions.csv',sep = '\t',row.names = 1)
