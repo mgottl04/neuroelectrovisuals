@@ -34,9 +34,9 @@ ephys_panel = bsCollapsePanel(title = "Ephys Properties", ephys_panel_contents, 
 
 # *** Main panel logic ***
 
-add_input_selector <- function(x_label,y_label){
+add_input_selector <- function(x_label,y_label, border_widths){
   
-  fluidRow(style='background-color: gray',
+  fluidRow(style=paste('background-color: LightGray;border-style: solid; border-width:',border_widths),
            column(6,
       selectInput(x_label, 
                 label = "Choose a variable to display on x axis",
@@ -65,17 +65,17 @@ shinyUI(fluidPage(
   
   # Control panel sidebar
   sidebarLayout(
-    sidebarPanel(width = 4, bsCollapse(nt_panel, organism_panel,ephys_panel, control_panel,id = "filterMenu", multiple = TRUE, open = NULL)),
+    sidebarPanel(width = 3, bsCollapse(nt_panel, organism_panel,ephys_panel, control_panel,id = "filterMenu", multiple = TRUE, open = NULL)),
    
     # Show a plot of the generated distribution
     mainPanel(
       
-       fluidRow(style = 'height: 800px; width: 1320px;',
+       fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
                                   
-                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1'),ggvisOutput("plot1"), add_input_selector('x2','y2'),ggvisOutput('plot2')),
+                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1"), add_input_selector('x2','y2','3px 0px 0px 0px'),ggvisOutput('plot2')),
                                   column(1,style = 'width:5%'),
-                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3'),ggvisOutput("plot3"), add_input_selector('x4','y4'),ggvisOutput('plot4'))
-                                
+                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"), add_input_selector('x4','y4','3px 0px 0px 0px'),ggvisOutput('plot4'))
+                              ,tags$pre(style= "border:0px;",'\n')
                )
       
       ), fluid =TRUE
