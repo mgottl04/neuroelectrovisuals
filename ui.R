@@ -54,6 +54,9 @@ add_input_selector <- function(x_label,y_label, border_widths){
 # *** Define UI ***
 
 shinyUI(fluidPage(
+  tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "neuroelectrovisuals.css")
+  ),
   
   useShinyjs(),
   extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
@@ -75,14 +78,17 @@ $(".jstree-default .jstree-clicked").css("background", "white")}'),
    
     # Show a plot of the generated distribution
     mainPanel(
-       fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
+      plotOutput("hivePlot"),
+      fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1"), add_input_selector('x2','y2','3px 0px 0px 0px'),ggvisOutput('plot2')),
                                   column(1,style = 'width:5%'),
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"), add_input_selector('x4','y4','3px 0px 0px 0px'),ggvisOutput('plot4'))
                               ,tags$pre(style= "border:0px;",'\n')
                )
-      ), fluid =TRUE
-      )))
+    ), fluid =TRUE
+  )
+))
+  
 
 # toggleState
 #runjs(code = "$.jstree.defaults.core.expand_selected_onload = false;")

@@ -1,7 +1,8 @@
 library(shinyjs)
 library(V8)
+source("./hive.R")
 
-shinyServer(function(input, output,session) {
+shinyServer(function(input, output, session) {
   
   js$collapseNodesOnLoad()
   js$log2Slider(id = "Age", max_power = log2(age_max))
@@ -32,6 +33,8 @@ shinyServer(function(input, output,session) {
   observeEvent(input$restoreRemoved, {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
+  
+
   
   do_remove <- reactive({input$remove})
   
@@ -143,4 +146,6 @@ shinyServer(function(input, output,session) {
     bind_shiny('plot3')
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
+  
+  output$hivePlot <- renderPlot({makeHivePlot(bigData)})
 })
