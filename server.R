@@ -34,7 +34,9 @@ shinyServer(function(input, output, session) {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
   
-
+  observeEvent(input$nt_tree, {
+    js$textWrap()
+  })
   
   do_remove <- reactive({input$remove})
   
@@ -79,13 +81,7 @@ shinyServer(function(input, output, session) {
               } 
         }  
       
-      )%>% handle_hover(on_mouse_over = function(data,...){
-        
-        isolate(values$selected[values$selected == 2] <- 1)
-        isolate(values$selected[data$key] <- 2)
-        
-
-      }) #ggvis-tooltip 
+      ) #ggvis-tooltip 
   }
  
   mtc <- reactive({
