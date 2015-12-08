@@ -12,18 +12,18 @@ log2Slider <-
     }
     $('#' + params.id).data('ionRangeSlider').update({'values':vals})}"
 
-addSlider <- function(name, units, min, max, step) {
-  sliderInput(name,paste(name, " (", units, ")"),min,max,value = c(min,max))
+addSlider <- function(name, label, min, max, step) {
+  sliderInput(name,label,min,max,value = c(min,max))
 }
 
 nested_ephys_panel_contents <- lapply(seq(1,length(prop_names)), 
-                                      function(x) {bsCollapsePanel(title = prop_names[x], addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                        props[[x,c("Min.Range")]],props[[x,c("Max.Range")]]), style= "info")})
+                                      function(x) {bsCollapsePanel(title = paste(prop_names[x], " (", props[[x,c("usual.units")]], ")"), addSlider(prop_names[x], "",
+                                        props[[x,c("Min.Range")]],props[[x,c("Max.Range")]]), style= "default")})
 
 nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
 organism_panel_contents = list(h5("Species",style='font-weight: bold'),
                                fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
-                               addSlider("Age","days",0,log2(age_max) + 1))
+                               addSlider("Age","Age (days)",0,log2(age_max) + 1))
 ephys_panel_contents <- do.call(bsCollapse, c(nested_ephys_panel_contents, id = "ephys_panel", multiple = TRUE, open = NULL))
 
 farts = fluidRow(column(12,align = 'center', actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
