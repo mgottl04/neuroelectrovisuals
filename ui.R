@@ -21,17 +21,18 @@ ephys_panel = bsCollapsePanel(title = "Ephys Properties", ephys_panel_contents, 
 
 add_input_selector <- function(x_label,y_label){
   
-  fluidRow(
-    selectInput(x_label, 
+  fluidRow(style='background-color: gray',
+           column(6,
+      selectInput(x_label, 
                 label = "Choose a variable to display on x axis",
                 choices =names(bigData)[axis_names],
                 selected = names(bigData)[axis_names][[1]]
-    ),
-    selectInput(y_label, 
+    )),
+    column(6,selectInput(y_label, 
                 label = "Choose a variable to display on y axis",
                 choices =names(bigData)[axis_names],
                 selected = names(bigData)[axis_names][[2]]
-    )
+    ))
   )
   
 }
@@ -51,29 +52,20 @@ shinyUI(fluidPage(
    
     # Show a plot of the generated distribution
     mainPanel(
-      fluidRow(style='width:1200',column(3,actionButton('toggle1','Toggle Show/Edit', icon = icon("cog", lib = "glyphicon"))),
-              
+      fluidRow(style='width:1200',              
                column(3,actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome"))),
-               column(3, radioButtons('mode', 'Highlight on:', c('Hover' = 'hover', 'Click' = 'click')) ),
-               column(3,checkboxInput('remove','Remove on Click', value = FALSE),'*Overrides Highlight on Click')),
-       fluidRow(style = 'height: 800px; width: 1200px',column(12,
-               conditionalPanel(condition = 'input.toggle1 % 2 == 0',
-                                fluidRow(style="padding: 0px 0px 0px 40px;",h2('Select variables to plot')),
-                                fluidRow(column(6,style = "width: 50%; height: 50%",fluidRow(style="padding: 50px 0px 150px 40px;",add_input_selector('x1','y1')), 
-                                fluidRow(style="padding: 0px 0px 0px 40px;",add_input_selector('x2','y2'))),
-                                column(6,style = "width: 50%; height: 50%", fluidRow(style="padding: 50px 0px 150px 40px;",add_input_selector('x3','y3')),
-                                fluidRow(style="padding: 0px 0px 0px 40px;",add_input_selector('x4','y4')))
-                                )),
-               conditionalPanel('input.toggle1 % 2 == 1', #style = 'height: 800px; width: 1200px',
-                                fluidRow(style = "padding: 30px 0px 0px 0px",
-                                  column(6, style="width: 50%;",ggvisOutput("plot1"), ggvisOutput('plot2')),
-                                  column(6, style="width: 50%;",ggvisOutput("plot3"), ggvisOutput('plot4'))
-                                )
+               column(3,checkboxInput('remove','Remove on Click', value = FALSE))),
+       fluidRow(style = 'height: 800px; width: 1320px;',
+                                  
+                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1'),ggvisOutput("plot1"), add_input_selector('x2','y2'),ggvisOutput('plot2')),
+                                  column(1,style = 'width:5%'),
+                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3'),ggvisOutput("plot3"), add_input_selector('x4','y4'),ggvisOutput('plot4'))
+                                
                )
-      )
+      
       ), fluid =TRUE
       
-      ))))
+      )))
 # toggleState
 #runjs(code = "$.jstree.defaults.core.expand_selected_onload = false;")
 

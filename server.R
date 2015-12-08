@@ -27,7 +27,7 @@ shinyServer(function(input, output,session) {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
   do_remove <- reactive({input$remove})
-  mode <- reactive({input$mode})
+  
   
   make_main_plot <- function(df, x_axis, y_axis){
     
@@ -55,17 +55,14 @@ shinyServer(function(input, output,session) {
              
               if (do_remove()){
                 isolate(removed$selected[data$key] <- TRUE)
-              } else if (mode() == 'click') {
-              
-             isolate(values$selected[data$key] <- 2)
               } 
         }  
       
       )%>% handle_hover(on_mouse_over = function(data,...){
-        if (mode() == 'hover'){
+        
         isolate(values$selected[values$selected == 2] <- 1)
         isolate(values$selected[data$key] <- 2)
-        }
+        
 
       }) #ggvis-tooltip 
     
