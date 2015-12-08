@@ -59,11 +59,7 @@ shinyUI(fluidPage(
   extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
   #extendShinyjs(text = 'shinyjs.textWrap = function(){$("#nt_tree").attr("style", "white-space: normal !important");}'),
-  extendShinyjs(text = 'shinyjs.textWrap = function(){$(".jstree-clicked").css("background", "white");
-$(".jstree-default").css("background", "white");
-$(".jstree-anchor").css("background", "white");
-$(".jstree-anchor .jstree-clicked").css("background", "white");
-$(".jstree-default .jstree-clicked").css("background", "white")}'),
+  extendShinyjs(text = 'shinyjs.textWrap = function(){$(".jstree-clicked").css("background", "white");}'),
   extendShinyjs(text = log2Slider),
   
   # Application title
