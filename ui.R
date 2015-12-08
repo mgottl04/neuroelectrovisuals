@@ -17,8 +17,9 @@ addSlider <- function(name, units, min, max, step) {
 }
 
 nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
-organism_panel_contents = list(h5("Species"),shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),
-                               addSlider("Age","days",floor(min(age)),ceiling(max(age))))
+organism_panel_contents = list(h5("Species",style='font-weight: bold'),
+                               fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
+                               addSlider("Age","days",0,log2(age_max) + 1))
 ephys_panel_contents = stuff <- lapply(seq(1,length(prop_names)), function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
                                                                            props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])})
 
@@ -27,7 +28,6 @@ farts = fluidRow(column(12,align = 'center', actionButton('clearance','Clear Hig
          checkboxInput('remove','Remove on Click', value = FALSE)))
 
 control_panel = bsCollapsePanel(title = "Controls",farts, style = "danger" )
-
 nt_panel = bsCollapsePanel(title = "Neuron Type", nt_panel_contents, style = "info")
 organism_panel = bsCollapsePanel(title = "Organism", organism_panel_contents, style = "success")
 ephys_panel = bsCollapsePanel(title = "Ephys Properties", ephys_panel_contents, style = "warning")
@@ -40,12 +40,12 @@ add_input_selector <- function(x_label,y_label, border_widths){
            column(6,
       selectInput(x_label, 
                 label = "Choose a variable to display on x axis",
-                choices =names(bigData)[axis_names],
+                choices =sort(names(bigData)[axis_names]),
                 selected = names(bigData)[axis_names][[1]]
     )),
     column(6,selectInput(y_label, 
                 label = "Choose a variable to display on y axis",
-                choices =names(bigData)[axis_names],
+                choices =sort(names(bigData)[axis_names]),
                 selected = names(bigData)[axis_names][[2]]
     ))
   )
@@ -58,6 +58,12 @@ shinyUI(fluidPage(
   useShinyjs(),
   extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
+  #extendShinyjs(text = 'shinyjs.textWrap = function(){$("#nt_tree").attr("style", "white-space: normal !important");}'),
+  extendShinyjs(text = 'shinyjs.textWrap = function(){$(".jstree-clicked").css("background", "white");
+$(".jstree-default").css("background", "white");
+$(".jstree-anchor").css("background", "white");
+$(".jstree-anchor .jstree-clicked").css("background", "white");
+$(".jstree-default .jstree-clicked").css("background", "white")}'),
   extendShinyjs(text = log2Slider),
   
   # Application title
@@ -69,18 +75,15 @@ shinyUI(fluidPage(
    
     # Show a plot of the generated distribution
     mainPanel(
-      
        fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
-                                  
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1"), add_input_selector('x2','y2','3px 0px 0px 0px'),ggvisOutput('plot2')),
                                   column(1,style = 'width:5%'),
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"), add_input_selector('x4','y4','3px 0px 0px 0px'),ggvisOutput('plot4'))
                               ,tags$pre(style= "border:0px;",'\n')
                )
-      
       ), fluid =TRUE
-      
       )))
+
 # toggleState
 #runjs(code = "$.jstree.defaults.core.expand_selected_onload = false;")
 

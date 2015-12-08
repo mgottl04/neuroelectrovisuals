@@ -2,9 +2,13 @@ library(shinyjs)
 library(V8)
 
 shinyServer(function(input, output,session) {
+  
+  js$collapseNodesOnLoad()
+  js$log2Slider(id = "Age", max_power = log2(age_max))
+  js$textWrap()
  
   output$nt_tree <- renderTree({
-    region_groups
+    list(All = structure(region_groups,stselected = TRUE,stopened= TRUE))
   })
   
   output$species_tree <- renderTree({
@@ -31,23 +35,34 @@ shinyServer(function(input, output,session) {
   
   do_remove <- reactive({input$remove})
   
-  
   make_main_plot <- function(df, x_axis, y_axis){
     
     data_frame <- df()
     data_frame$col <- reactive({values$selected[data_frame$key]})() 
     data_frame$remove <- reactive({removed$selected[data_frame$key]})()
     
-    #filter out NA values
+    x_axis_lab <- as.character(x_axis())
+    y_axis_lab <- as.character(y_axis())
     
-    data_frame <- data_frame%>%filter((!is.na(data_frame[,as.character(x_axis())]))&
-               (!is.na(data_frame[,as.character(y_axis())])))
+    #filter out NA values
+    data_frame <- data_frame%>%filter((!is.na(data_frame[,x_axis_lab]))&
+               (!is.na(data_frame[,y_axis_lab])))
+    
+    # Add units for ephys props (TODO - get units for metadata and missing ephys props!)
+    if (x_axis_lab %in% row.names(props)) {
+      x_axis_lab <- paste(x_axis_lab, " (", props[[x_axis_lab,c("usual.units")]], ")")
+    }
+    
+    # Add units for ephys props
+    if (y_axis_lab %in% row.names(props)) {
+      y_axis_lab <- paste(y_axis_lab, " (", props[[y_axis_lab,c("usual.units")]], ")")
+    }
     
     data_frame[!data_frame$remove,] %>%
       ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
       hide_legend(scales = c('fill','size')) %>%
-      add_axis('y', properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
-      add_axis('x', properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
+      add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+      add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
       layer_points() %>%
       set_options(height = 400, width = 600) %>%
       add_tooltip(function(data){
@@ -78,7 +93,7 @@ shinyServer(function(input, output,session) {
     
     if (!is.null(input$nt_tree)) {
       selected_nts <- get_selected(input$nt_tree)
-      selected_nts <- selected_nts[!(selected_nts %in% regions)]
+      selected_nts <- selected_nts[!(selected_nts %in% c("All",regions))]
       if (length(selected_nts) < nrow(neuron_types)){
         data <- data[data$NeuronName %in% selected_nts,]
       }
@@ -91,6 +106,22 @@ shinyServer(function(input, output,session) {
         data <- data[data$Species %in% selected_species,]
       }
     }
+    
+    age_slider_min <- input$Age[1]
+    age_slider_max <- input$Age[2]
+    age_low <- if (age_slider_min == 0) 0 else (2^(age_slider_min - 1))
+    age_high <- if (age_slider_max == 0) 0 else (2^(age_slider_max - 1))
+    if (age_low > 0 || age_high < age_max) {
+      data <- data[which(!is.null(data$AnimalAge) & data$AnimalAge >= age_low & data$AnimalAge <= age_high),]
+    }
+    
+    lapply(prop_names, function(x){
+      slider_val = input[[x]]
+      if (slider_val[1] > props[[x,c("Min.Range")]] || slider_val[2] < props[[x,c("Max.Range")]]) {
+        data <- data[which(!is.null(data[[x]]) & data[[x]] >= slider_val[1] & data[[x]] <= slider_val[2]),]
+      }
+    })
+    
     data
   })
   
@@ -112,7 +143,4 @@ shinyServer(function(input, output,session) {
     bind_shiny('plot3')
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
- 
- js$collapseNodesOnLoad()
- js$log2Slider(id = "Age", max_power = ceiling(log2(max(age))))
 })
