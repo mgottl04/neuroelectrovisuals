@@ -1,7 +1,6 @@
 library(shinyjs)
 library(V8)
 
-# Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
  
   output$nt_tree <- renderTree({
@@ -11,21 +10,25 @@ shinyServer(function(input, output,session) {
   output$species_tree <- renderTree({
     list(Mice = structure("Mice",stselected=TRUE),
     Rats = structure("Rats",stselected=TRUE),
-    Other = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE))
+    Others = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE))
   })
  
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
   removed <- reactiveValues(selected = rep(FALSE,nrow(bigData)))
-  observeEvent(input$toggle1,{
+ 
+   observeEvent(input$toggle1,{
     js$removeStuckToolTip()
   })
+  
   observeEvent(input$clearance, {
     values$selected <- rep(1,nrow(bigData))
     js$removeStuckToolTip()
   })
+  
   observeEvent(input$restoreRemoved, {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
+  
   do_remove <- reactive({input$remove})
   
   
@@ -65,31 +68,42 @@ shinyServer(function(input, output,session) {
         
 
       }) #ggvis-tooltip 
-    
-
   }
  
   mtc <- reactive({
-    #global filtering will occur in this reactive
-    selected_nts <- get_selected(input$species_tree)
-    data = bigData 
+    
+    data = bigData
+    
+    # Apply filters (only on attributes where not everything is selected)
+    
+    if (!is.null(input$nt_tree)) {
+      selected_nts <- get_selected(input$nt_tree)
+      selected_nts <- selected_nts[!(selected_nts %in% regions)]
+      if (length(selected_nts) < nrow(neuron_types)){
+        data <- data[data$NeuronName %in% selected_nts,]
+      }
+    }
+    
+    if (!is.null(input$species_tree)) {
+      selected_species <- get_selected(input$species_tree)
+      selected_species <- selected_species[selected_species != "Others"]
+      if (length(selected_species) < length(species)){
+        data <- data[data$Species %in% selected_species,]
+      }
+    }
     data
   })
-  
-  selected_nts <- reactive({get_selected(input$species_tree)})
   
   x1 <- reactive({as.symbol(input$x1)})
   x2 <- reactive({as.symbol(input$x2)})
   x3 <- reactive({as.symbol(input$x3)})
   x4 <- reactive({as.symbol(input$x4)})
   
-  
   y1 <- reactive({as.symbol(input$y1)})
   y2 <- reactive({as.symbol(input$y2)})
   y3 <- reactive({as.symbol(input$y3)})
   y4 <- reactive({as.symbol(input$y4)})
   
- 
   reactive({make_main_plot(mtc,x1,y1)})%>%
     bind_shiny('plot1')
   reactive({make_main_plot(mtc,x2,y2)})%>%
@@ -100,4 +114,5 @@ shinyServer(function(input, output,session) {
     bind_shiny('plot4')
  
  js$collapseNodesOnLoad()
+ js$log2Slider(id = "Age", max_power = ceiling(log2(max(age))))
 })

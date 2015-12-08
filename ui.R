@@ -1,23 +1,38 @@
-# Define UI for application that draws a histogram
+# *** Control panel logic ***
 
-# Control panel
-library(shinyjs)
-library(V8)
+log2Slider <-
+  "shinyjs.log2Slider = function(params) {
+    var vals = [0];
+    var powStart = 0;
+    var powStop = params.max_power;
+    for (i = powStart; i <= powStop; i++) {
+      var val = Math.pow(2, i);
+      val = parseFloat(val.toFixed(8));
+      vals.push(val);
+    }
+    $('#' + params.id).data('ionRangeSlider').update({'values':vals})}"
+
 addSlider <- function(name, units, min, max, step) {
   sliderInput(name,paste(name, " (", units, ")"),min,max,value = c(min,max))
 }
 
 nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
+organism_panel_contents = list(h5("Species"),shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),
+                               addSlider("Age","days",floor(min(age)),ceiling(max(age))))
 ephys_panel_contents = stuff <- lapply(seq(1,length(prop_names)), function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
                                                                            props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])})
-organism_panel_contents = list(h5("Species"),shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),
-                               addSlider("Age","days",min(age),max(age)))
+
+farts = fluidRow(column(12,align = 'center', actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
+                  actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome")),
+         checkboxInput('remove','Remove on Click', value = FALSE)))
+
+control_panel = bsCollapsePanel(title = "Controls",farts, style = "danger" )
 
 nt_panel = bsCollapsePanel(title = "Neuron Type", nt_panel_contents, style = "info")
 organism_panel = bsCollapsePanel(title = "Organism", organism_panel_contents, style = "success")
 ephys_panel = bsCollapsePanel(title = "Ephys Properties", ephys_panel_contents, style = "warning")
 
-# End control panel
+# *** Main panel logic ***
 
 add_input_selector <- function(x_label,y_label){
   
@@ -34,27 +49,27 @@ add_input_selector <- function(x_label,y_label){
                 selected = names(bigData)[axis_names][[2]]
     ))
   )
-  
 }
+
+# *** Define UI ***
 
 shinyUI(fluidPage(
   
   useShinyjs(),
   extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
-   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
+  extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
+  extendShinyjs(text = log2Slider),
   
   # Application title
   titlePanel('NeuroElectro Visuals'),
   
-  # Sidebar with a slider input for the number of bins
+  # Control panel sidebar
   sidebarLayout(
-    sidebarPanel(width = 3, bsCollapse(nt_panel, organism_panel,ephys_panel, id = "filterMenu", multiple = TRUE, open = NULL)),
+    sidebarPanel(width = 4, bsCollapse(nt_panel, organism_panel,ephys_panel, control_panel,id = "filterMenu", multiple = TRUE, open = NULL)),
    
     # Show a plot of the generated distribution
     mainPanel(
-      fluidRow(style='width:1200',              
-               column(3,actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome"))),
-               column(3,checkboxInput('remove','Remove on Click', value = FALSE))),
+      
        fluidRow(style = 'height: 800px; width: 1320px;',
                                   
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1'),ggvisOutput("plot1"), add_input_selector('x2','y2'),ggvisOutput('plot2')),
