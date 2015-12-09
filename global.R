@@ -71,12 +71,13 @@ species <- levels(as.factor(bigData$Species))
 misc_species <- species[!species %in% c("Rats", "Mice")]
 age <- na.omit(bigData$AnimalAge)
 age_max <- 2^ceiling(log2(max(age))) # max val for range slider
+weight <- na.omit(bigData$AnimalWeight)
 
 # Ephys props
 props <- ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range"),drop=FALSE]
 prop_names <- rownames(props)
 
-# Three groups for ephys props panels
+# Four groups for ephys props panels
 g1_start <- 1 
 g1_end <-  length(prop_names[grepl("^[a-cA-C]", prop_names)])
 g2_start <- g1_end + 1

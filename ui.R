@@ -35,7 +35,7 @@ nested_ephys_panel_SmZ <- bsCollapsePanel(lapply(seq(g4_start,g4_end),
 nt_panel_contents <- shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
 organism_panel_contents <- list(h5("Species",style='font-weight: bold'),
                                fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
-                               addSlider("Age","days",0,log2(age_max) + 1))
+                               addSlider("Age","days",0,log2(age_max) + 1), addSlider("Weight","oz",floor(min(weight)),ceiling(max(weight))))
 ephys_panel_contents <- bsCollapse(nested_ephys_panel_AC, nested_ephys_panel_DL, nested_ephys_panel_MSl, nested_ephys_panel_SmZ, id = "ephys_panel", multiple = TRUE, open = NULL)
 
 nt_panel <- bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")

@@ -106,6 +106,12 @@ shinyServer(function(input, output, session) {
       data <- data[which(!is.na(data$AnimalAge) & data$AnimalAge >= age_low & data$AnimalAge <= age_high),]
     }
     
+    weight_low <- input$Weight[1]
+    weight_high <- input$Weight[2]
+    if (weight_low > floor(min(weight)) || weight_high < ceiling(max(weight))) {
+      data <- data[which(!is.na(data$AnimalWeight) & data$AnimalWeight >= weight_low & data$AnimalWeight <= weight_high),]
+    }
+    
     for (x in prop_names) {
       if (!is.null(input[[x]])) {
         slider_val = input[[x]] 
