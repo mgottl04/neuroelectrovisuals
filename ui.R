@@ -64,7 +64,6 @@ shinyUI(fluidPage(
   useShinyjs(),
   extendShinyjs(text = "shinyjs.collapseNodesOnLoad = function(){$.jstree.defaults.core.expand_selected_onload = false;}"),
   extendShinyjs(text = 'shinyjs.removeStuckToolTip = function(){$("#ggvis-tooltip").remove();}'),
-  extendShinyjs(text = 'shinyjs.textWrap = function(){$(".jstree-clicked").css("background", "white");}'),
   extendShinyjs(text = log2Slider),
   
   # Application title

@@ -34,10 +34,6 @@ shinyServer(function(input, output, session) {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
   
-  observeEvent(input$nt_tree, {
-    js$textWrap()
-  })
-  
   do_remove <- reactive({input$remove})
   
   make_main_plot <- function(df, x_axis, y_axis){
