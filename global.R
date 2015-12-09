@@ -19,7 +19,7 @@ rownames(ephys_info) <- gsub("-", ".", rownames(ephys_info))
 ephys_info <- ephys_info[rownames(ephys_info) != "other",]
 
 # Fix nonsense levels
-bigData[!bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
+bigData[bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
 
 # Add log10 to units of log10 transformed props
 ephys_info[ephys_info$Transform == "log10",c("usual.units")] <- paste("log10",ephys_info[ephys_info$Transform != "linear",c("usual.units")])

@@ -18,43 +18,37 @@ addSlider <- function(name, units, min, max, step) {
 
 nested_ephys_panel_AF <- bsCollapsePanel(lapply(seq(g1_start,g1_end), 
                                       function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "A-F", style= "warning")
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "A-F", style = "warning")
 
 nested_ephys_panel_GSl <- bsCollapsePanel(lapply(seq(g2_start,g2_end), 
                                                 function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                                props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "G-Sl", style= "warning")
+                                                props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "G-Sl", style = "warning")
 
 nested_ephys_panel_SmZ <- bsCollapsePanel(lapply(seq(g3_start,g3_end),
                                                 function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                                props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "Sm-Z", style= "warning")
+                                                props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "Sm-Z", style = "warning")
 
-nt_panel_contents = shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
-organism_panel_contents = list(h5("Species",style='font-weight: bold'),
+nt_panel_contents <- shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
+organism_panel_contents <- list(h5("Species",style='font-weight: bold'),
                                fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
                                addSlider("Age","days",0,log2(age_max) + 1))
 ephys_panel_contents <- bsCollapse(nested_ephys_panel_AF, nested_ephys_panel_GSl, nested_ephys_panel_SmZ, id = "ephys_panel", multiple = TRUE, open = NULL)
 
-farts = fluidRow(column(12,align = 'center', actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
-                  actionButton('restoreRemoved','Restore Removed', width = 150,icon = icon("undo", lib = "font-awesome")),
-         checkboxInput('remove','Remove on Click', value = FALSE)))
-
-control_panel = bsCollapsePanel(title = "Controls",farts, style = "danger" )
-nt_panel = bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
-organism_panel = bsCollapsePanel(title = "Organism Filters", organism_panel_contents, style = "success")
-ephys_panel = bsCollapsePanel(title = "Ephys Property Filters", ephys_panel_contents, style = "warning")
+nt_panel <- bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
+organism_panel <- bsCollapsePanel(title = "Organism Filters", organism_panel_contents, style = "info")
+ephys_panel <- bsCollapsePanel(title = "Ephys Property Filters", ephys_panel_contents, style = "info")
 
 # *** Main panel logic ***
 
 add_input_selector <- function(x_label,y_label, border_widths){
   
-  fluidRow(style=paste('background-color: LightGray;border-style: solid; border-width:',border_widths),
-           column(6,
-      selectInput(x_label, 
+  fluidRow(style=paste('background-color: #d9edf7;border-style: solid; border-color: #bce8f1; border-width:',border_widths),
+           column(6,style='padding: 5px', selectInput(x_label,
                 label = "Choose a variable to display on x axis",
                 choices =sort(names(bigData)[axis_names]),
                 selected = names(bigData)[axis_names][[1]]
     )),
-    column(6,selectInput(y_label, 
+          column(6,style='padding: 5px', selectInput(y_label, 
                 label = "Choose a variable to display on y axis",
                 choices =sort(names(bigData)[axis_names]),
                 selected = names(bigData)[axis_names][[2]]
@@ -79,23 +73,32 @@ shinyUI(fluidPage(
   
   # Control panel sidebar
   sidebarLayout(
-    sidebarPanel(width = 3, bsCollapse(nt_panel, organism_panel,ephys_panel,control_panel,id = "filterMenu", multiple = TRUE, open = NULL)),
+    sidebarPanel(width = 3, bsCollapse(nt_panel,organism_panel,ephys_panel,id = "filterMenu", multiple = TRUE, open = NULL)),
    
-    # Show a plot of the generated distribution
     mainPanel(
       tabsetPanel(
         tabPanel("Overview",
-                  fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
+          fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
 #                            column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
-                 fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
+          fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
         ),
       tabPanel('Explore',
-                  fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
-                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1"), add_input_selector('x2','y2','3px 0px 0px 0px'),ggvisOutput('plot2')),
-                                  column(1,style = 'width:5%'),
-                                  column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"), add_input_selector('x4','y4','3px 0px 0px 0px'),ggvisOutput('plot4'))
-                              ,tags$pre(style= "border:0px;",'\n')
-               )
+        fluidRow(style = 'padding: 10px',column(6, style="width: 30%", actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
+           actionButton('restoreRemoved','Restore Removed',icon = icon("undo", lib = "font-awesome"))),
+           column(6,checkboxInput('remove','Remove on Click', value = FALSE))),
+        
+        fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
+          column(6, style="width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1")),
+          column(1,style = 'width:5%'),
+          column(6, style="width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"))
+          ,tags$pre(style= "border:0px;",'\n')),
+        
+        fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
+          column(6, style="margin-top: 10px;width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px'),ggvisOutput('plot2')),
+          column(1,style = 'width:5%'),
+          column(6, style="margin-top: 10px;width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px'),ggvisOutput('plot4'))
+          ,tags$pre(style= "border:0px;",'\n'))
+      
     ))), fluid =TRUE
   )
 ))
