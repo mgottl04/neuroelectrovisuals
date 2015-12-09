@@ -1,13 +1,27 @@
+library(dplyr)
+library(ggvis)
+library(grDevices)
+library(HiveR)
+library(igraph)
+library(plyr)
+library(psych)
+library(RColorBrewer)
+library(reshape2)
 library(shiny)
 library(shinyBS)
-library(shinyTree)
-library(ggvis)
-library(dplyr)
 library(shinyjs)
+library(shinyTree)
 library(V8)
 
+source("./mod.edge2HPD.R")
+source("./hive.R")
+source("./hive_mike.R")
+
+load('data//hive_node_data.rda')
+hive_data <- read.csv(file='data/hive_data.csv')
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 ephys_info <- read.csv('data/ephys_prop_definitions.csv',sep = '\t',row.names = 1)
+
 rownames(ephys_info) <- gsub(" ", ".", rownames(ephys_info))
 rownames(ephys_info) <- gsub("-", ".", rownames(ephys_info))
 
@@ -44,4 +58,6 @@ age_max <- 2^ceiling(log2(max(age))) # max val for range slider
 # Ephys props
 props <- na.omit(ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range")])
 prop_names <- rownames(props)
+
+
 

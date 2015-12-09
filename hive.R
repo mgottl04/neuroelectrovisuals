@@ -44,31 +44,31 @@ makeHivePlot = function(bigData = bigData) {
     }
   }
   
-#   increment_count <- function(src_ob, sink_ob) {
-#     dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count <<- dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count + 1
-#   }
+  #   increment_count <- function(src_ob, sink_ob) {
+  #     dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count <<- dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count + 1
+  #   }
   
-#   for (i in 1 : nrow(bigData)) {
-#     for (ep in ephys_props) {
-#       if (!is.na(bigData[i, ep])) {
-#         increment_count(bigData[i, "NeuronName"], ep)
-#         for (meta in metadata) {
-#           if (!is.na(bigData[i, meta])) {
-#             increment_count(ep, meta)
-#           }
-#         }
-#       }
-#     }
-#     for (meta in metadata) {
-#       if (!is.na(bigData[i, meta])) {
-#         increment_count(bigData[i, "NeuronName"], meta)
-#       }
-#     }
-#   }
+  #   for (i in 1 : nrow(bigData)) {
+  #     for (ep in ephys_props) {
+  #       if (!is.na(bigData[i, ep])) {
+  #         increment_count(bigData[i, "NeuronName"], ep)
+  #         for (meta in metadata) {
+  #           if (!is.na(bigData[i, meta])) {
+  #             increment_count(ep, meta)
+  #           }
+  #         }
+  #       }
+  #     }
+  #     for (meta in metadata) {
+  #       if (!is.na(bigData[i, meta])) {
+  #         increment_count(bigData[i, "NeuronName"], meta)
+  #       }
+  #     }
+  #   }
   
   #dataSetTest <- data.frame(src = character(), sink = character(), count = numeric(), stringsAsFactors = FALSE)
   #output <- apply(bigData, 1, function(x) {
-    
+  
   #})
   
   
@@ -138,12 +138,12 @@ makeHivePlot = function(bigData = bigData) {
   nodeAxis[(num_neurons + length(ephys_props) + 1) : nrow(node.list)] <- as.integer(3)
   node.list <- cbind(node.list, axis = nodeAxis)
   rm(nodeAxis)
-
+  
   ############################################################################################
   #Create a hive plot
   source("./mod.edge2HPD.R")
   source("./mod.mineHPD.R")
-
+  
   hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.axis = node.list[,c("name", "axis")])
   p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Neuron Type", "Ephys. property", "Metadata"), axLab.pos = 1)
   return(p)

@@ -1,6 +1,3 @@
-library(shinyjs)
-library(V8)
-source("./hive.R")
 
 shinyServer(function(input, output, session) {
   
@@ -145,6 +142,7 @@ shinyServer(function(input, output, session) {
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
   
-  output$hivePlot <- renderPlot({makeHivePlot(mtc())})
+#   output$hivePlot <- renderPlot({makeHivePlot(mtc())})
+  output$hivePlot <- renderPlot({makeHivePlot_mike(mtc()$key)})
   output$table <- renderDataTable(mtc()[,sapply(mtc(),is.character)])
 })
