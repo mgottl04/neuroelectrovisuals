@@ -75,14 +75,20 @@ shinyUI(fluidPage(
    
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("hivePlot", height = 1000, width = 1200),
-      fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
+      tabsetPanel(
+        tabPanel("Overview",
+                  fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
+#                            column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
+                 fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
+        ),
+      tabPanel('Explore',
+                  fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1"), add_input_selector('x2','y2','3px 0px 0px 0px'),ggvisOutput('plot2')),
                                   column(1,style = 'width:5%'),
                                   column(6, style="width: 47.5%;border-style: solid; border-width: medium",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"), add_input_selector('x4','y4','3px 0px 0px 0px'),ggvisOutput('plot4'))
                               ,tags$pre(style= "border:0px;",'\n')
                )
-    ), fluid =TRUE
+    ))), fluid =TRUE
   )
 ))
   
