@@ -16,23 +16,27 @@ addSlider <- function(name, units, min, max, step) {
   sliderInput(name,paste(name, " (", units, ")"),min,max,value = c(min,max))
 }
 
-nested_ephys_panel_AF <- bsCollapsePanel(lapply(seq(g1_start,g1_end), 
+nested_ephys_panel_AC <- bsCollapsePanel(lapply(seq(g1_start,g1_end), 
                                       function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "A-F", style = "warning")
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "A-C", style = "warning")
 
-nested_ephys_panel_GSl <- bsCollapsePanel(lapply(seq(g2_start,g2_end), 
-                                                function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                                props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "G-Sl", style = "warning")
+nested_ephys_panel_DL <- bsCollapsePanel(lapply(seq(g2_start,g2_end), 
+                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "D-L", style = "warning")
 
-nested_ephys_panel_SmZ <- bsCollapsePanel(lapply(seq(g3_start,g3_end),
-                                                function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                                props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "Sm-Z", style = "warning")
+nested_ephys_panel_MSl <- bsCollapsePanel(lapply(seq(g3_start,g3_end), 
+                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "M-Sl", style = "warning")
+
+nested_ephys_panel_SmZ <- bsCollapsePanel(lapply(seq(g4_start,g4_end),
+                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "Sm-Z", style = "warning")
 
 nt_panel_contents <- shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
 organism_panel_contents <- list(h5("Species",style='font-weight: bold'),
                                fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
                                addSlider("Age","days",0,log2(age_max) + 1))
-ephys_panel_contents <- bsCollapse(nested_ephys_panel_AF, nested_ephys_panel_GSl, nested_ephys_panel_SmZ, id = "ephys_panel", multiple = TRUE, open = NULL)
+ephys_panel_contents <- bsCollapse(nested_ephys_panel_AC, nested_ephys_panel_DL, nested_ephys_panel_MSl, nested_ephys_panel_SmZ, id = "ephys_panel", multiple = TRUE, open = NULL)
 
 nt_panel <- bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
 organism_panel <- bsCollapsePanel(title = "Organism Filters", organism_panel_contents, style = "info")
@@ -88,16 +92,16 @@ shinyUI(fluidPage(
            column(6,checkboxInput('remove','Remove on Click', value = FALSE))),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
-          column(6, style="width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1")),
-          column(1,style = 'width:5%'),
-          column(6, style="width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"))
-          ,tags$pre(style= "border:0px;",'\n')),
+          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1")),
+          column(1,style = 'height: 100%;width: 2%'),
+          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"))
+          ),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
-          column(6, style="margin-top: 10px;width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px'),ggvisOutput('plot2')),
-          column(1,style = 'width:5%'),
-          column(6, style="margin-top: 10px;width: 47.5%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px'),ggvisOutput('plot4'))
-          ,tags$pre(style= "border:0px;",'\n'))
+          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px'),ggvisOutput('plot2')),
+          column(1,style = 'height: 100%;width: 2%'),
+          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px'),ggvisOutput('plot4'))
+          )
       
     ))), fluid =TRUE
   )

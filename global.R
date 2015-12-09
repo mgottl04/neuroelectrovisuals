@@ -78,9 +78,11 @@ prop_names <- rownames(props)
 
 # Three groups for ephys props panels
 g1_start <- 1 
-g1_end <-  length(prop_names[grepl("^[a-fA-F]", prop_names)])
+g1_end <-  length(prop_names[grepl("^[a-cA-C]", prop_names)])
 g2_start <- g1_end + 1
-g2_end <- g2_start + length(prop_names[grepl("^[g-rG-R]|^[Ss][a-lA-L]", prop_names)]) - 1
+g2_end <- g2_start + length(prop_names[grepl("^[d-lD-L]", prop_names)]) - 1
 g3_start <- g2_end + 1
-g3_end <- g3_start + length(prop_names[grepl("^[Ss][m-zM-Z]|^[t-zT-Z]", prop_names)]) - 1
+g3_end <- g3_start +length(prop_names[grepl("^[m-rM-R]|^[Ss][a-lA-L]", prop_names)]) - 1
+g4_start <- g3_end + 1
+g4_end <- g4_start + length(prop_names[grepl("^[Ss][m-zM-Z]|^[t-zT-Z]", prop_names)]) - 1
 
