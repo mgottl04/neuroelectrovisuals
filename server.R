@@ -145,5 +145,6 @@ shinyServer(function(input, output, session) {
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
   
-  output$hivePlot <- renderPlot({makeHivePlot(bigData)})
+  output$hivePlot <- renderPlot({makeHivePlot(mtc())})
+  output$table <- renderDataTable(mtc())
 })
