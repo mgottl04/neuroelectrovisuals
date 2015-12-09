@@ -146,5 +146,5 @@ shinyServer(function(input, output, session) {
     bind_shiny('plot4')
   
   output$hivePlot <- renderPlot({makeHivePlot(mtc())})
-  output$table <- renderDataTable(mtc())
+  output$table <- renderDataTable(mtc()[,sapply(mtc(),is.character)])
 })

@@ -80,7 +80,7 @@ shinyUI(fluidPage(
         tabPanel("Overview",
                   fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
 #                            column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
-                 fluidRow(column(12,dataTableOutput('table')))
+                 fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
         ),
       tabPanel('Explore',
                   fluidRow(style = 'height: 800px; width: 1320px;padding: 0px 0px 10px 0px',
