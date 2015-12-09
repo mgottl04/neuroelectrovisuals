@@ -43,7 +43,7 @@ shinyServer(function(input, output, session) {
     
     #filter out NA values
     data_frame <- data_frame%>%filter((!is.na(data_frame[,x_axis_lab]))&
-               (!is.na(data_frame[,y_axis_lab])))
+               (y_axis_lab == "---" || !is.na(data_frame[,y_axis_lab])))
     
     # Add units for ephys props (TODO - get units for metadata)
     if (x_axis_lab %in% rownames(props)) {
@@ -55,25 +55,30 @@ shinyServer(function(input, output, session) {
       y_axis_lab <- paste(y_axis_lab, " (", props[[y_axis_lab,c("usual.units")]], ")")
     }
     
-    data_frame[!data_frame$remove,] %>%
-      ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
-      hide_legend(scales = c('fill','size')) %>%
-      add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
-      add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
-      layer_points() %>%
-      set_options(height = 400, width = 600) %>%
-      add_tooltip(function(data){
-        paste0(       
-                 "ID: ", as.character(data$key),"<br>",
-                      x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
-      }, "hover")%>%set_options(renderer = "canvas") %>% handle_click(on_click = function(data,...){
-             
-              if (do_remove()){
-                isolate(removed$selected[data$key] <- TRUE)
-              } 
+    # Just one variable selected - make a histogram
+    if (y_axis_lab == "---") {
+      data_frame[!data_frame$remove,] %>% ggvis(x=x_axis()) %>% layer_histograms()
+    }
+    
+    else {
+      data_frame[!data_frame$remove,] %>%
+        ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
+        hide_legend(scales = c('fill','size')) %>%
+        add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
+        layer_points() %>%
+        set_options(height = 400, width = 600) %>%
+        add_tooltip(function(data){
+          paste0(       
+            "ID: ", as.character(data$key),"<br>",
+            x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
+        }, "hover")%>%set_options(renderer = "canvas") %>% handle_click(on_click = function(data,...){
+          if (do_remove()){
+            isolate(removed$selected[data$key] <- TRUE)
+          } 
         }  
-      
       ) #ggvis-tooltip 
+    }
   }
  
   mtc <- reactive({

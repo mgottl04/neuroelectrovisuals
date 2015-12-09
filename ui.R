@@ -54,7 +54,7 @@ add_input_selector <- function(x_label,y_label, border_widths){
     )),
           column(6,style='padding: 5px', selectInput(y_label, 
                 label = "Choose a variable to display on y axis",
-                choices =sort(names(bigData)[axis_names]),
+                choices =c("---",sort(names(bigData)[axis_names])),
                 selected = names(bigData)[axis_names][[2]]
     ))
   )
