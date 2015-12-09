@@ -3,7 +3,6 @@ shinyServer(function(input, output, session) {
   
   js$collapseNodesOnLoad()
   js$log2Slider(id = "Age", max_power = log2(age_max))
-  js$textWrap()
  
   output$nt_tree <- renderTree({
     list(All = structure(region_groups,stselected = TRUE,stopened= TRUE))
@@ -31,10 +30,6 @@ shinyServer(function(input, output, session) {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
   
-  observeEvent(input$nt_tree, {
-    js$textWrap()
-  })
-  
   do_remove <- reactive({input$remove})
   
   make_main_plot <- function(df, x_axis, y_axis){
@@ -50,13 +45,13 @@ shinyServer(function(input, output, session) {
     data_frame <- data_frame%>%filter((!is.na(data_frame[,x_axis_lab]))&
                (!is.na(data_frame[,y_axis_lab])))
     
-    # Add units for ephys props (TODO - get units for metadata and missing ephys props!)
-    if (x_axis_lab %in% row.names(props)) {
+    # Add units for ephys props (TODO - get units for metadata)
+    if (x_axis_lab %in% rownames(props)) {
       x_axis_lab <- paste(x_axis_lab, " (", props[[x_axis_lab,c("usual.units")]], ")")
     }
     
     # Add units for ephys props
-    if (y_axis_lab %in% row.names(props)) {
+    if (y_axis_lab %in% rownames(props)) {
       y_axis_lab <- paste(y_axis_lab, " (", props[[y_axis_lab,c("usual.units")]], ")")
     }
     
