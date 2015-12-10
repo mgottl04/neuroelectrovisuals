@@ -15,11 +15,12 @@ library(shinyTree)
 library(V8)
 
 source("./mod.edge2HPD.R")
+source("./mod.mineHPD.R")
 source("./hive.R")
-source("./hive_mike.R")
+#source("./hive_mike.R")
 
-load('data//hive_node_data.rda')
-hive_data <- read.csv(file='data/hive_data.csv')
+#load('data/hive_plot_data.RData')
+#hive_data <- read.csv(file='data/hive_data.csv')
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 ephys_info <- read.csv('data/ephys_prop_definitions.csv',sep = '\t',stringsAsFactors = FALSE, row.names = 1)
 
@@ -87,4 +88,14 @@ g3_start <- g2_end + 1
 g3_end <- g3_start +length(prop_names[grepl("^[m-rM-R]|^[Ss][a-lA-L]", prop_names)]) - 1
 g4_start <- g3_end + 1
 g4_end <- g4_start + length(prop_names[grepl("^[Ss][m-zM-Z]|^[t-zT-Z]", prop_names)]) - 1
+
+# Useful lists
+ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold","spike.amplitude","spike.half.width","membrane.time.constant",
+                 "AHP.amplitude","spike.width","cell.capacitance","AHP.duration","rheobase","firing.frequency",
+                 "adaptation.ratio","sag.ratio","fast.AHP.amplitude","spike.peak","maximum.firing.rate","other",
+                 "spontaneous.firing.rate","FI.slope","first.spike.latency","slow.AHP.amplitude","spike.max.rise.slope","ADP.amplitude",
+                 "sag.amplitude","spike.max.decay.slope","spike.rise.time","fast.AHP.duration","spike.decay.time","access.resistance",
+                 "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
+metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
+
 

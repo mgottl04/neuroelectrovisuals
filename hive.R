@@ -1,114 +1,77 @@
-library("igraph")
-library("plyr")
-library("HiveR")
-library("RColorBrewer")
-library("grDevices")
-library("psych")
-library("reshape2")
+# File for hive plot creation
 ############################################################################################
-
 makeHivePlot = function(bigData = bigData) { 
-  dataSet <- data.frame(src = character(), sink = character(), count = numeric(), stringsAsFactors = FALSE)
+#   plot.d <- subset(bigData, select = c("NeuronName"))
+  bigData[is.na(bigData$BrainRegion),] <- "Other"
+  plot.d <- subset(bigData, select = c("BrainRegion"))
   
-  ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold","spike.amplitude","spike.half.width","membrane.time.constant",
-                   "AHP.amplitude","spike.width","cell.capacitance","AHP.duration","rheobase","firing.frequency",
-                   "adaptation.ratio","sag.ratio","fast.AHP.amplitude","spike.peak","maximum.firing.rate","other",
-                   "spontaneous.firing.rate","FI.slope","first.spike.latency","slow.AHP.amplitude","spike.max.rise.slope","ADP.amplitude",
-                   "sag.amplitude","spike.max.decay.slope","spike.rise.time","fast.AHP.duration","spike.decay.time","access.resistance",
-                   "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
-  metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
+  plot.d$id <- 1:nrow(plot.d)
+  plot.d$value <- plot.d$BrainRegion
   
-  test <- subset(bigData, select = c("NeuronName"))
-  test$id <- 1:nrow(test)
-  test$value <- test$NeuronName
-  testy <- dcast(data = test, formula = id ~ NeuronName, value.var = "value")
-  testy <- testy[,!(names(testy) %in% c("id"))]
+  plot.d.cast <- dcast(data = plot.d, formula = id ~ BrainRegion, value.var = "value")
+  plot.d.cast <- as.data.frame(plot.d.cast[,!(names(plot.d.cast) %in% c("id"))])
   
-  test  <- subset(bigData, select = c(ephys_props, metadata))
-  test2 <- cbind(test,testy)
-  
-  temp <- count.pairwise(test2, diagonal = FALSE)
-  
-  for (nt in unique(bigData[,"NeuronName"])) {
-    for (ep in ephys_props) {
-      dataSet[nrow(dataSet) + 1,] <- list(nt, ep, temp[nt, ep])
-    }
-    for (meta in metadata) {
-      dataSet[nrow(dataSet) + 1,] <- list(nt, meta, temp[nt, meta])
-    }
+  if (ncol(plot.d.cast) == 1) {
+    colnames(plot.d.cast) <- plot.d.cast[1,1]
   }
+    
+  plot.d  <- subset(bigData, select = c(ephys_props, metadata))
+  plot.d <- cbind(plot.d, plot.d.cast)
   
-  for (ep in ephys_props) {
-    for (meta in metadata) {
-      dataSet[nrow(dataSet) + 1,] <- list(ep, meta, temp[ep, meta])
-    }
-  }
+  plot.d.pairs <- count.pairwise(plot.d, diagonal = FALSE)
   
-  #   increment_count <- function(src_ob, sink_ob) {
-  #     dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count <<- dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count + 1
-  #   }
+  dataSet1 <- expand.grid(V1 = unique(bigData[,"BrainRegion"]), V2 = c(ephys_props, metadata), stringsAsFactors = FALSE)
   
-  #   for (i in 1 : nrow(bigData)) {
-  #     for (ep in ephys_props) {
-  #       if (!is.na(bigData[i, ep])) {
-  #         increment_count(bigData[i, "NeuronName"], ep)
-  #         for (meta in metadata) {
-  #           if (!is.na(bigData[i, meta])) {
-  #             increment_count(ep, meta)
-  #           }
-  #         }
-  #       }
-  #     }
-  #     for (meta in metadata) {
-  #       if (!is.na(bigData[i, meta])) {
-  #         increment_count(bigData[i, "NeuronName"], meta)
-  #       }
-  #     }
-  #   }
+  dataSet2 <- expand.grid(V1 = ephys_props, V2 = metadata, stringsAsFactors = FALSE)
+  dataSet <- rbind(dataSet1, dataSet2)
   
-  #dataSetTest <- data.frame(src = character(), sink = character(), count = numeric(), stringsAsFactors = FALSE)
-  #output <- apply(bigData, 1, function(x) {
+  dataSet$V3 <- apply(dataSet, 1, function(x) {
+    plot.d.pairs[x[["V1"]], x[["V2"]]]
+  })
   
-  #})
+  dataSet <- dataSet %>% filter(V3 != 0)
   
-  
+  rm(plot.d, plot.d.pairs, plot.d.cast, dataSet1, dataSet2)
+
   ############################################################################################
   # Create a graph. Use simplify to ensure that there are no duplicated edges or self loops
-  colnames(dataSet) <- c("V1","V2","V3")
-  dataSet <- subset(dataSet, V3 > 0)
   
   gD <- simplify(graph.data.frame(dataSet, directed=FALSE))
   
-  # Calculate some node properties and node similarities that will be used to illustrate
-  # different plotting abilities
+  # Calculate some node properties and node similarities that will be used to illustrate different plotting abilities
   
   # Calculate degree for all nodes
   degAll <- degree(gD, v = V(gD), mode = "all")
   
   # Calculate betweenness for all nodes
-  betAll <- betweenness(gD, v = V(gD), directed = FALSE) / (((vcount(gD) - 1) * (vcount(gD)-2)) / 2)
-  betAll.norm <- (betAll - min(betAll))/(max(betAll) - min(betAll))
+  #betAll <- betweenness(gD, v = V(gD), directed = FALSE) / (((vcount(gD) - 1) * (vcount(gD)-2)) / 2)
+  #betAll.norm <- (betAll - min(betAll))/(max(betAll) - min(betAll))
   
-  node.list <- data.frame(name = V(gD)$name, degree = degAll, betw = betAll.norm)
+  #node.list <- data.frame(name = V(gD)$name, degree = degAll, betw = betAll.norm)
+  node.list <- data.frame(name = V(gD)$name, degree = degAll)
   
   # Calculate Dice similarities between all pairs of nodes
   dsAll <- similarity.dice(gD, vids = V(gD), mode = "all")
   
-  # Calculate edge weight based on the node similarity
-  F1 <- function(x) {data.frame(V4 = dsAll[which(V(gD)$name == as.character(x$V1)), which(V(gD)$name == as.character(x$V2))])}
-  dataSet.ext <- ddply(dataSet, .variables=c("V1", "V2", "V3"), function(x) data.frame(F1(x)))
+  # Calculate edge weight based on the number of evidence lines
+  normalize <- function(x, ...) {
+    (x - min(x, ...)) / (max(x, ...) - min(x, ...))
+  }
+  dataSet.ext <- cbind(dataSet, V4 = normalize(dataSet$V3, na.rm = T))
   
-  rm(degAll, betAll, betAll.norm, F1)
+  rm(degAll, F1, dsAll, gD, V4)
   ############################################################################################
   #Determine node/edge color based on the properties
   
   # Calculate node size
   # We'll interpolate node size based on the node betweenness centrality, using the "approx" function
   # And we will assign a node size for each node based on its betweenness centrality
-  approxVals <- approx(c(0.5, 1.5), n = length(unique(node.list$bet)))
-  nodes_size <- sapply(node.list$bet, function(x) approxVals$y[which(sort(unique(node.list$bet)) == x)])
-  node.list <- cbind(node.list, size = nodes_size)
-  rm(approxVals, nodes_size)
+  #approxVals <- approx(c(0.5, 1.5), n = length(unique(node.list$bet)))
+  #nodes_size <- sapply(node.list$bet, function(x) approxVals$y[which(sort(unique(node.list$bet)) == x)])
+  
+  # Bcentrality does not tell us much for our data, so let's just keep all nodes at the same size for now.
+  node.list <- cbind(node.list, size = rep(1, nrow(node.list)))
+  #rm(approxVals, nodes_size)
   
   # Define node color
   # We'll interpolate node colors based on the node degree using the "colorRampPalette" function from the "grDevices" library
@@ -122,7 +85,8 @@ makeHivePlot = function(bigData = bigData) {
   rm(F2, colCodes, nodes_col)
   
   # Assign visual attributes to edges using the same approach as we did for nodes
-  F2 <- colorRampPalette(c("#FFFF00", "#006400"), bias = length(unique(dataSet.ext$V4)), space = "rgb", interpolate = "linear")
+  F2 <- colorRampPalette(rev(brewer.pal(n = 7, name ="Blues")), bias = length(unique(dataSet.ext$V4)), space = "rgb", interpolate = "linear")
+#   F2 <- colorRampPalette(c("#FFFF00", "#006400"), bias = length(unique(dataSet.ext$V4)), space = "rgb", interpolate = "linear")
   colCodes <- F2(length(unique(dataSet.ext$V4)))
   edges_col <- sapply(dataSet.ext$V4, function(x) colCodes[which(sort(unique(dataSet.ext$V4)) == x)])
   dataSet.ext <- cbind(dataSet.ext, color = edges_col)
@@ -131,21 +95,22 @@ makeHivePlot = function(bigData = bigData) {
   ############################################################################################
   # Assign nodes to axes
   
-  num_neurons <- length(unique(bigData[,"NeuronName"]))
+  num_neurons <- length(unique(bigData[,"BrainRegion"]))
   nodeAxis <- integer(nrow(node.list))
   nodeAxis[1 : num_neurons] <- as.integer(1)
-  nodeAxis[(num_neurons + 1) : (num_neurons + length(ephys_props))] <- as.integer(2)
-  nodeAxis[(num_neurons + length(ephys_props) + 1) : nrow(node.list)] <- as.integer(3)
+  nodeAxis[(num_neurons + 1) : (num_neurons + nrow(subset(node.list, name %in% ephys_props)))] <- as.integer(2)
+  nodeAxis[(num_neurons + nrow(subset(node.list, name %in% ephys_props)) + 1) : nrow(node.list)] <- as.integer(3)
   node.list <- cbind(node.list, axis = nodeAxis)
-  rm(nodeAxis)
+  rm(nodeAxis, num_neurons)
   
   ############################################################################################
   #Create a hive plot
-  source("./mod.edge2HPD.R")
-  source("./mod.mineHPD.R")
   
   hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.axis = node.list[,c("name", "axis")])
-  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Neuron Type", "Ephys. property", "Metadata"), axLab.pos = 1)
+  
+  # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
+  hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
+  p <- plotHive(hive2, method = "abs", bkgnd = "gray", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 5)
   return(p)
 }
 
