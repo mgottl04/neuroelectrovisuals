@@ -18,59 +18,33 @@ makeHivePlot = function(bigData = bigData) {
                    "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
   metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
   
-  test <- subset(bigData, select = c("NeuronName"))
-  test$id <- 1:nrow(test)
-  test$value <- test$NeuronName
-  testy <- dcast(data = test, formula = id ~ NeuronName, value.var = "value")
-  testy <- testy[,!(names(testy) %in% c("id"))]
+  plot.d <- subset(bigData, select = c("NeuronName"))
+  plot.d$id <- 1:nrow(plot.d)
+  plot.d$value <- plot.d$NeuronName
+  plot.d.cast <- dcast(data = plot.1, formula = id ~ NeuronName, value.var = "value")
+  plot.d.cast <- plot.d.cast[,!(names(plot.d.cast) %in% c("id"))]
   
-  test  <- subset(bigData, select = c(ephys_props, metadata))
-  test2 <- cbind(test,testy)
+  plot.d  <- subset(bigData, select = c(ephys_props, metadata))
+  plot.d <- cbind(plot.d, plot.d.cast)
   
-  temp <- count.pairwise(test2, diagonal = FALSE)
+  plot.d.pairs <- count.pairwise(plot.d, diagonal = FALSE)
   
   for (nt in unique(bigData[,"NeuronName"])) {
     for (ep in ephys_props) {
-      dataSet[nrow(dataSet) + 1,] <- list(nt, ep, temp[nt, ep])
+      dataSet[nrow(dataSet) + 1,] <- list(nt, ep, plot.d.pairs[nt, ep])
     }
     for (meta in metadata) {
-      dataSet[nrow(dataSet) + 1,] <- list(nt, meta, temp[nt, meta])
+      dataSet[nrow(dataSet) + 1,] <- list(nt, meta, plot.d.pairs[nt, meta])
     }
   }
   
   for (ep in ephys_props) {
     for (meta in metadata) {
-      dataSet[nrow(dataSet) + 1,] <- list(ep, meta, temp[ep, meta])
+      dataSet[nrow(dataSet) + 1,] <- list(ep, meta, plot.d.pairs[ep, meta])
     }
   }
   
-  #   increment_count <- function(src_ob, sink_ob) {
-  #     dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count <<- dataSet[dataSet$src == src_ob & dataSet$sink == sink_ob,]$count + 1
-  #   }
-  
-  #   for (i in 1 : nrow(bigData)) {
-  #     for (ep in ephys_props) {
-  #       if (!is.na(bigData[i, ep])) {
-  #         increment_count(bigData[i, "NeuronName"], ep)
-  #         for (meta in metadata) {
-  #           if (!is.na(bigData[i, meta])) {
-  #             increment_count(ep, meta)
-  #           }
-  #         }
-  #       }
-  #     }
-  #     for (meta in metadata) {
-  #       if (!is.na(bigData[i, meta])) {
-  #         increment_count(bigData[i, "NeuronName"], meta)
-  #       }
-  #     }
-  #   }
-  
-  #dataSetTest <- data.frame(src = character(), sink = character(), count = numeric(), stringsAsFactors = FALSE)
-  #output <- apply(bigData, 1, function(x) {
-  
-  #})
-  
+  rm(temp, plot.d, plot.d.pairs, plot.d.cast)
   
   ############################################################################################
   # Create a graph. Use simplify to ensure that there are no duplicated edges or self loops
@@ -79,20 +53,20 @@ makeHivePlot = function(bigData = bigData) {
   
   gD <- simplify(graph.data.frame(dataSet, directed=FALSE))
   
-  # Calculate some node properties and node similarities that will be used to illustrate
-  # different plotting abilities
+  # Calculate some node properties and node similarities that will be used to illustrate different plotting abilities
   
   # Calculate degree for all nodes
   degAll <- degree(gD, v = V(gD), mode = "all")
   
   # Calculate betweenness for all nodes
-  betAll <- betweenness(gD, v = V(gD), directed = FALSE) / (((vcount(gD) - 1) * (vcount(gD)-2)) / 2)
-  betAll.norm <- (betAll - min(betAll))/(max(betAll) - min(betAll))
+  #betAll <- betweenness(gD, v = V(gD), directed = FALSE) / (((vcount(gD) - 1) * (vcount(gD)-2)) / 2)
+  #betAll.norm <- (betAll - min(betAll))/(max(betAll) - min(betAll))
   
-  node.list <- data.frame(name = V(gD)$name, degree = degAll, betw = betAll.norm)
+  #node.list <- data.frame(name = V(gD)$name, degree = degAll, betw = betAll.norm)
+  node.list <- data.frame(name = V(gD)$name, degree = degAll)
   
   # Calculate Dice similarities between all pairs of nodes
-  dsAll <- similarity.dice(gD, vids = V(gD), mode = "all")
+  #dsAll <- similarity.dice(gD, vids = V(gD), mode = "all")
   
   # Calculate edge weight based on the node similarity
   F1 <- function(x) {data.frame(V4 = dsAll[which(V(gD)$name == as.character(x$V1)), which(V(gD)$name == as.character(x$V2))])}
@@ -105,10 +79,10 @@ makeHivePlot = function(bigData = bigData) {
   # Calculate node size
   # We'll interpolate node size based on the node betweenness centrality, using the "approx" function
   # And we will assign a node size for each node based on its betweenness centrality
-  approxVals <- approx(c(0.5, 1.5), n = length(unique(node.list$bet)))
-  nodes_size <- sapply(node.list$bet, function(x) approxVals$y[which(sort(unique(node.list$bet)) == x)])
-  node.list <- cbind(node.list, size = nodes_size)
-  rm(approxVals, nodes_size)
+  #approxVals <- approx(c(0.5, 1.5), n = length(unique(node.list$bet)))
+  #nodes_size <- sapply(node.list$bet, function(x) approxVals$y[which(sort(unique(node.list$bet)) == x)])
+  #node.list <- cbind(node.list, size = nodes_size)
+  #rm(approxVals, nodes_size)
   
   # Define node color
   # We'll interpolate node colors based on the node degree using the "colorRampPalette" function from the "grDevices" library

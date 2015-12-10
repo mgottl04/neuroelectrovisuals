@@ -82,9 +82,12 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Overview",
-          fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
-#                            column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600))),
-          fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
+           fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600, hover = hoverOpts(
+             id = "image_hover",
+             delay = 500,
+             delayType = "throttle"
+           ))))),
+           fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
         ),
       tabPanel('Explore',
         fluidRow(style = 'padding: 10px',column(6, style="width: 30%", actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
@@ -104,7 +107,6 @@ shinyUI(fluidPage(
           )
       
     ))), fluid =TRUE
-  )
 ))
   
 
