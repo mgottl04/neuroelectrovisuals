@@ -1,27 +1,10 @@
-library("igraph")
-library("plyr")
-library("HiveR")
-library("RColorBrewer")
-library("grDevices")
-library("psych")
-library("reshape2")
+# File for hive plot creation
 ############################################################################################
-
 makeHivePlot = function(bigData = bigData) { 
-  dataSet <- data.frame(src = character(), sink = character(), count = numeric(), stringsAsFactors = FALSE)
-  
-  ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold","spike.amplitude","spike.half.width","membrane.time.constant",
-                   "AHP.amplitude","spike.width","cell.capacitance","AHP.duration","rheobase","firing.frequency",
-                   "adaptation.ratio","sag.ratio","fast.AHP.amplitude","spike.peak","maximum.firing.rate","other",
-                   "spontaneous.firing.rate","FI.slope","first.spike.latency","slow.AHP.amplitude","spike.max.rise.slope","ADP.amplitude",
-                   "sag.amplitude","spike.max.decay.slope","spike.rise.time","fast.AHP.duration","spike.decay.time","access.resistance",
-                   "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
-  metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
-  
   plot.d <- subset(bigData, select = c("NeuronName"))
   plot.d$id <- 1:nrow(plot.d)
   plot.d$value <- plot.d$NeuronName
-  plot.d.cast <- dcast(data = plot.1, formula = id ~ NeuronName, value.var = "value")
+  plot.d.cast <- dcast(data = plot.d, formula = id ~ NeuronName, value.var = "value")
   plot.d.cast <- plot.d.cast[,!(names(plot.d.cast) %in% c("id"))]
   
   plot.d  <- subset(bigData, select = c(ephys_props, metadata))
@@ -29,27 +12,20 @@ makeHivePlot = function(bigData = bigData) {
   
   plot.d.pairs <- count.pairwise(plot.d, diagonal = FALSE)
   
-  for (nt in unique(bigData[,"NeuronName"])) {
-    for (ep in ephys_props) {
-      dataSet[nrow(dataSet) + 1,] <- list(nt, ep, plot.d.pairs[nt, ep])
-    }
-    for (meta in metadata) {
-      dataSet[nrow(dataSet) + 1,] <- list(nt, meta, plot.d.pairs[nt, meta])
-    }
-  }
+  dataSet1 <- expand.grid(V1 = unique(bigData[,"NeuronName"]), V2 = c(ephys_props, metadata), stringsAsFactors = FALSE)
+  dataSet2 <- expand.grid(V1 = ephys_props, V2 = metadata, stringsAsFactors = FALSE)
+  dataSet <- rbind(dataSet1, dataSet2)
   
-  for (ep in ephys_props) {
-    for (meta in metadata) {
-      dataSet[nrow(dataSet) + 1,] <- list(ep, meta, plot.d.pairs[ep, meta])
-    }
-  }
+  dataSet$V3 <- apply(dataSet, 1, function(x) {
+    plot.d.pairs[x[["V1"]], x[["V2"]]]
+  })
   
-  rm(temp, plot.d, plot.d.pairs, plot.d.cast)
+  dataSet <- dataSet %>% filter(V3 != 0)
   
+  rm(plot.d, plot.d.pairs, plot.d.cast, dataSet1, dataSet2)
+
   ############################################################################################
   # Create a graph. Use simplify to ensure that there are no duplicated edges or self loops
-  colnames(dataSet) <- c("V1","V2","V3")
-  dataSet <- subset(dataSet, V3 > 0)
   
   gD <- simplify(graph.data.frame(dataSet, directed=FALSE))
   
@@ -66,13 +42,15 @@ makeHivePlot = function(bigData = bigData) {
   node.list <- data.frame(name = V(gD)$name, degree = degAll)
   
   # Calculate Dice similarities between all pairs of nodes
-  #dsAll <- similarity.dice(gD, vids = V(gD), mode = "all")
+  dsAll <- similarity.dice(gD, vids = V(gD), mode = "all")
   
-  # Calculate edge weight based on the node similarity
-  F1 <- function(x) {data.frame(V4 = dsAll[which(V(gD)$name == as.character(x$V1)), which(V(gD)$name == as.character(x$V2))])}
-  dataSet.ext <- ddply(dataSet, .variables=c("V1", "V2", "V3"), function(x) data.frame(F1(x)))
+  # Calculate edge weight based on the number of evidence lines
+  normalize <- function(x, ...) {
+    (x - min(x, ...)) / (max(x, ...) - min(x, ...))
+  }
+  dataSet.ext <- cbind(dataSet, V4 = normalize(dataSet$V3, na.rm = T))
   
-  rm(degAll, betAll, betAll.norm, F1)
+  rm(degAll, F1, dsAll, gD, V4)
   ############################################################################################
   #Determine node/edge color based on the properties
   
@@ -81,7 +59,9 @@ makeHivePlot = function(bigData = bigData) {
   # And we will assign a node size for each node based on its betweenness centrality
   #approxVals <- approx(c(0.5, 1.5), n = length(unique(node.list$bet)))
   #nodes_size <- sapply(node.list$bet, function(x) approxVals$y[which(sort(unique(node.list$bet)) == x)])
-  #node.list <- cbind(node.list, size = nodes_size)
+  
+  # Bcentrality does not tell us much for our data, so let's just keep all nodes at the same size for now.
+  node.list <- cbind(node.list, size = rep(1, nrow(node.list)))
   #rm(approxVals, nodes_size)
   
   # Define node color
@@ -108,18 +88,19 @@ makeHivePlot = function(bigData = bigData) {
   num_neurons <- length(unique(bigData[,"NeuronName"]))
   nodeAxis <- integer(nrow(node.list))
   nodeAxis[1 : num_neurons] <- as.integer(1)
-  nodeAxis[(num_neurons + 1) : (num_neurons + length(ephys_props))] <- as.integer(2)
-  nodeAxis[(num_neurons + length(ephys_props) + 1) : nrow(node.list)] <- as.integer(3)
+  nodeAxis[(num_neurons + 1) : (num_neurons + nrow(subset(node.list, name %in% ephys_props)))] <- as.integer(2)
+  nodeAxis[(num_neurons + nrow(subset(node.list, name %in% ephys_props)) + 1) : nrow(node.list)] <- as.integer(3)
   node.list <- cbind(node.list, axis = nodeAxis)
-  rm(nodeAxis)
+  rm(nodeAxis, num_neurons)
   
   ############################################################################################
   #Create a hive plot
-  source("./mod.edge2HPD.R")
-  source("./mod.mineHPD.R")
   
   hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.axis = node.list[,c("name", "axis")])
-  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Neuron Type", "Ephys. property", "Metadata"), axLab.pos = 1)
+  
+  # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
+  hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
+  p <- plotHive(hive2, method = "abs", bkgnd = "black", axLabs = c("Neuron Type", "Ephys. property", "Metadata"), axLab.pos = 30)
   return(p)
 }
 

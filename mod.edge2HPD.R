@@ -132,7 +132,7 @@ mod.edge2HPD <- function(edge_df = NULL, unique.rows = TRUE, axis.cols = NULL, t
       rm(i, nSize, indx)
     }#is.numeric
     else{
-      stop("Node raidus is not integer.")  
+      stop("Node radius is not an integer.")  
     }
   }#is.null
   

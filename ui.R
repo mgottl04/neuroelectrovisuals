@@ -61,7 +61,6 @@ add_input_selector <- function(x_label,y_label, border_widths){
 }
 
 # *** Define UI ***
-
 shinyUI(fluidPage(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "neuroelectrovisuals.css")
@@ -82,14 +81,15 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Overview",
-           fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600, hover = hoverOpts(
+           fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 800, width = 1000, hover = hoverOpts(
              id = "image_hover",
              delay = 500,
              delayType = "throttle"
-           ))))),
+           )))),
+           br(),
            fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
         ),
-      tabPanel('Explore',
+      tabPanel("Explore",
         fluidRow(style = 'padding: 10px',column(6, style="width: 30%", actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
            actionButton('restoreRemoved','Restore Removed',icon = icon("undo", lib = "font-awesome"))),
            column(6,checkboxInput('remove','Remove on Click', value = FALSE))),
@@ -107,7 +107,7 @@ shinyUI(fluidPage(
           )
       
     ))), fluid =TRUE
-))
+)))
   
 
 # toggleState
