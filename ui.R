@@ -44,18 +44,18 @@ ephys_panel <- bsCollapsePanel(title = "Ephys Property Filters", ephys_panel_con
 
 # *** Main panel logic ***
 
-add_input_selector <- function(x_label,y_label, border_widths){
+add_input_selector <- function(x_label,y_label, border_widths, x_initial, y_initial){
   
   fluidRow(style=paste('background-color: #d9edf7;border-style: solid; border-color: #bce8f1; border-width:',border_widths),
            column(6,style='padding: 5px', selectInput(x_label,
                 label = "Choose a variable to display on x axis",
                 choices =sort(names(bigData)[axis_names]),
-                selected = names(bigData)[axis_names][[1]]
+                selected = x_initial
     )),
           column(6,style='padding: 5px', selectInput(y_label, 
                 label = "Choose a variable to display on y axis",
                 choices =c("---",sort(names(bigData)[axis_names])),
-                selected = names(bigData)[axis_names][[2]]
+                selected = y_initial
     ))
   )
 }
@@ -95,15 +95,15 @@ shinyUI(fluidPage(
            column(6,checkboxInput('remove','Remove on Click', value = FALSE))),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
-          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px'),ggvisOutput("plot1")),
+          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px',"Pmid","PubYear"),ggvisOutput("plot1")),
           column(1,style = 'height: 100%;width: 2%'),
-          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px'),ggvisOutput("plot3"))
+          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px',"BrainRegion","spike.amplitude"),ggvisOutput("plot3"))
           ),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
-          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px'),ggvisOutput('plot2')),
+          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px',"Species","---"),ggvisOutput('plot2')),
           column(1,style = 'height: 100%;width: 2%'),
-          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px'),ggvisOutput('plot4'))
+          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px',"Species","BrainRegion"),ggvisOutput('plot4'))
           )
       
     ))), fluid =TRUE
