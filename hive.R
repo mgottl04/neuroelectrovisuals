@@ -1,18 +1,27 @@
 # File for hive plot creation
 ############################################################################################
 makeHivePlot = function(bigData = bigData) { 
-  plot.d <- subset(bigData, select = c("NeuronName"))
-  plot.d$id <- 1:nrow(plot.d)
-  plot.d$value <- plot.d$NeuronName
-  plot.d.cast <- dcast(data = plot.d, formula = id ~ NeuronName, value.var = "value")
-  plot.d.cast <- plot.d.cast[,!(names(plot.d.cast) %in% c("id"))]
+#   plot.d <- subset(bigData, select = c("NeuronName"))
+  bigData[is.na(bigData$BrainRegion),] <- "Other"
+  plot.d <- subset(bigData, select = c("BrainRegion"))
   
+  plot.d$id <- 1:nrow(plot.d)
+  plot.d$value <- plot.d$BrainRegion
+  
+  plot.d.cast <- dcast(data = plot.d, formula = id ~ BrainRegion, value.var = "value")
+  plot.d.cast <- as.data.frame(plot.d.cast[,!(names(plot.d.cast) %in% c("id"))])
+  
+  if (ncol(plot.d.cast) == 1) {
+    colnames(plot.d.cast) <- plot.d.cast[1,1]
+  }
+    
   plot.d  <- subset(bigData, select = c(ephys_props, metadata))
   plot.d <- cbind(plot.d, plot.d.cast)
   
   plot.d.pairs <- count.pairwise(plot.d, diagonal = FALSE)
   
-  dataSet1 <- expand.grid(V1 = unique(bigData[,"NeuronName"]), V2 = c(ephys_props, metadata), stringsAsFactors = FALSE)
+  dataSet1 <- expand.grid(V1 = unique(bigData[,"BrainRegion"]), V2 = c(ephys_props, metadata), stringsAsFactors = FALSE)
+  
   dataSet2 <- expand.grid(V1 = ephys_props, V2 = metadata, stringsAsFactors = FALSE)
   dataSet <- rbind(dataSet1, dataSet2)
   
@@ -85,7 +94,7 @@ makeHivePlot = function(bigData = bigData) {
   ############################################################################################
   # Assign nodes to axes
   
-  num_neurons <- length(unique(bigData[,"NeuronName"]))
+  num_neurons <- length(unique(bigData[,"BrainRegion"]))
   nodeAxis <- integer(nrow(node.list))
   nodeAxis[1 : num_neurons] <- as.integer(1)
   nodeAxis[(num_neurons + 1) : (num_neurons + nrow(subset(node.list, name %in% ephys_props)))] <- as.integer(2)
@@ -100,7 +109,7 @@ makeHivePlot = function(bigData = bigData) {
   
   # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
   hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
-  p <- plotHive(hive2, method = "abs", bkgnd = "black", axLabs = c("Neuron Type", "Ephys. property", "Metadata"), axLab.pos = 30)
+  p <- plotHive(hive2, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 5)
   return(p)
 }
 
