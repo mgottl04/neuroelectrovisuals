@@ -38,12 +38,18 @@ shinyServer(function(input, output, session) {
     data_frame$col <- reactive({values$selected[data_frame$key]})() 
     data_frame$remove <- reactive({removed$selected[data_frame$key]})()
     
-    x_axis_lab <- as.character(x_axis())
-    y_axis_lab <- as.character(y_axis())
+    x_axis_col <- as.character(x_axis())
+    y_axis_col <- as.character(y_axis())
+    x_axis_lab <- x_axis_col
+    y_axis_lab <- y_axis_col
     
     #filter out NA values
-    data_frame <- data_frame%>%filter((!is.na(data_frame[,x_axis_lab]))&
-               (y_axis_lab == "---" || !is.na(data_frame[,y_axis_lab])))
+    if (y_axis_lab == "---") { 
+      data_frame <- data_frame %>% filter(!is.na(data_frame[,x_axis_lab])) 
+    }
+    else { 
+      data_frame <- data_frame %>% filter(!is.na(data_frame[,x_axis_lab]) & !is.na(data_frame[,y_axis_lab])) 
+    }
     
     # Add units for ephys props (TODO - get units for metadata)
     if (x_axis_lab %in% rownames(props)) {
@@ -55,11 +61,56 @@ shinyServer(function(input, output, session) {
       y_axis_lab <- paste(y_axis_lab, " (", props[[y_axis_lab,c("usual.units")]], ")")
     }
     
-    # Just one variable selected - make a histogram
+    # Just one variable selected - show frequency bars
     if (y_axis_lab == "---") {
-      data_frame[!data_frame$remove,] %>% ggvis(x=x_axis()) %>% layer_histograms()
+      # No data - make an empty plot
+      if (nrow(data_frame[!data_frame$remove,]) == 0) {
+        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
+        add_axis('y', title = "Count", properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+      }
+      # Categorical - make a frequency bar chart
+      else if (!is.numeric(data_frame[,x_axis_col])) {
+        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis()) %>% layer_bars() %>%
+        add_axis('y', title = "Count", properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+      }
+      # Continous - make a histogram
+      else {
+        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis()) %>% layer_histograms() %>%
+        add_axis('y', title = "Count", properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+      }
+    } 
+  
+    # Both variables categorical - make a frequency matrix
+    else if (!is.numeric(data_frame[,x_axis_col]) && !is.numeric(data_frame[,y_axis_col])) {
+      # No data - make an empty plot
+      if (nrow(data_frame[!data_frame$remove,]) == 0) {
+        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
+        add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+      }
+      else {
+        form <- as.formula(paste("~",x_axis_col,"+",y_axis_col))
+        freqs <- melt(xtabs(form, data_frame))
+        freqs%>%
+          ggvis(x=x_axis(), y=y_axis(), fill=~value)%>%
+          layer_rects(width = band(), height = band()) %>%
+          layer_text(
+            x = prop("x", x_axis(), scale = "xcenter"),
+            y = prop("y", y_axis(), scale = "ycenter"),
+            text:=~value, fontSize := 14, fill:="white", baseline:="middle", align:="center") %>%
+          scale_nominal("x", padding = 0, points = FALSE) %>%
+          scale_nominal("y", padding = 0, points = FALSE) %>% 
+          scale_nominal("x", name = "xcenter", padding = 1, points = TRUE) %>%
+          scale_nominal("y", name = "ycenter", padding = 1, points = TRUE) %>%
+          add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+          add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+      }
     }
     
+    # Both variables continous - make a scatterplot
     else {
       data_frame[!data_frame$remove,] %>%
         ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
@@ -77,7 +128,7 @@ shinyServer(function(input, output, session) {
             isolate(removed$selected[data$key] <- TRUE)
           } 
         }  
-      ) #ggvis-tooltip 
+      ) #ggvis-tooltip
     }
   }
  

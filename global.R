@@ -1,5 +1,6 @@
 library(dplyr)
 library(ggvis)
+library(ggplot2)
 library(grDevices)
 library(HiveR)
 library(igraph)
