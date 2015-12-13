@@ -82,6 +82,7 @@ age <- na.omit(bigData$AnimalAge)
 age_max <- 2^ceiling(log2(max(age))) # max val for range slider
 weight <- na.omit(bigData$AnimalWeight)
 temp <- na.omit(bigData$RecTemp)
+metadata_units <- list(AnimalAge = "days", AnimalWeight = "grams", RecTemp="C")
 
 # Ephys props
 props <- ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range"),drop=FALSE]

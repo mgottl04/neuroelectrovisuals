@@ -51,14 +51,20 @@ shinyServer(function(input, output, session) {
       data_frame <- data_frame %>% filter(!is.na(data_frame[,x_axis_lab]) & !is.na(data_frame[,y_axis_lab])) 
     }
     
-    # Add units for ephys props (TODO - get units for metadata)
+    # Add units for ephys props and relevant metadata
     if (x_axis_lab %in% rownames(props)) {
       x_axis_lab <- paste(x_axis_lab, " (", props[[x_axis_lab,c("usual.units")]], ")")
+    }
+    else if (x_axis_lab %in% names(metadata_units)) {
+      x_axis_lab <- paste(x_axis_lab, " (", metadata_units[x_axis_lab], ")")
     }
     
     # Add units for ephys props
     if (y_axis_lab %in% rownames(props)) {
       y_axis_lab <- paste(y_axis_lab, " (", props[[y_axis_lab,c("usual.units")]], ")")
+    }
+    else if (y_axis_lab %in% names(metadata_units)) {
+      y_axis_lab <- paste(y_axis_lab, " (", metadata_units[y_axis_lab], ")")
     }
     
     # Just one variable selected - show frequency bars
