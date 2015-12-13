@@ -35,7 +35,7 @@ nested_ephys_panel_SmZ <- bsCollapsePanel(lapply(seq(g4_start,g4_end),
 nt_panel_contents <- shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
 organism_panel_contents <- list(h5("Species",style='font-weight: bold'),
                                fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
-                               addSlider("Age","days",0,log2(age_max) + 1), addSlider("Weight","oz",floor(min(weight)),ceiling(max(weight))))
+                               addSlider("Age","days",0,log2(age_max) + 1), addSlider("Weight","grams",floor(min(weight)),ceiling(max(weight))),addSlider("Temperature","C",floor(min(temp)),ceiling(max(temp))))
 ephys_panel_contents <- bsCollapse(nested_ephys_panel_AC, nested_ephys_panel_DL, nested_ephys_panel_MSl, nested_ephys_panel_SmZ, id = "ephys_panel", multiple = TRUE, open = NULL)
 
 nt_panel <- bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
@@ -80,33 +80,33 @@ shinyUI(fluidPage(
    
     mainPanel(
       tabsetPanel(
-        tabPanel("Overview",
-           fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 800, width = 1000, hover = hoverOpts(
-             id = "image_hover",
-             delay = 500,
-             delayType = "throttle"
-           )))),
-           br(),
-           fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
-        ),
       tabPanel("Explore",
         fluidRow(style = 'padding: 10px',column(6, style="width: 30%", actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
            actionButton('restoreRemoved','Restore Removed',icon = icon("undo", lib = "font-awesome"))),
            column(6,checkboxInput('remove','Remove on Click', value = FALSE))),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
-          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px',"Pmid","PubYear"),ggvisOutput("plot1")),
+          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px',"resting.membrane.potential","spike.threshold"),ggvisOutput("plot1")),
           column(1,style = 'height: 100%;width: 2%'),
-          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px',"BrainRegion","spike.amplitude"),ggvisOutput("plot3"))
+          column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x3','y3','0px 0px 0px 0px',"Species","BrainRegion"),ggvisOutput("plot3"))
           ),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
-          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px',"Species","---"),ggvisOutput('plot2')),
+          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x2','y2','0px 0px 0px 0px',"AnimalAge","input.resistance"),ggvisOutput('plot2')),
           column(1,style = 'height: 100%;width: 2%'),
-          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px',"Species","BrainRegion"),ggvisOutput('plot4'))
+          column(6, style="margin-top: 20px;width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x4','y4','0px 0px 0px 0px',"Species","---"),ggvisOutput('plot4'))
           )
-      
-    ))), fluid =TRUE
+      ),
+      tabPanel("Overview",
+               fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 800, width = 1000, hover = hoverOpts(
+                 id = "image_hover",
+                 delay = 500,
+                 delayType = "throttle"
+               )))),
+               br(),
+               fluidRow(column(12,div(dataTableOutput('table'),style='font-size:75%')))
+      )
+    )), fluid =TRUE
 )))
   
 

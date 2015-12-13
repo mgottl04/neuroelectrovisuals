@@ -23,6 +23,7 @@ source("./hive.R")
 #hive_data <- read.csv(file='data/hive_data.csv')
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 ephys_info <- read.csv('data/ephys_prop_definitions.csv',sep = '\t',stringsAsFactors = FALSE, row.names = 1)
+plottables <- scan('data/plotting_attribs.csv',what="",sep=",")
 
 # *** Data clean-up ***
 
@@ -36,8 +37,9 @@ ephys_info <- ephys_info[rownames(ephys_info) != "other",]
 # Fix nonsense levels
 bigData[bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
 
-# Add log10 to units of log10 transformed props
-ephys_info[ephys_info$Transform == "log10",c("usual.units")] <- paste("log10",ephys_info[ephys_info$Transform != "linear",c("usual.units")])
+# Log transform specified properties - DEPRECATED (now log transforming the axis itself)
+# bigData[,log_transform] <- lapply(bigData[,log_transform],log10)
+# ephys_info[ephys_info$Transform == "log10",c("usual.units")] <- paste("log10",ephys_info[ephys_info$Transform != "linear",c("usual.units")])
 
 # Change min/max ranges to reflect actual data
 for (x in rownames(ephys_info)) {
@@ -52,10 +54,15 @@ for (i in 1:ncol(bigData)){
     }
 }
 
-# Disallow big borgin' bompers on axes  
+# *** End data clean-up
+
+# Get names to put on axes
 axis_names <- sapply(colnames(bigData),function(x){
-  x != "other" & ((!(is.character(bigData[,x]) & length(unique(bigData[,x])) > 15) | x == "NeuronName"))
+  x %in% plottables
 })
+
+# Get properties that need log transformation of axes
+log_transform <- rownames(ephys_info[ephys_info$Transform == "log10",])
 
 bigData$key <-(1:nrow(bigData))
 bigData[bigData$key,]
@@ -74,6 +81,7 @@ misc_species <- species[!species %in% c("Rats", "Mice")]
 age <- na.omit(bigData$AnimalAge)
 age_max <- 2^ceiling(log2(max(age))) # max val for range slider
 weight <- na.omit(bigData$AnimalWeight)
+temp <- na.omit(bigData$RecTemp)
 
 # Ephys props
 props <- ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range"),drop=FALSE]

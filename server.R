@@ -9,9 +9,9 @@ shinyServer(function(input, output, session) {
   })
   
   output$species_tree <- renderTree({
-    list(Mice = structure("Mice",stselected=TRUE),
+    list(All = structure(list(Mice = structure("Mice",stselected=TRUE),
     Rats = structure("Rats",stselected=TRUE),
-    Others = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE))
+    Others = structure(as.list(setNames(misc_species,misc_species)),stselected = TRUE)),stopened=TRUE))
   })
  
   values <- reactiveValues(selected = rep(1, nrow(bigData)))
@@ -88,8 +88,8 @@ shinyServer(function(input, output, session) {
       # No data - make an empty plot
       if (nrow(data_frame[!data_frame$remove,]) == 0) {
         data_frame[!data_frame$remove,] %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
-        add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
-        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+        add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -70)))%>%
+        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 70)))
       }
       else {
         form <- as.formula(paste("~",x_axis_col,"+",y_axis_col))
@@ -105,20 +105,29 @@ shinyServer(function(input, output, session) {
           scale_nominal("y", padding = 0, points = FALSE) %>% 
           scale_nominal("x", name = "xcenter", padding = 1, points = TRUE) %>%
           scale_nominal("y", name = "ycenter", padding = 1, points = TRUE) %>%
-          add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
-          add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
+          add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -70)))%>%
+          add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 70)))
       }
     }
     
     # Both variables continous - make a scatterplot
     else {
+      format_x <- if (x_axis_col == "PubYear") "####" else ""
+      format_y <- if (y_axis_col == "PubYear") "####" else ""
       data_frame[!data_frame$remove,] %>%
         ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
         hide_legend(scales = c('fill','size')) %>%
-        add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
-        add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
+        add_axis('y',title = y_axis_lab, format = format_y, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
+        add_axis('x', title = x_axis_lab, format = format_x, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
         layer_points() %>%
-        set_options(height = 400, width = 600) %>%
+        set_options(height = 400, width = 600) -> stuff
+        if (x_axis_col %in% log_transform) {
+          stuff %>% scale_numeric("x", trans="log", expand=0) -> stuff
+        }
+        if (y_axis_col %in% log_transform) {
+          stuff %>% scale_numeric("y", trans="log", expand=0) -> stuff
+        }
+        stuff %>% 
         add_tooltip(function(data){
           paste0(       
             "ID: ", as.character(data$key),"<br>",
@@ -148,7 +157,7 @@ shinyServer(function(input, output, session) {
     
     if (!is.null(input$species_tree)) {
       selected_species <- get_selected(input$species_tree)
-      selected_species <- selected_species[selected_species != "Others"]
+      selected_species <- selected_species[!(selected_species %in% c("All","Others"))]
       if (length(selected_species) < length(species)){
         data <- data[data$Species %in% selected_species,]
       }
@@ -160,6 +169,12 @@ shinyServer(function(input, output, session) {
     age_high <- if (age_slider_max == 0) 0 else (2^(age_slider_max - 1))
     if (age_low > 0 || age_high < age_max) {
       data <- data[which(!is.na(data$AnimalAge) & data$AnimalAge >= age_low & data$AnimalAge <= age_high),]
+    }
+    
+    temp_low <- input$Temperature[1]
+    temp_high <- input$Temperature[2]
+    if (temp_low > floor(min(temp)) || temp_high < ceiling(max(temp))) {
+      data <- data[which(!is.na(data$RecTemp) & data$RecTemp >= temp_low & data$RecTemp <= temp_high),]
     }
     
     weight_low <- input$Weight[1]
