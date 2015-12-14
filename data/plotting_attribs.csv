@@ -1,12 +1,1 @@
-Metadata,Ephys
-Pmid,input resistance
-PubYear,resting membrane potential
-NeuronName,spike threshold
-BrainRegion,spike amplitude
-Species,spike half-width
-Strain,membrane time constant
-ElectrodeType,AHP amplitude
-PrepType,cell capacitance
-JxnPotential,rheobase
-AnimalAge,maximum firing rate
-RecTemp,
+Pmid,input.resistance,PubYear,resting.membrane.potential,NeuronName,spike.threshold,BrainRegion,spike.amplitude,Species,spike.half.width,Strain,membrane.time.constant,ElectrodeType,AHP.amplitude,PrepType,cell.capacitance,JxnPotential,rheobase,AnimalAge,maximum.firing.rate,RecTemp,AnimalWeight
