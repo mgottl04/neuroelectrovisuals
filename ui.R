@@ -81,9 +81,9 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
       tabPanel("Explore",
-        fluidRow(style = 'padding: 10px',column(6, style="width: 30%", actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome")),
-           actionButton('restoreRemoved','Restore Removed',icon = icon("undo", lib = "font-awesome"))),
-           column(6,checkboxInput('remove','Remove on Click', value = FALSE))),
+        fluidRow(style = 'padding: 10px; width: 500px',column(4,  actionButton('clearance','Clear Highlighting',  icon = icon("undo", lib = "font-awesome"))),
+           column(4,actionButton('restoreRemoved','Restore Removed',icon = icon("undo", lib = "font-awesome"))),
+           column(4,actionButton('remove','Remove Highlighted', icon = icon('remove',lib='font-awesome') ))),
         
         fluidRow(style = 'height: 400px; width: 1320px;padding: 0px 0px 10px 0px',
           column(6, style="width: 48%;border-color: #bce8f1;border-radius: 4px;border-style: solid; border-width: 2px",add_input_selector('x1','y1', '0px 0px 0px 0px',"resting.membrane.potential","spike.threshold"),ggvisOutput("plot1")),

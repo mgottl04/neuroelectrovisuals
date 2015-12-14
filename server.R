@@ -26,11 +26,21 @@ shinyServer(function(input, output, session) {
     js$removeStuckToolTip()
   })
   
+  
   observeEvent(input$restoreRemoved, {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
   
-  do_remove <- reactive({input$remove})
+  observeEvent(input$remove, {
+    removed$selected <- unlist(lapply(values$selected,function(x){
+      if (x == 1){
+        FALSE
+      } else {
+        TRUE
+      }
+    }))
+  }
+  )
   
   make_main_plot <- function(df, x_axis, y_axis){
     
@@ -136,9 +146,8 @@ shinyServer(function(input, output, session) {
             "ID: ", as.character(data$key),"<br>",
             x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
         }, "hover")%>%set_options(renderer = "canvas") %>% handle_click(on_click = function(data,...){
-          if (do_remove()){
-            isolate(removed$selected[data$key] <- TRUE)
-          } 
+          isolate(values$selected[data$key] <- 2)
+          
         }  
       ) #ggvis-tooltip
     }
