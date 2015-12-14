@@ -41,7 +41,7 @@ shinyServer(function(input, output, session) {
     }))
   }
   )
-  
+ 
   make_main_plot <- function(df, x_axis, y_axis){
     
     data_frame <- df()
@@ -225,8 +225,14 @@ shinyServer(function(input, output, session) {
     bind_shiny('plot3')
   reactive({make_main_plot(mtc,x4,y4)})%>%
     bind_shiny('plot4')
-  
-  output$hivePlot <- renderPlot({makeHivePlot(mtc())})
-#   output$hivePlot <- renderPlot({makeHivePlot_mike(mtc()$key)})
-  output$table <- renderDataTable(mtc()[,sapply(mtc(),is.character)])
+  htc <- reactiveValues(keys = 1)
+  observe({
+    if (length(mtc()$key)!=length(htc$keys)){      
+      htc$keys <<- mtc()$key
+      m <- bigData[which(bigData$key %in% htc$keys),]
+      output$hivePlot <- renderPlot({makeHivePlot(m)})
+      output$table <- renderDataTable(m[,sapply(m,is.character)])
+    }
+  } )
+
 })
