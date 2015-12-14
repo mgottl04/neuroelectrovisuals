@@ -35,9 +35,6 @@ shinyServer(function(input, output, session) {
   make_main_plot <- function(df, x_axis, y_axis){
     
     data_frame <- df()
-    data_frame$col <- reactive({values$selected[data_frame$key]})() 
-    data_frame$remove <- reactive({removed$selected[data_frame$key]})()
-    
     x_axis_col <- as.character(x_axis())
     y_axis_col <- as.character(y_axis())
     x_axis_lab <- x_axis_col
@@ -70,20 +67,20 @@ shinyServer(function(input, output, session) {
     # Just one variable selected - show frequency bars
     if (y_axis_lab == "---") {
       # No data - make an empty plot
-      if (nrow(data_frame[!data_frame$remove,]) == 0) {
-        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
+      if (nrow(data_frame) == 0) {
+        data_frame %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
         add_axis('y', title = "Count", properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
         add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
       }
       # Categorical - make a frequency bar chart
       else if (!is.numeric(data_frame[,x_axis_col])) {
-        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis()) %>% layer_bars() %>%
+        data_frame %>% ggvis(x=x_axis()) %>% layer_bars() %>%
         add_axis('y', title = "Count", properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
         add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
       }
       # Continous - make a histogram
       else {
-        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis()) %>% layer_histograms() %>%
+        data_frame %>% ggvis(x=x_axis()) %>% layer_histograms() %>%
         add_axis('y', title = "Count", properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
         add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))
       }
@@ -92,8 +89,8 @@ shinyServer(function(input, output, session) {
     # Both variables categorical - make a frequency matrix
     else if (!is.numeric(data_frame[,x_axis_col]) && !is.numeric(data_frame[,y_axis_col])) {
       # No data - make an empty plot
-      if (nrow(data_frame[!data_frame$remove,]) == 0) {
-        data_frame[!data_frame$remove,] %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
+      if (nrow(data_frame) == 0) {
+        data_frame %>% ggvis(x=x_axis(),y=x_axis()) %>% layer_points() %>%
         add_axis('y', title = y_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -70)))%>%
         add_axis('x', title = x_axis_lab, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 70)))
       }
@@ -120,7 +117,7 @@ shinyServer(function(input, output, session) {
     else {
       format_x <- if (x_axis_col == "PubYear") "####" else ""
       format_y <- if (y_axis_col == "PubYear") "####" else ""
-      data_frame[!data_frame$remove,] %>%
+      data_frame %>%
         ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
         hide_legend(scales = c('fill','size')) %>%
         add_axis('y',title = y_axis_lab, format = format_y, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
@@ -197,8 +194,8 @@ shinyServer(function(input, output, session) {
         }
       }
     }
-    
-    data
+    data$col <- values$selected[data$key] 
+    data[!removed$selected[data$key],]
   })
   
   x1 <- reactive({as.symbol(input$x1)})
