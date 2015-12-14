@@ -128,7 +128,7 @@ shinyServer(function(input, output, session) {
       format_x <- if (x_axis_col == "PubYear") "####" else ""
       format_y <- if (y_axis_col == "PubYear") "####" else ""
       data_frame %>%
-        ggvis(x =x_axis(),  y= y_axis(), key := ~key, fill = ~col, size = ~col ) %>% 
+        ggvis(x =x_axis(),  y= y_axis(), key := ~superkey,   fill = ~col, size = ~col ) %>% 
         hide_legend(scales = c('fill','size')) %>%
         add_axis('y',title = y_axis_lab, format = format_y, properties = axis_props(labels=list(angle = -40,fontSize=10),title=list(fontSize=16,dy = -55)))%>%
         add_axis('x', title = x_axis_lab, format = format_x, properties = axis_props(labels=list(angle = -40,fontSize=10, dx = -30,dy=5),title=list(fontSize=16,dy = 50)))%>%
@@ -142,8 +142,11 @@ shinyServer(function(input, output, session) {
         }
         stuff %>% 
         add_tooltip(function(data){
+        point_info <- strsplit(as.character(data$superkey),split='@')
+        Title <-point_info[[1]][[1]]
+        pmid <- point_info[[1]][[2]]
           paste0(       
-            "ID: ", as.character(data$key),"<br>",
+            Title,"<br>", pmid,"<br>",
             x_axis(),": ", as.character(data[[1]]), "<br>", y_axis(), ": ", as.character(data[[2]]),"<br>")
         }, "hover")%>%set_options(renderer = "canvas") %>% handle_click(on_click = function(data,...){
           isolate(values$selected[data$key] <- 2)
@@ -204,6 +207,7 @@ shinyServer(function(input, output, session) {
       }
     }
     data$col <- values$selected[data$key] 
+    data$superkey <- paste(paste0('Title: ',data$Title,sep=''),paste0('PubMed ID: ',data$Pmid,sep=''),paste0('Table ID: ',data$key,sep=''),sep='@')
     data[!removed$selected[data$key],]
   })
   
