@@ -37,8 +37,6 @@ ephys_info <- ephys_info[rownames(ephys_info) != "other",]
 # Fix nonsense levels
 bigData[bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
 
-
-
 # Change min/max ranges to reflect actual data
 for (x in rownames(ephys_info)) {
   ephys_info[x,"Min.Range"] <- floor(min(na.omit(bigData[,x])))

@@ -26,7 +26,6 @@ shinyServer(function(input, output, session) {
     js$removeStuckToolTip()
   })
   
-  
   observeEvent(input$restoreRemoved, {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
@@ -238,5 +237,4 @@ shinyServer(function(input, output, session) {
       output$table <- renderDataTable(m[,sapply(m,is.character)])
     }
   } )
-
 })
