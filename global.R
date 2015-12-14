@@ -37,9 +37,7 @@ ephys_info <- ephys_info[rownames(ephys_info) != "other",]
 # Fix nonsense levels
 bigData[bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
 
-# Log transform specified properties - DEPRECATED (now log transforming the axis itself)
-# bigData[,log_transform] <- lapply(bigData[,log_transform],log10)
-# ephys_info[ephys_info$Transform == "log10",c("usual.units")] <- paste("log10",ephys_info[ephys_info$Transform != "linear",c("usual.units")])
+
 
 # Change min/max ranges to reflect actual data
 for (x in rownames(ephys_info)) {
@@ -106,5 +104,4 @@ ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshol
                  "sag.amplitude","spike.max.decay.slope","spike.rise.time","fast.AHP.duration","spike.decay.time","access.resistance",
                  "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
-
 

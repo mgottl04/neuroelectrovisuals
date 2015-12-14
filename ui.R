@@ -98,7 +98,7 @@ shinyUI(fluidPage(
           )
       ),
       tabPanel("Overview",
-               fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 800, width = 1000, hover = hoverOpts(
+               fluidRow(column(6, style="width: 47.5%",plotOutput("hivePlot", height = 400, width = 600, hover = hoverOpts(
                  id = "image_hover",
                  delay = 500,
                  delayType = "throttle"
