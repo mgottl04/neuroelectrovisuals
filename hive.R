@@ -85,7 +85,7 @@ makeHivePlot = function(bigData = bigData) {
   rm(F2, colCodes, nodes_col)
   
   # Assign visual attributes to edges using the same approach as we did for nodes
-  F2 <- colorRampPalette(rev(brewer.pal(n = 7, name ="Blues")), bias = length(unique(dataSet.ext$V4)), space = "rgb", interpolate = "linear")
+  F2 <- colorRampPalette(rev(brewer.pal(n = 7, name ="YlGnBu")))
 #   F2 <- colorRampPalette(c("#FFFF00", "#006400"), bias = length(unique(dataSet.ext$V4)), space = "rgb", interpolate = "linear")
   colCodes <- F2(length(unique(dataSet.ext$V4)))
   edges_col <- sapply(dataSet.ext$V4, function(x) colCodes[which(sort(unique(dataSet.ext$V4)) == x)])
@@ -106,8 +106,12 @@ makeHivePlot = function(bigData = bigData) {
   ############################################################################################
   #Create a hive plot
   
-  hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2], edge.color = dataSet.ext[, 5], node.color = node.list[,c("name", "color")], node.size = node.list[,c("name", "size")], node.axis = node.list[,c("name", "axis")])
-  
+  hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2],
+                        edge.color = dataSet.ext[, 5],
+                        node.color = node.list[,c("name", "color")],
+                        node.size = node.list[,c("name", "size")],
+                        node.axis = node.list[,c("name", "axis")])  
+
   # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
   hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
   p <- plotHive(hive2, method = "abs", bkgnd = "gray", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 5)
