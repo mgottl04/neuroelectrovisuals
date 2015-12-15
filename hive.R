@@ -124,6 +124,9 @@ makeHivePlot = function(bigData = bigData) {
   rm(nodeAxis, num_neurons, nodeRadius, num_ephys)
 
   ############################################################################################
+  # Craete a csv file for node labels
+
+  ############################################################################################
   #Create a hive plot
   suppressWarnings(hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2],
                         edge.color = dataSet.ext[, 5],

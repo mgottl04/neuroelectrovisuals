@@ -16,27 +16,19 @@ addSlider <- function(name, units, min, max, step) {
   sliderInput(name,paste(name, " (", units, ")"),min,max,value = c(min,max))
 }
 
-nested_ephys_panel_AC <- bsCollapsePanel(lapply(seq(g1_start,g1_end), 
-                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "A-C", style = "warning")
+nested_ephys_panel_AM <- bsCollapsePanel(lapply(seq(g1_start,g1_end), 
+                                      function(x) {addSlider(rownames(props)[x], props[[x,c("usual.units")]],
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "A-M", style = "warning")
 
-nested_ephys_panel_DL <- bsCollapsePanel(lapply(seq(g2_start,g2_end), 
-                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "D-L", style = "warning")
-
-nested_ephys_panel_MSl <- bsCollapsePanel(lapply(seq(g3_start,g3_end), 
-                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "M-Sl", style = "warning")
-
-nested_ephys_panel_SmZ <- bsCollapsePanel(lapply(seq(g4_start,g4_end),
-                                      function(x) {addSlider(prop_names[x], props[[x,c("usual.units")]],
-                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "Sm-Z", style = "warning")
+nested_ephys_panel_NZ <- bsCollapsePanel(lapply(seq(g2_start,g2_end), 
+                                      function(x) {addSlider(rownames(props)[x], props[[x,c("usual.units")]],
+                                      props[[x,c("Min.Range")]],props[[x,c("Max.Range")]])}), title = "N-Z", style = "warning")
 
 nt_panel_contents <- shinyTree("nt_tree", checkbox = TRUE, search = TRUE, dragAndDrop = FALSE)
 organism_panel_contents <- list(h5("Species",style='font-weight: bold'),
                                fluidRow(column(12,shinyTree("species_tree", checkbox = TRUE, search = FALSE, dragAndDrop = FALSE),style = 'padding-bottom: 15px')),
                                addSlider("Age","days",0,log2(age_max) + 1), addSlider("Weight","grams",floor(min(weight)),ceiling(max(weight))),addSlider("Temperature","C",floor(min(temp)),ceiling(max(temp))))
-ephys_panel_contents <- bsCollapse(nested_ephys_panel_AC, nested_ephys_panel_DL, nested_ephys_panel_MSl, nested_ephys_panel_SmZ, id = "ephys_panel", multiple = TRUE, open = NULL)
+ephys_panel_contents <- bsCollapse(nested_ephys_panel_AM, nested_ephys_panel_NZ, id = "ephys_panel", multiple = TRUE, open = NULL)
 
 nt_panel <- bsCollapsePanel(title = "Neuron Type Filters", nt_panel_contents, style = "info")
 organism_panel <- bsCollapsePanel(title = "Organism Filters", organism_panel_contents, style = "info")
@@ -99,17 +91,17 @@ shinyUI(fluidPage(
           )
       ),
       tabPanel("Overview",
-               fluidRow(style = 'width: 1200px', 
-                        fluidRow(style= 'padding: 0px 0px 15px 0px',column(6,plotOutput("hivePlot", 
+               fluidRow(style = 'width: 1400px', 
+                        fluidRow(style= 'padding: 0px 0px 15px 0px',column(5,plotOutput("hivePlot", 
                                                             height = 600,
                                                             width = 600,
                                                             hover = hoverOpts(id = "image_hover",
                                                                               delay = 500,
                                                                               delayType = "throttle")
                         )),
-                          column(6,plotOutput('freqMat',
+                          column(7,plotOutput('freqMat',
                                                    height = 600,
-                                                   width = 600))),
+                                                   width = 800))),
                         
                         bsCollapse(bsCollapsePanel(div(dataTableOutput('table'),
                                             style='font-size:75%;'),
