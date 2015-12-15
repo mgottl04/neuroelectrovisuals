@@ -234,10 +234,7 @@ shinyServer(function(input, output, session) {
       htc$keys <<- mtc()$key
       m <- bigData[which(bigData$key %in% htc$keys),]
       output$hivePlot <- renderPlot({makeHivePlot(m)})
-#       tab <- adply(unique(m$Pmid),1,function(x){
-#         rows <- m[which(m$Pmid == x),]
-#         data.frame('PubMed ID' = rows$Pmid[[1]],'Year' = rows$PubYear[[1]], 'Author'=rows$LastAuthor[[1]], Title = rows$Title[[1]], 'Neurons' = paste(unique(rows$NeuronName),sep='!!!'), 'Species'=unique(rows$Species))
-#       })
+
       output$freqMat <- renderPlot({make_frequency_matrix(htc$keys)})
       tab <- m[,c('Pmid','PubYear','LastAuthor','Title','allNeurons','allSpecies')]
       output$table <-renderDataTable(tab[!duplicated(tab),],class ='compact cell-border stripe', filter = 'top', colnames = c('PubMed ID', 'Year','Author', 'Title','Neurons', 'Species'),rownames = FALSE)
