@@ -104,4 +104,3 @@ g2_end <- g2_start + length(rownames(props)[grepl("^[n-zN-Z]", rownames(props))]
 
 # Useful lists
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
-biggestData <- bigData

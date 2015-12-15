@@ -1,6 +1,6 @@
 # File for hive plot creation
 ############################################################################################
-makeHivePlot = function(bigData = biggestData) { 
+makeHivePlot = function(bigData = bigData) { 
   ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold",
                    "spike.amplitude","spike.half.width","membrane.time.constant",
                    "AHP.amplitude","cell.capacitance", "rheobase","maximum.firing.rate")
@@ -73,7 +73,7 @@ makeHivePlot = function(bigData = biggestData) {
   # And we will assign a node size for each node based on its betweenness centrality
 
   
-  # Bcentrality does not tell us much for our data, so let's just keep all nodes at the same size for now.
+  # B-centrality does not tell us much for our data, so let's just keep all nodes at the same size for now.
   node.list <- cbind(node.list, size = rep(1, nrow(node.list)))
 
   
@@ -99,24 +99,32 @@ makeHivePlot = function(bigData = biggestData) {
   
   ############################################################################################
   # Assign nodes to axes
-  
-  num_neurons <- length(regions)
-  num_ephys <- length(ephys_props) 
-
+  #browser()
   nodeAxis <- integer(nrow(node.list))
-  nodeAxis[1 : num_neurons] <- as.integer(1)
-  nodeAxis[(num_neurons + 1) : (num_neurons + num_ephys)] <- as.integer(2)
-  nodeAxis[(num_neurons + num_ephys + 1) : nrow(node.list)] <- as.integer(3)
+
+  nodeAxis[node.list$name %in% regions] <- as.integer(1)
+  nodeAxis[node.list$name %in% ephys_props] <- as.integer(2)
+  nodeAxis[nodeAxis == 0] <- as.integer(3)
+
+#   nodeAxis[1 : num_neurons] <- as.integer(1)
+#   nodeAxis[(num_neurons + 1) : (num_neurons + num_ephys)] <- as.integer(2)
+#   nodeAxis[(num_neurons + num_ephys + 1) : nrow(node.list)] <- as.integer(3)
   node.list <- cbind(node.list, axis = nodeAxis)
 
   ############################################################################################
   # Set radius for each node (distance along the axis)
+  num_neurons <- length(node.list$name[node.list$name %in% regions])
+  num_ephys <- length(node.list$name[node.list$name %in% ephys_props])
+
   nodeRadius <- integer(nrow(node.list))
-  nodeRadius[1 : num_neurons] <- 3 * (1 : num_neurons)
-  nodeRadius[(num_neurons + 1) : (num_neurons + num_ephys)] <- 2 * (1 : num_ephys)
-  nodeRadius[(num_neurons + num_ephys + 1) : nrow(node.list)] <- 3 * (1 : (nrow(node.list) - num_neurons - num_ephys))
+  nodeRadius[1 : num_neurons] <- 2 * (1 : num_neurons)
+  nodeRadius[(num_neurons + 1) : (num_neurons + num_ephys)] <- 2.5 * (1 : num_ephys)
+  nodeRadius[(num_neurons + num_ephys + 1) : nrow(node.list)] <- 4 * (1 : (nrow(node.list) - num_neurons - num_ephys))
   node.list <- cbind(node.list, radius = nodeRadius)
   rm(nodeAxis, num_neurons, nodeRadius, num_ephys)
+
+  ############################################################################################
+  # Craete a csv file for node labels
 
   ############################################################################################
   #Create a hive plot
@@ -131,6 +139,6 @@ makeHivePlot = function(bigData = biggestData) {
 
   # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
   #hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
-  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 5)
+  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 3)
   return(p)
 }
