@@ -100,24 +100,21 @@ shinyUI(fluidPage(
       ),
       tabPanel("Overview",
                fluidRow(style = 'width: 1200px', 
-                        bsCollapsePanel(plotOutput('freqMat',
+                        fluidRow(style= 'padding: 0px 0px 15px 0px',column(6,plotOutput("hivePlot", 
+                                                            height = 600,
+                                                            width = 600,
+                                                            hover = hoverOpts(id = "image_hover",
+                                                                              delay = 500,
+                                                                              delayType = "throttle")
+                        )),
+                          column(6,plotOutput('freqMat',
                                                    height = 600,
-                                                   width = 100),
-                                        title= 'Marix View', style = 'info'),
-                        bsCollapsePanel(
-                          plotOutput("hivePlot", 
-                                     height = 600,
-                                     width = 1100,
-                                     hover = hoverOpts(id = "image_hover",
-                                                       delay = 500,
-                                                       delayType = "throttle")
-                                     ),
-                          title = 'Hive View',
-                          style = 'info'),
-                        bsCollapsePanel(div(dataTableOutput('table'),
+                                                   width = 600))),
+                        
+                        bsCollapse(bsCollapsePanel(div(dataTableOutput('table'),
                                             style='font-size:75%;'),
-                                        title='Table View',
-                                        style='info')
+                                        title='Table',
+                                        style='info'), open = 'Table')
                         )
                )
       ), fluid =TRUE
