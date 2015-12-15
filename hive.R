@@ -1,14 +1,10 @@
 # File for hive plot creation
 ############################################################################################
 makeHivePlot = function(bigData = bigData) { 
-  ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold",
-                   "spike.amplitude","spike.half.width","membrane.time.constant",
-                   "AHP.amplitude","cell.capacitance", "rheobase","maximum.firing.rate")
-  metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential",
-                "RecTemp", "AnimalAge")
-  
 
-  bigData[is.na(bigData$BrainRegion),] <- "Other"
+  #bigData[is.na(bigData$BrainRegion),] <- "Other"
+  #bigData$BrainRegion <- gsub(" ", ".", bigData$BrainRegion)
+  
   plot.d <- subset(bigData, select = c("BrainRegion"))
   
   plot.d$id <- 1 : nrow(plot.d)
@@ -118,27 +114,49 @@ makeHivePlot = function(bigData = bigData) {
 
   nodeRadius <- integer(nrow(node.list))
   nodeRadius[1 : num_neurons] <- 2 * (1 : num_neurons)
-  nodeRadius[(num_neurons + 1) : (num_neurons + num_ephys)] <- 2.5 * (1 : num_ephys)
-  nodeRadius[(num_neurons + num_ephys + 1) : nrow(node.list)] <- 4 * (1 : (nrow(node.list) - num_neurons - num_ephys))
+  nodeRadius[(num_neurons + 1) : (num_neurons + num_ephys)] <- 3 * (1 : num_ephys)
+  nodeRadius[(num_neurons + num_ephys + 1) : nrow(node.list)] <- 3 * (1 : (nrow(node.list) - num_neurons - num_ephys))
   node.list <- cbind(node.list, radius = nodeRadius)
-  rm(nodeAxis, num_neurons, nodeRadius, num_ephys)
 
   ############################################################################################
   # Craete a csv file for node labels
 
+  nodeAngle <- numeric(nrow(node.list))
+  nodeAngle[1 : num_neurons] <- 20
+  nodeAngle[(num_neurons + 1) : (num_neurons + num_ephys)] <- 120
+  nodeAngle[(num_neurons + num_ephys + 1) : nrow(node.list)] <- 245
+
+  nodeLabRadius <- numeric(nrow(node.list))
+  nodeLabRadius[1 : num_neurons] <- 3 * (num_neurons : 1) - 2
+  nodeLabRadius[(num_neurons + 1) : (num_neurons + num_ephys)] <- 3 * (num_ephys : 1) + 5
+  nodeLabRadius[(num_neurons + num_ephys + 1) : nrow(node.list)] <- 3 * ((nrow(node.list) - num_neurons - num_ephys) : 1) + 5
+
+  nodeLabels <- data.frame(node.lab = as.character(node.list$name), 
+                           node.text = gsub("\\.", " ", as.character(node.list$name)), 
+                           angle = nodeAngle, 
+                           radius = nodeLabRadius, 
+                           offset = 1, 
+                           hjust = 0.5, 
+                           vjust = 0, 
+                           stringsAsFactors = F)
+
+  write.table(nodeLabels, "~/Documents/neuroelectrovisuals/data/nodeLabels.csv", sep = ",", row.names = FALSE)
+  rm(nodeAxis, num_neurons, nodeRadius, num_ephys, nodeAngle, nodeLabRadius, nodeLabels)
+
+
   ############################################################################################
-  #Create a hive plot
-  suppressWarnings(hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2],
+  # Create a hive plot
+  hive1 <- mod.edge2HPD(edge_df = dataSet.ext[,1:2],
                         edge.color = dataSet.ext[, 5],
                         edge.weight = 3*log10(dataSet.ext[,3])/max(log10(dataSet.ext[,3])),
                         node.radius = node.list[,c("name", "radius")],
                         node.color = node.list[,c("name", "color")],
                         node.size = node.list[,c("name", "size")],
                         node.axis = node.list[,c("name", "axis")])  
-  )
+  
 
   # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
   #hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
-  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 3)
+  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 3, anNodes = "~/Documents/neuroelectrovisuals/data/nodeLabels.csv")
   return(p)
 }

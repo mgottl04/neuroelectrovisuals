@@ -103,3 +103,6 @@ g2_end <- g2_start + length(rownames(props)[grepl("^[n-zN-Z]", rownames(props))]
 
 # Useful lists
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
+ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold",
+                 "spike.amplitude","spike.half.width","membrane.time.constant",
+                 "AHP.amplitude","cell.capacitance", "rheobase","maximum.firing.rate")
