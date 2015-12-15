@@ -26,7 +26,6 @@ shinyServer(function(input, output, session) {
     js$removeStuckToolTip()
   })
   
-  
   observeEvent(input$restoreRemoved, {
     removed$selected <- rep(FALSE,nrow(bigData))
   })
@@ -244,5 +243,4 @@ shinyServer(function(input, output, session) {
       output$table <-renderDataTable(tab[!duplicated(tab),],class ='compact cell-border stripe', filter = 'top', colnames = c('PubMed ID', 'Year','Author', 'Title','Neurons', 'Species'),rownames = FALSE)
     }
   } )
-
 })

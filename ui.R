@@ -61,6 +61,7 @@ add_input_selector <- function(x_label,y_label, border_widths, x_initial, y_init
 }
 
 # *** Define UI ***
+
 shinyUI(fluidPage(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "neuroelectrovisuals.css")
@@ -121,6 +122,7 @@ shinyUI(fluidPage(
                )
       ), fluid =TRUE
       )
+
     )
   )
   )
