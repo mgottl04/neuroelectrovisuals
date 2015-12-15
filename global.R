@@ -36,6 +36,9 @@ rownames(ephys_info) <- gsub("-", ".", rownames(ephys_info))
 # Drop "other" from ephys
 ephys_info <- ephys_info[rownames(ephys_info) != "other",]
 
+# Add "other" brain region for all the neuron types that don't have one yet
+bigData$BrainRegion[is.na(bigData$BrainRegion)] <- "Other"
+
 # Fix nonsense levels
 bigData[bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
 
@@ -102,11 +105,6 @@ g4_start <- g3_end + 1
 g4_end <- g4_start + length(prop_names[grepl("^[Ss][m-zM-Z]|^[t-zT-Z]", prop_names)]) - 1
 
 # Useful lists
-ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold","spike.amplitude","spike.half.width","membrane.time.constant",
-                 "AHP.amplitude","spike.width","cell.capacitance","AHP.duration","rheobase","firing.frequency",
-                 "adaptation.ratio","sag.ratio","fast.AHP.amplitude","spike.peak","maximum.firing.rate","other",
-                 "spontaneous.firing.rate","FI.slope","first.spike.latency","slow.AHP.amplitude","spike.max.rise.slope","ADP.amplitude",
-                 "sag.amplitude","spike.max.decay.slope","spike.rise.time","fast.AHP.duration","spike.decay.time","access.resistance",
-                 "slow.AHP.duration","cell.diameter","medium.AHP.amplitude","medium.AHP.duration","ADP.duration","cell.surface.area")
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
 
+biggestData <- bigData
