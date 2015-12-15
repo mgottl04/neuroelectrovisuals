@@ -197,7 +197,7 @@ shinyServer(function(input, output, session) {
       data <- data[which(!is.na(data$AnimalWeight) & data$AnimalWeight >= weight_low & data$AnimalWeight <= weight_high),]
     }
     
-    for (x in prop_names) {
+    for (x in rownames(props)) {
       if (!is.null(input[[x]])) {
         slider_val = input[[x]] 
         if (slider_val[1] > props[[x,c("Min.Range")]] || slider_val[2] < props[[x,c("Max.Range")]]) {

@@ -21,7 +21,6 @@ source("./mod.mineHPD.R")
 source("./hive.R")
 source('./lib/make_frequency_matrix.R')
 
-
 #load('data/hive_plot_data.RData')
 #hive_data <- read.csv(file='data/hive_data.csv')
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
@@ -38,7 +37,7 @@ rownames(ephys_info) <- gsub("-", ".", rownames(ephys_info))
 ephys_info <- ephys_info[rownames(ephys_info) != "other",]
 
 # Add "other" brain region for all the neuron types that don't have one yet
-bigData$BrainRegion[is.na(bigData$BrainRegion)] <- "Other"
+bigData$BrainRegion[is.na(bigData$BrainRegion)] <- "Other Region"
 
 # Fix nonsense levels
 bigData[bigData$Species %in% c("Rats, Mice","Mice, Xenopus"),c("Species")] <- "Other"
@@ -74,6 +73,7 @@ bigData$allNeurons <- unlist(lapply(bigData$Pmid,function(x){
 bigData$allSpecies <- unlist(lapply(bigData$Pmid,function(x){
   paste(unlist(unique(bigData[which(bigData$Pmid == x), 'Species'])),collapse=',\n ')
 })) 
+
 # Neuron types
 neuron_types <- na.omit(unique(bigData[,c('NeuronName','BrainRegion')]))
 regions <- levels(as.factor(neuron_types$BrainRegion))
@@ -93,19 +93,14 @@ metadata_units <- list(AnimalAge = "days", AnimalWeight = "grams", RecTemp="C")
 
 # Ephys props
 props <- ephys_info[order(rownames(ephys_info)),c("usual.units","Min.Range","Max.Range"),drop=FALSE]
-prop_names <- rownames(props)
+props <- props[rownames(props) %in% plottables,]
 
-# Four groups for ephys props panels
+# Two groups for ephys props panel
 g1_start <- 1 
-g1_end <-  length(prop_names[grepl("^[a-cA-C]", prop_names)])
+g1_end <-  length(prop_names[grepl("^[a-mA-M]", prop_names)])
 g2_start <- g1_end + 1
-g2_end <- g2_start + length(prop_names[grepl("^[d-lD-L]", prop_names)]) - 1
-g3_start <- g2_end + 1
-g3_end <- g3_start +length(prop_names[grepl("^[m-rM-R]|^[Ss][a-lA-L]", prop_names)]) - 1
-g4_start <- g3_end + 1
-g4_end <- g4_start + length(prop_names[grepl("^[Ss][m-zM-Z]|^[t-zT-Z]", prop_names)]) - 1
+g2_end <- g2_start + length(prop_names[grepl("^[n-zN-Z]", prop_names)]) - 1
 
 # Useful lists
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
-
 biggestData <- bigData
