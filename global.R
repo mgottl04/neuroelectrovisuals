@@ -1,3 +1,4 @@
+library(DT)
 library(dplyr)
 library(ggvis)
 library(ggplot2)
@@ -13,11 +14,12 @@ library(shinyBS)
 library(shinyjs)
 library(shinyTree)
 library(V8)
-
+library(pheatmap)
 source("./mod.edge2HPD.R")
 source("./mod.mineHPD.R")
 source("./hive.R")
-#source("./hive_mike.R")
+source('./lib/make_frequency_matrix.R')
+
 
 #load('data/hive_plot_data.RData')
 #hive_data <- read.csv(file='data/hive_data.csv')
@@ -63,8 +65,13 @@ axis_names <- sapply(colnames(bigData),function(x){
 log_transform <- rownames(ephys_info[ephys_info$Transform == "log10",])
 
 bigData$key <-(1:nrow(bigData))
-bigData[bigData$key,]
-
+bigData$superkey <- paste(paste0('Title: ',bigData$Title,sep=''),paste0('PubMed ID: ',bigData$Pmid,sep=''),paste0('Table ID: ',bigData$key,sep=''),sep='@')
+bigData$allNeurons <- unlist(lapply(bigData$Pmid,function(x){
+  paste(unlist(unique(bigData[which(bigData$Pmid == x), 'NeuronName'])),collapse=',  ')
+}))
+bigData$allSpecies <- unlist(lapply(bigData$Pmid,function(x){
+  paste(unlist(unique(bigData[which(bigData$Pmid == x), 'Species'])),collapse=',\n ')
+})) 
 # Neuron types
 neuron_types <- na.omit(unique(bigData[,c('NeuronName','BrainRegion')]))
 regions <- levels(as.factor(neuron_types$BrainRegion))
