@@ -106,5 +106,3 @@ g4_end <- g4_start + length(prop_names[grepl("^[Ss][m-zM-Z]|^[t-zT-Z]", prop_nam
 
 # Useful lists
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
-
-biggestData <- bigData
