@@ -140,7 +140,7 @@ makeHivePlot = function(bigData = bigData) {
                            vjust = 0, 
                            stringsAsFactors = F)
 
-  write.table(nodeLabels, "~/Documents/neuroelectrovisuals/data/nodeLabels.csv", sep = ",", row.names = FALSE)
+  write.table(nodeLabels, "./data/nodeLabels.csv", sep = ",", row.names = FALSE)
   rm(nodeAxis, num_neurons, nodeRadius, num_ephys, nodeAngle, nodeLabRadius, nodeLabels)
 
 
