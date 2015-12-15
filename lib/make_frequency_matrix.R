@@ -1,5 +1,5 @@
 make_frequency_matrix <- function(keys){
-load('data/matrix.rda')
+# load('data/matrix.rda')
 f <- frequency_data[which(frequency_data$key %in% keys),]
 f$key <- NULL
 
