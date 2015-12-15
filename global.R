@@ -97,9 +97,9 @@ props <- props[rownames(props) %in% plottables,]
 
 # Two groups for ephys props panel
 g1_start <- 1 
-g1_end <-  length(prop_names[grepl("^[a-mA-M]", prop_names)])
+g1_end <-  length(rownames(props)[grepl("^[a-mA-M]", rownames(props))])
 g2_start <- g1_end + 1
-g2_end <- g2_start + length(prop_names[grepl("^[n-zN-Z]", prop_names)]) - 1
+g2_end <- g2_start + length(rownames(props)[grepl("^[n-zN-Z]", rownames(props))]) - 1
 
 # Useful lists
 metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", "JxnOffset", "RecTemp", "AnimalAge", "AnimalWeight", "ExternalSolution", "InternalSolution")
