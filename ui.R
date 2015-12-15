@@ -99,17 +99,17 @@ shinyUI(fluidPage(
           )
       ),
       tabPanel("Overview",
-               fluidRow(style = 'width: 1200px', 
-                        fluidRow(style= 'padding: 0px 0px 15px 0px',column(6,plotOutput("hivePlot", 
+               fluidRow(style = 'width: 1400px', 
+                        fluidRow(style= 'padding: 0px 0px 15px 0px',column(5,plotOutput("hivePlot", 
                                                             height = 600,
                                                             width = 600,
                                                             hover = hoverOpts(id = "image_hover",
                                                                               delay = 500,
                                                                               delayType = "throttle")
                         )),
-                          column(6,plotOutput('freqMat',
+                          column(7,plotOutput('freqMat',
                                                    height = 600,
-                                                   width = 600))),
+                                                   width = 800))),
                         
                         bsCollapse(bsCollapsePanel(div(dataTableOutput('table'),
                                             style='font-size:75%;'),
