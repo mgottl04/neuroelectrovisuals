@@ -140,7 +140,7 @@ makeHivePlot = function(bigData = bigData) {
                            vjust = 0, 
                            stringsAsFactors = F)
 
-  write.table(nodeLabels, "./data/nodeLabels.csv", sep = ",", row.names = FALSE)
+  write.table(nodeLabels, "data/nodeLabels.csv", sep = ",", row.names = FALSE)
   rm(nodeAxis, num_neurons, nodeRadius, num_ephys, nodeAngle, nodeLabRadius, nodeLabels)
 
 
@@ -157,6 +157,6 @@ makeHivePlot = function(bigData = bigData) {
 
   # Assign position on the axis to nodes (sort by number of connections, outer nodes have the most connections)
   #hive2 <- mod.mineHPD(hive1, "rad <- tot.edge.count")
-  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 3, anNodes = "~/Documents/neuroelectrovisuals/data/nodeLabels.csv")
+  p <- plotHive(hive1, method = "abs", bkgnd = "black", axLabs = c("Brain region", "Ephys. property", "Metadata"), axLab.pos = 3, anNodes = "data/nodeLabels.csv")
   return(p)
 }
