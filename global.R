@@ -21,6 +21,7 @@ source("./lib/mod.mineHPD.R")
 source("./lib/hive.R")
 source('./lib/make_frequency_matrix.R')
 
+load('data/matrix.rda')
 #load('data/hive_plot_data.RData')
 #hive_data <- read.csv(file='data/hive_data.csv')
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))

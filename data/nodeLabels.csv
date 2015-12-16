@@ -1,0 +1,25 @@
+"node.lab","node.text","angle","radius","offset","hjust","vjust"
+"Hippocampal formation","Hippocampal formation",20,7,1,0.5,0
+"Cerebellum","Cerebellum",20,4,1,0.5,0
+"Cortical subplate","Cortical subplate",20,1,1,0.5,0
+"input.resistance","input resistance",120,35,1,0.5,0
+"resting.membrane.potential","resting membrane potential",120,32,1,0.5,0
+"spike.threshold","spike threshold",120,29,1,0.5,0
+"spike.amplitude","spike amplitude",120,26,1,0.5,0
+"spike.half.width","spike half width",120,23,1,0.5,0
+"membrane.time.constant","membrane time constant",120,20,1,0.5,0
+"AHP.amplitude","AHP amplitude",120,17,1,0.5,0
+"cell.capacitance","cell capacitance",120,14,1,0.5,0
+"rheobase","rheobase",120,11,1,0.5,0
+"maximum.firing.rate","maximum firing rate",120,8,1,0.5,0
+"Species","Species",245,38,1,0.5,0
+"Strain","Strain",245,35,1,0.5,0
+"ElectrodeType","ElectrodeType",245,32,1,0.5,0
+"PrepType","PrepType",245,29,1,0.5,0
+"JxnPotential","JxnPotential",245,26,1,0.5,0
+"JxnOffset","JxnOffset",245,23,1,0.5,0
+"RecTemp","RecTemp",245,20,1,0.5,0
+"AnimalAge","AnimalAge",245,17,1,0.5,0
+"AnimalWeight","AnimalWeight",245,14,1,0.5,0
+"ExternalSolution","ExternalSolution",245,11,1,0.5,0
+"InternalSolution","InternalSolution",245,8,1,0.5,0
