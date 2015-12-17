@@ -21,9 +21,15 @@ csl: ieee.csl
 
 > give the big picture. establish the scope of what you did, some background material may be appropriate here.
     
-Neuroelectro is a Django text mining application [http://neuroelectro.org/] and was published as an article in Frontiers in Neuroinformatics [@tripathy2014neuroelectro]. Through the combined use of text mining and manual curation, it currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of about 5,000 articles. The data of each article can be accessed by type of neuron, electrophysiological property, or via a table of articles. 
+Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, [1] et al. have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to “facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types.”
 
-Neuroelectro is unique amongst text mining projects in that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [26,27]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the primary data. This limits the analyses the user can perform.
+NeuroElectro is a Django text mining and curation application [link](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL database on the back end. It currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles. 
+
+However, the current visualizations provided by NeuroElectro are lacking: the user is only able to view data for one neuron type or one ephys property at a time using scatter plots. Our goal was to develop a new interface that supports seamless browsing and analysis of select subsets of the data.
+
+Neuroelectro is a rare breed amongst text-mining projects in the fact that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [26,27]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the original data. This limits the analyses a user can perform.
+
+Taking that flaw into account, we designed our NeuroElectro visualization mainly to provide the user with the overview of the gathered data and with the ability to explore it as they see fit. To accomplish said goals in the most efficient manner we performed an extensive literature search into online biomedical databases visualization efforts and the most efficient general ways to display as well as interact with the data similar to ours (on the scope of hundreds to thousands data rows with a few dozen variables).
 
 ##Related Work
 
@@ -36,15 +42,19 @@ Neuroelectro provides some crude data visualizations in the form of static scatt
 
 ####Exploring relationships
 
-Exploration of relationships between the different properties in Neuroelectro’s dataset is supported by the current version of Neuroelectro. However, it is a static set of strip plots that do not account for all combinations of variables and do not allow any interaction.  
+Exploration of relationships between some of the properties in Neuroelectro’s dataset is supported by the current version of Neuroelectro (Brain region vs Electrophysiology only, metadata is only accessible via database). However, it is a static set of strip plots that do not account for all combinations of variables and do not allow any interaction.  
 
-Exploration of relationships is a common task in many analytics platforms such as Tableau [17], SAP BOBJ AOLAP [32] and  Microsoft  Excel [33]. Generally, these platforms provide a tabular view of the data in addition to customizable visualizations to enhance users’ exploration of the data. Our goal differs from these platforms as we are not including a tabular view, we are limiting the users’ choices to provide a simpler experience, and we are using plots that are not easily achieved with these platforms (e.g. interactive plots, hive-plots).
+Exploration of relationships is a common task in many analytics platforms such as Tableau [17], SAP BOBJ AOLAP [32] and  Microsoft  Excel [33]. Generally, these platforms provide a tabular view of the data in addition to customizable visualizations to enhance users’ exploration of the data. Our goal differs from these platforms as we are not including a tabular view, we are limiting the users’ choices to provide a simpler experience, and we are using plots that are not easily achieved with these platforms (e.g. interactive plots, hive plot).
 
 ####Providing an overview of data
 
-Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [35], matrix [34], arc diagram [31], call network [37], hive plot [29], etc. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task: 1) Our data is 3 dimensional (neuron type, ephys. property, metadata) and 3D matrices are usually very hard to interpret, we could provide a faceted view of 1 matrix per metadata as a possible solutions, but the amount of screen space that would require is enormous; 2) Matrices do not scale well, the labels get too small to be legible at some point. A call network visualization would end up looking very similar to a hairball in our case, as a result we had to discard this possibility due to scalability issues. Arc diagrams came in as a close second as our visualization of choice - they are easy to interpret, pleasant to look at and they can scale reasonably well with the amount of evidence in the database. The problem with arc diagrams is that all nodes would end up being on one line and that does not represent the 3 distinct groups of nodes (neuron types, ephys. properties, metadata) in our data.
+Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [35], matrix [34], arc diagram [31], call network [37], hive plot [29] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task: 1) Our data is 3 dimensional (neuron type, ephys. property, metadata) and 3D matrices are usually very hard to interpret, we could provide a faceted view of 1 matrix per metadata as a possible solution, but the amount of screen space that would require is enormous; 2) Matrices do not scale well, the labels get too small to be legible at some point. That said, a count matrix could provide a similar overview information to a hive plot as long as the number of parameters is small enough. In the implementation section we will discuss further our decision to use both a hive plot and a matrix approach.
+
+A call network visualization would end up looking very similar to a hairball in our case, as a result we had to discard this possibility due to scalability issues. Arc diagrams came in as a close second as our visualization of choice - they are easy to interpret, pleasant to look at and they can scale reasonably well with the amount of evidence in the database. The problem with arc diagrams is that all nodes would end up being on one line and that does not represent the 3 distinct groups of nodes (neuron types, ephys. properties, metadata) in our data.
+
 As a result, we decided to use hive plots for providing an overview of our data. Krzywinski, Birol, Jones and Marra [30] describe the advantages of hive plots in terms of gaining quantitative understanding when visualizing networks. They also support: multiple axes, information encoding in the nodes and edges, scaling. The one issue with hive plots is that they are a fairly new visualization style and researchers may have trouble understanding what they are looking at. However, we plan to provide a guide to interpreting the hive plot as well as provide links to the supporting literature. This feature would be on-demand and can be disabled in the application preferences.
-Applications of Similar Solutions
+
+###Applications of Similar Solutions
 
 ####Filter panels
 
@@ -58,19 +68,65 @@ Since Neuroelectro data is rather diverse (dozens of electrophysiology propertie
 
 ####Linked highlighting
 
-There are a number of interaction approaches to linked highlighting in scatter plots [23].  Through our consultation with the stakeholder, linked highlighting on hover was emphasized as a critical element. However, this not the only means of linked highlighting available. For example, linked  brushing, where the user selects a subset of points to be highlighted, is a popular choice for multi-selection [23, 36]. Further conversations with our stakeholder as we gain more exposure will allow us to finalize our design decisions.
+There are a number of interaction approaches to linked highlighting in scatter plots [23].  Through our consultation with the stakeholder, linked highlighting on hover was emphasized as a critical element. However, this is not the only means of linked highlighting available. For example, linked  brushing, where the user selects a subset of points to be highlighted, is a popular choice for multi-selection [23, 36].
 
 ####Hive plot
 
-Overviews of the data will make use of the work done by Krzywinski et al. [5] and Hanson [9] for our proposed hive plot. Various good examples of hive plot visualizations of networks are shown on the hive plot website [29]. We will be developing our visualization based on the features that are most meaningful for our data and the questions we are trying to answer with this view (sparsity of data, node degree, node centrality and reachability, outliers and general trends in the data).
+Overviews of the data will make use of the work done by Krzywinski et al. [5] and Hanson [9] for our proposed hive plot. Various good examples of hive plot visualizations of networks are shown on the hive plot website [29]. We have developed our visualization based on the features that are most meaningful for our data and the questions we are trying to answer with the view (sparsity of data, node degree, edge weights, outliers and general trends in the data). We also use a matrix and a table approach to supplement the hive plot, since alone the hive plot does not provide enough details about connections between data types.
 
 ####Colour
 
-We have decided to use colour as a channel for linked-highlighting. Previous research suggests that colour is one of the most powerful visualization channels [20, 8] and, when used correctly, it can provide insight into the data so intuitively that the user wouldn’t even need a legend to understand what kind of data the channel encodes for.
+We have decided to use colour as a channel for linked-highlighting. Previous research suggests that colour is one of the most powerful visualization channels [20, 8] and, when used correctly, it can provide insight into the data so intuitively that the user wouldn’t even need a legend to understand what kind of data the channel encodes for. On the overview panel colour is used as a measure of how many articles exist for each connection between nodes.
 
 ##Data and Task Abstractions
 
 > you should analyze your domain problem according to the framework of the book, translating from domain language into abstract descriptions of both tasks and data typically data will need to come first, since you will need to refer to that data in your task descriptions. it is very likely that you will need to first have domain-specific descriptions, followed by the abstracted versions.it is often helpful to split these sections into two pieces: first have subsection where data is described in domain-specific terms, and then follow up with a next subsection where you've abstracted into domain-independent language. you may choose to have a separate Domain Background section before this one if there's a lot of specialized vocabulary/material to explain in order to have a comprehensible and concise data description. similarly, it can be easier to write the tasks section by first providing a domain-specific list of tasks, and then present the abstracted version. you should decide whether to split by domain vs abstract (first have both data and task domain-specific sections, followed by the abstractions for data and task) or to split by data/task (first have data domain-specific then data abstract, then have task domain-specific and finally task abstract).
+
+###Domain-specific data and tasks
+
+NeuroElectro is a database of neuroscience articles and it applies text-mining as well as curation approaches to extract electrophysiology measurements, neuron type information and experimental setup conditions (metadata) from the html-encoded articles. At this point, text-mining alone is not reliable enough since neuroscientists authoring the articles in questions were not writing them using guidelines. As a result, each article is a snowflake of sorts - even with very well written algorithms automated text-mining is not at human text interpretation level yet. Hence the need for training undergraduate curators to verify the text-mining results and correct its errors. We focus on visualizing only the curated data, meaning that we have ~1000 articles worth of data. Note that not all articles contain all data types that NeuroElectro is able to store.
+
+####Domain-specific data types
+1. Electrophysiology measurements
+    + These are intrinsic neuron properties: membrane potential at rest, spike threshold (minimum membrane potential that causes a spike), input resistance, rheobase (minimum amount of current one needs to inject to cause an spike), etc.
+    + Neurons communicate with the help of action potentials (voltage spikes) which are caused by cell's membrane voltage rising above the spike threshold causing a cascade of Sodium ions to flood into the neuron, propagating the action potential signal down its axon and to other neurons. The cell then closes Sodium channels and opens Potassium channels in order to return to its original state.
+    + Neuron signalling is an electrochemical process and electrophysiology aims to record all meaningful characteristics that describe this process.
+2. Neuron types
+    + It is no secret that brain contains many different kinds of neurons. Neuroscientists have not decided on exactly how many neuron types there are and the debate has been ongoing for over a hunder years. Nevertheless, there are resources on the Internet that attempt to offer a classification for neuron types. NeuroElectro utilizes enhanced NeuroLex neuron classifications, eventually NeuroElectro may be offering its own neuron type hierarchy as we gather more data. For the purposes of our visualization, we distinguish 2 levels in the neuron type classification hierarchy - all neurons are assigned a brain region and a neuron type within that region. Each neuron type is assigned exactly one brain region (Neuron types that are present in many places or if their location is unknown comprise the "Other Region" brain region). These assignments were performed by a Dr. S.J. Tripathy - a neuroscience postdoc and the original developer of NeuroElectro.
+3. Experimental conditions (metadata)
+    + This data type stores information about the electrophysiological experiment itself, such as: species, strain, age and weight of the animal used, electrode type with which the measurements were taken, chemical solutions used to keep the brain slice moist and semi-alive, recording temperature, etc.
+    + This data is important in order to compare ephys measurements from different experiments and labs.
+
+NeuroElectro also stores data about each article: title, publication year, authors, etc.
+
+####Domain-specific tasks
+1. Explore relationships between neuron types, ephys properties, and experimental conditions.
+    + Find the neuron type, ephys measurement and metadata of interest.
+    + View specific electrophysiology measurement for a specific neuron type (e.g. view rheobase values for Hippocampal CA1 pyramidal cells).
+    + Compare ephys measurements across neuron types (e.g. resting membrane potential across all or a selected set of neuron types).
+    + Explore the effect of metadata on an ephys measurement (e.g. action potential amplitude change with animal age).
+2. Identify regions of the brain where particular neuron types are found.
+3. Identify how many data points exist for different combinations of neuron types, ephys properties, and experimental conditions.
+4. Find out how many articles support a specific analysis.
+5. Summarize the data in the current analysis scope.
+6. Lookup details for individual evidence lines extracted from articles. 
+
+###Abstracted data and tasks
+
+####Abstracted data
+Ignoring all domain-specific complications, we are dealing with 1 csv spreadsheet that contains ~1000 lines of ~150 variables. We can split these variables up into 4 types: quantitative measurement data, qualitative location data, mixed type explanatory variables and qualitative information about each line. The line information can be used for tooltips or tables to provide more context, but in itself, it is not interesting for the analysis.
+
+####Abstracted tasks
+1. Explore relationships between three different data types.
+    + Browse data available for analysis (data overview).
+    + Identify distributions of quantitative attribute values for a particular categorical attribute values.
+    + Compare distributions of quantitative attribute values for different categorical attribute values.
+    + Identify correlations between quantitative attributes.
+2. Navigate data type hierarchy to identify data of interest.
+3. Identify how many data points exist for different combinations of data types.
+4. Identify how many data points support a specific analysis.
+5. Summarize the data in the current analysis scope.
+6. Lookup details for individual data points (items).
 
 ##Solution
 
@@ -141,3 +197,4 @@ The hive plot library HiveR.R developed by Hanson [9] provides us with the tools
 37. Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. “Comparing genomes to computer operating systems in terms of the topology and evolution of their regulatory control networks.” Proc Natl Acad Sci USA. 107(20): 9186-9191
 
 # References
+ 
