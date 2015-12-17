@@ -1,9 +1,14 @@
-# Final Report
-| Michael Gottlieb mikemgottlieb@gmail.com
-| Emily Hindalong ehindalong@gmail.com
-| Dmitry Tebaykin dmitry.tebaykin@gmail.com
-  
-December 16, 2015  
+---
+title: "Final Report"
+author: |
+  | Michael Gottlieb mikemgottlieb@gmail.com
+  | Emily Hindalong ehindalong@gmail.com
+  | Dmitry Tebaykin dmitry.tebaykin@gmail.com
+date: "December 16, 2015"
+output:
+  pdf_document:
+    latex_engine: lualatex
+---
 
 
 ##Abstract
