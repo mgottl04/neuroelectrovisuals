@@ -8,28 +8,25 @@ date: "December 16, 2015"
 output:
   pdf_document:
     latex_engine: lualatex
+bibliography: bibliography.bib
 ---
 
 
 ##Abstract
 
-    **concise summary of your project. do not include citations.**
+> concise summary of your project. do not include citations.
 
 ##Introduction
 
-    **give the big picture. establish the scope of what you did, some background material may be appropriate here.**
+> give the big picture. establish the scope of what you did, some background material may be appropriate here.
     
-Neuroelectro is a Django text mining application [http://neuroelectro.org/] and was published as an article in Frontiers in Neuroinformatics [1]. Through the combined use of text mining and manual curation, it currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of about 5,000 articles. The data of each article can be accessed by type of neuron, electrophysiological property, or via a table of articles. 
+Neuroelectro is a Django text mining application [http://neuroelectro.org/] and was published as an article in Frontiers in Neuroinformatics [@tripathy2014neuroelectro]. Through the combined use of text mining and manual curation, it currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of about 5,000 articles. The data of each article can be accessed by type of neuron, electrophysiological property, or via a table of articles. 
 
 Neuroelectro is unique amongst text mining projects in that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [26,27]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the primary data. This limits the analyses the user can perform.
 
 ##Related Work
 
-    **include both work aimed at similar problems and work that employs similar solutions to yours
-    structure into subsections based on your own synthesis of themes in the related work
-    although there is no requirement to establish research novelty since it's a course project, you should still discuss how the previous work is similar to or different from your own work (either individually or with respect to an entire group)
-    definitely cover academic work; it's often good to cover non-academic work as well (commercial software, thoughtful blog posts)
-    you may choose to reorder sections to put this one after Abstractions, if it will help you write this section more concisely/clearly.**
+> include both work aimed at similar problems and work that employs similar solutions to yours structure into subsections based on your own synthesis of themes in the related work although there is no requirement to establish research novelty since it's a course project, you should still discuss how the previous work is similar to or different from your own work (either individually or with respect to an entire group) definitely cover academic work; it's often good to cover non-academic work as well (commercial software, thoughtful blog posts) you may choose to reorder sections to put this one after Abstractions, if it will help you write this section more concisely/clearly.
 
 
 ###Solutions to Similar Problems
@@ -72,24 +69,17 @@ We have decided to use colour as a channel for linked-highlighting. Previous res
 
 ##Data and Task Abstractions
 
-    **you should analyze your domain problem according to the framework of the book, translating from domain language into abstract descriptions of both tasks and data
-    typically data will need to come first, since you will need to refer to that data in your task descriptions.
-    it is very likely that you will need to first have domain-specific descriptions, followed by the abstracted versions.
-    it is often helpful to split these sections into two pieces: first have subsection where data is described in domain-specific terms, and then follow up with a next subsection where you've abstracted into domain-independent language. you may choose to have a separate Domain Background section before this one if there's a lot of specialized vocabulary/material to explain in order to have a comprehensible and concise data description.
-    similarly, it can be easier to write the tasks section by first providing a domain-specific list of tasks, and then present the abstracted version.
-    you should decide whether to split by domain vs abstract (first have both data and task domain-specific sections, followed by the abstractions for data and task) or to split by data/task (first have data domain-specific then data abstract, then have task domain-specific and finally task abstract).** 
+> you should analyze your domain problem according to the framework of the book, translating from domain language into abstract descriptions of both tasks and data typically data will need to come first, since you will need to refer to that data in your task descriptions. it is very likely that you will need to first have domain-specific descriptions, followed by the abstracted versions.it is often helpful to split these sections into two pieces: first have subsection where data is described in domain-specific terms, and then follow up with a next subsection where you've abstracted into domain-independent language. you may choose to have a separate Domain Background section before this one if there's a lot of specialized vocabulary/material to explain in order to have a comprehensible and concise data description. similarly, it can be easier to write the tasks section by first providing a domain-specific list of tasks, and then present the abstracted version. you should decide whether to split by domain vs abstract (first have both data and task domain-specific sections, followed by the abstractions for data and task) or to split by data/task (first have data domain-specific then data abstract, then have task domain-specific and finally task abstract).
 
 ##Solution
 
-    **describe your solution idiom, analyze it according to the framework of the book, and justify your design choices with respect to alternative possibilities
-    if you have done any significant algorithmic work, discuss the algorithm and data structures
-    you might choose to split out Interface into its own section**
+> describe your solution idiom, analyze it according to the framework of the book, and justify your design choices with respect to alternative possibilities if you have done any significant algorithmic work, discuss the algorithm and data structures you might choose to split out Interface into its own section
     
     
 
 ##Implementation
 
-    **medium-level implementation description. you must include specifics of what you did yourself versus what other components/libraries/toolkits you built upon. this section is one major divergence from standard research paper format, you need to provide much more detail than would normally be appropriate in a research context.** 
+> medium-level implementation description. you must include specifics of what you did yourself versus what other components/libraries/toolkits you built upon. this section is one major divergence from standard research paper format, you need to provide much more detail than would normally be appropriate in a research context.
     
 
 We will likely take advantage of the work done in interactive visualizations such as D3.js [4] and AngularJS [14] or RShiny [15]. Although D3.js and Angular.js are arguably more powerful in terms of possible customizations and optimizations than RShiny, both of them would require a steep learning curve and time input we do not have. In the interest of time and given the team’s expertise in R, we are leaning towards using RShiny and will most likely take advantage of previous work available via github and the Shiny website. For example, we have found solutions to set up multiple plots [10], use linked views [11], filter data [12], and rearrange plot layout [13]. 
@@ -97,23 +87,19 @@ The hive plot library HiveR.R developed by Hanson [9] provides us with the tools
 
 ##Results
 
-    **should include scenarios of use and multiple screenshots of your software in action. walk the reader through how your interface succeeds (or acknowledge how it falls short) in solving the intended problem.
-    if you did any evaluation (deployment to target users, computational benchmarks), do report on that here.** 
+> should include scenarios of use and multiple screenshots of your software in action. walk the reader through how your interface succeeds (or acknowledge how it falls short) in solving the intended problem. if you did any evaluation (deployment to target users, computational benchmarks), do report on that here. 
 
 ##Discussion and Future Work
 
-    **Strengths, weaknesses, limitations (reflect on your approach)
-    Lessons learned (what do you know now that you didn't when you started?)
-    Future work (what would you do if you had more time?)** 
+> Strengths, weaknesses, limitations (reflect on your approach)  Lessons learned (what do you know now that you didn't when you started?)  Future work (what would you do if you had more time?)
 
 ##Conclusions
 
-    **summarize what you've done in a way that's different from the abstract because you can count on the reader having now seen all of the content of the paper in between** 
+> summarize what you've done in a way that's different from the abstract because you can count on the reader having now seen all of the content of the paper in between 
 
 ##Bibliography
 
-    **make sure to use real references for any work that's been published academically, not just URLs
-    do pay particular attention to my instructions for checking reference consistency** 
+> make sure to use real references for any work that's been published academically, not just URLs do pay particular attention to my instructions for checking reference consistency
     
 1. Tripathy, Shreejoy J., et al. "NeuroElectro: a window to the world's neuron electrophysiology data." Frontiers in neuroinformatics 8 (2014).
 2. Van Eck, Nees Jan, and Ludo Waltman. "Text mining and visualization using VOSviewer." arXiv preprint arXiv:1109.2058 (2011).
@@ -152,3 +138,5 @@ The hive plot library HiveR.R developed by Hanson [9] provides us with the tools
 35. Aitaluk M, Sedova M, Ray A, et al. “Biological Networks: visualization and analysis tool for systems biology.” Nucleic Acids Res (2006). 34:W466-71
 36. https://github.com/rstudio/ggvis/blob/master/demo/rmarkdown/linked_brush.Rmd
 37. Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. “Comparing genomes to computer operating systems in terms of the topology and evolution of their regulatory control networks.” Proc Natl Acad Sci USA. 107(20): 9186-9191
+
+# References
