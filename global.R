@@ -1,21 +1,33 @@
-library(DT)
-library(dplyr)
-library(grid)
-library(ggvis)
-library(ggplot2)
-library(grDevices)
-library(HiveR)
-library(igraph)
-library(plyr)
-library(psych)
-library(RColorBrewer)
-library(reshape2)
-library(shiny)
-library(shinyBS)
-library(shinyjs)
-library(shinyTree)
-library(V8)
-library(pheatmap)
+libs <- c('plyr','dplyr','ggvis','ggplot2',
+        'HiveR','igraph','psych','RColorBrewer',
+        'reshape2','shiny','DT','shinyBS',
+        'shinyjs','shinyTree','V8','pheatmap')
+for (L in libs){
+if(!require(L,character.only=TRUE)){
+  install.packages(L)
+}
+
+}
+# remove.packages(libs)
+
+# library(DT)
+# library(dplyr)
+# library(grid)
+# library(ggvis)
+# library(ggplot2)
+# library(grDevices)
+# library(HiveR)
+# library(igraph)
+# library(plyr)
+# library(psych)
+# library(RColorBrewer)
+# library(reshape2)
+# library(shiny)
+# library(shinyBS)
+# library(shinyjs)
+# library(shinyTree)
+# library(V8)
+# library(pheatmap)
 source("./lib/mod.edge2HPD.R")
 source("./lib/mod.mineHPD.R")
 source("./lib/hive.R")
