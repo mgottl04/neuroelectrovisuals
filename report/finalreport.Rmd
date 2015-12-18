@@ -162,7 +162,7 @@ The hive plot library HiveR.R developed by Hanson [9] provides us with the tools
 
 ##Discussion and Future Work
 
-> Strengths, weaknesses, limitations (reflect on your approach)  Lessons learned (what do you know now that you didn't when you started?)  Future work (what would you do if you had more time?)
+> Strengths, weaknesses, limitations (reflect on your approach).  Lessons learned (what do you know now that you didn't when you started?). Future work (what would you do if you had more time?)
 
 ##Conclusions
 
