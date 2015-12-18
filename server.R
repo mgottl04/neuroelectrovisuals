@@ -150,7 +150,7 @@ shinyServer(function(input, output, session) {
         , "hover")%>%
           set_options(renderer = "canvas") %>% 
           handle_click(on_click = function(data,...){
-            print('fuck')
+            
           isolate(values$selected[data$key] <- 2)
           
         }  
