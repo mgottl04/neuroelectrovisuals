@@ -24,6 +24,6 @@ names(plz) <- 'Data Type'
 pheatmap(as.matrix(fab),cluster_rows = FALSE, cluster_cols = FALSE,
          color = colorRampPalette(rev(brewer.pal(n = 7, name ="YlGnBu")))(801),
          breaks = c(-1:800),
-         annotation_row = plz,annotation_col = plz, display_numbers = TRUE,number_format = "%.0f", number_color = 'black')
+         annotation_row = plz,annotation_col = plz, display_numbers = TRUE,number_format = "%.0f", number_color = '#edf8b1')
 
 }
