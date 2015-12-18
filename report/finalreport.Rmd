@@ -21,7 +21,7 @@ csl: ieee.csl
 
 > give the big picture. establish the scope of what you did, some background material may be appropriate here.
     
-Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, [1] et al. have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to “facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types.”
+Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, [@tripathy2014neuroelectro] et al. have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to “facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types.”
 
 NeuroElectro is a Django text mining and curation application [link](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL database on the back end. It currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles. 
 
@@ -38,7 +38,7 @@ Taking that flaw into account, we designed our NeuroElectro visualization mainly
 
 ###Solutions to Similar Problems
 
-Neuroelectro provides some crude data visualizations in the form of static scatterplots and a single PCA analysis plot. Most text-mining tools in biomedicine do not use visualization at all, and those that do are restricted to analyses on the derived association matrix. For example, VOSviewer [2] uses colour and spatial position to visualize the semantic clustering and strength of association across text mined terms. The Trading Consequence project [3] focuses on mined trading documents supported by controlled vocabularies to generate maps of commodity trading over time.
+Neuroelectro provides some crude data visualizations in the form of static scatterplots and a single PCA analysis plot. Most text-mining tools in biomedicine do not use visualization at all, and those that do are restricted to analyses on the derived association matrix. For example, VOSviewer [@eck2011text] uses colour and spatial position to visualize the semantic clustering and strength of association across text mined terms. The Trading Consequence project [@Hinrichs2015trading] focuses on mined trading documents supported by controlled vocabularies to generate maps of commodity trading over time.
 
 ####Exploring relationships
 
@@ -48,23 +48,27 @@ Exploration of relationships is a common task in many analytics platforms such a
 
 ####Providing an overview of data
 
-Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [35], matrix [34], arc diagram [31], call network [37], hive plot [29] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task: 1) Our data is 3 dimensional (neuron type, ephys. property, metadata) and 3D matrices are usually very hard to interpret, we could provide a faceted view of 1 matrix per metadata as a possible solution, but the amount of screen space that would require is enormous; 2) Matrices do not scale well, the labels get too small to be legible at some point. That said, a count matrix could provide a similar overview information to a hive plot as long as the number of parameters is small enough. In the implementation section we will discuss further our decision to use both a hive plot and a matrix approach.
+Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [@aitaluk2006biological], matrix [@henry2006matrixexplorer], arc diagram [31], call network [@yan2010comparing], hive plot [29] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task: 
+1. Our data is 3 dimensional (neuron type, ephys. property, metadata) and 3D matrices are usually very hard to interpret, we could provide a faceted view of 1 matrix per metadata as a possible solution, but the amount of screen space that would require is enormous. 
+2. Matrices do not scale well, the labels get too small to be legible at some point. That said, a count matrix could provide a similar overview information to a hive plot as long as the number of parameters is small enough. 
+
+In the implementation section we will discuss further our decision to use both a hive plot and a matrix approach.
 
 A call network visualization would end up looking very similar to a hairball in our case, as a result we had to discard this possibility due to scalability issues. Arc diagrams came in as a close second as our visualization of choice - they are easy to interpret, pleasant to look at and they can scale reasonably well with the amount of evidence in the database. The problem with arc diagrams is that all nodes would end up being on one line and that does not represent the 3 distinct groups of nodes (neuron types, ephys. properties, metadata) in our data.
 
-As a result, we decided to use hive plots for providing an overview of our data. Krzywinski, Birol, Jones and Marra [30] describe the advantages of hive plots in terms of gaining quantitative understanding when visualizing networks. They also support: multiple axes, information encoding in the nodes and edges, scaling. The one issue with hive plots is that they are a fairly new visualization style and researchers may have trouble understanding what they are looking at. However, we plan to provide a guide to interpreting the hive plot as well as provide links to the supporting literature. This feature would be on-demand and can be disabled in the application preferences.
+As a result, we decided to use hive plots for providing an overview of our data. Krzywinski, Birol, Jones and Marra [@krzywinski2012hive] describe the advantages of hive plots in terms of gaining quantitative understanding when visualizing networks. They also support: multiple axes, information encoding in the nodes and edges, scaling. The one issue with hive plots is that they are a fairly new visualization style and researchers may have trouble understanding what they are looking at. However, we plan to provide a guide to interpreting the hive plot as well as provide links to the supporting literature. This feature would be on-demand and can be disabled in the application preferences.
 
 ###Applications of Similar Solutions
 
 ####Filter panels
 
-The filter panel paradigm, where one panel is used to control what data appears in the main panel, is well established in visualization domain [24,25,28]. An alternative solution is the filter bar, which uses less screen real estate [22]. However, we have opted to stick with filter panels because they will never interfere with the main view and will make it easier for the user to track which filters are applied at any given time. Furthermore, the number of filtering options that we offer will require a larger section of the screen.
+The filter panel paradigm, where one panel is used to control what data appears in the main panel, is well established in visualization domain [@bearavolu2003visualization, @dumas2012alertwheel, @sopan2012community]. An alternative solution is the filter bar, which uses less screen real estate [22]. However, we have opted to stick with filter panels because they will never interfere with the main view and will make it easier for the user to track which filters are applied at any given time. Furthermore, the number of filtering options that we offer will require a larger section of the screen.
 
 There are two basic attribute-based filtering paradigms: drill-down and parallel selection [21]. As the referenced blog post describes, Amazon uses drill-down filtering and Kayak uses parallel filtering. Our solution uses a hybrid of these, allowing the user to drill-down categories and apply parallel selection within. We intend to refer to this blog post when designing the specific details of our filter panel.
 
 ####Connected scatterplots
 
-Since Neuroelectro data is rather diverse (dozens of electrophysiology properties for each of over one hundred neuron types), we plan to utilize scatterplots [16] and connected scatterplots [7] for answering research-oriented questions. Haroz et al. [7] showed the effectiveness of the latter in representing time-series data: even though connected scatterplots are novel to many users, they are excellent at being intuitive to understand and capturing and holding the viewer's attention.
+Since Neuroelectro data is rather diverse (dozens of electrophysiology properties for each of over one hundred neuron types), we plan to utilize scatterplots [@friendly2005early] and connected scatterplots [@haroz2016connected] for answering research-oriented questions. Haroz et al. showed the effectiveness of the latter in representing time-series data: even though connected scatterplots are novel to many users, they are excellent at being intuitive to understand and capturing and holding the viewer's attention.
 
 ####Linked highlighting
 
@@ -72,11 +76,11 @@ There are a number of interaction approaches to linked highlighting in scatter p
 
 ####Hive plot
 
-Overviews of the data will make use of the work done by Krzywinski et al. [5] and Hanson [9] for our proposed hive plot. Various good examples of hive plot visualizations of networks are shown on the hive plot website [29]. We have developed our visualization based on the features that are most meaningful for our data and the questions we are trying to answer with the view (sparsity of data, node degree, edge weights, outliers and general trends in the data). We also use a matrix and a table approach to supplement the hive plot, since alone the hive plot does not provide enough details about connections between data types.
+Overviews of the data will make use of the work done by Krzywinski et al. [@krzywinski2012hive] and Hanson [@hanson2015hiver] for our proposed hive plot. Various good examples of hive plot visualizations of networks are shown on the hive plot website [29]. We have developed our visualization based on the features that are most meaningful for our data and the questions we are trying to answer with the view (sparsity of data, node degree, edge weights, outliers and general trends in the data). We also use a matrix and a table approach to supplement the hive plot, since alone the hive plot does not provide enough details about connections between data types.
 
 ####Colour
 
-We have decided to use colour as a channel for linked-highlighting. Previous research suggests that colour is one of the most powerful visualization channels [20, 8] and, when used correctly, it can provide insight into the data so intuitively that the user wouldn’t even need a legend to understand what kind of data the channel encodes for. On the overview panel colour is used as a measure of how many articles exist for each connection between nodes.
+We have decided to use colour as a channel for linked-highlighting. Previous research suggests that colour is one of the most powerful visualization channels [@munzner2014visualization, @setlur2015linguistic] and, when used correctly, it can provide insight into the data so intuitively that the user wouldn’t even need a legend to understand what kind of data the channel encodes for. On the overview panel colour is used as a measure of how many articles exist for each connection between nodes.
 
 ##Data and Task Abstractions
 
@@ -130,17 +134,27 @@ Ignoring all domain-specific complications, we are dealing with 1 csv spreadshee
 
 ##Solution
 
-> describe your solution idiom, analyze it according to the framework of the book, and justify your design choices with respect to alternative possibilities if you have done any significant algorithmic work, discuss the algorithm and data structures you might choose to split out Interface into its own section
+> describe your solution idiom, analyze it according to the framework of the book, and justify your design choices with respect to alternative possibilities if you have done any significant algorithmic work, discuss the algorithm and data structures. You might choose to split out Interface into its own section
     
-    
+We will likely take advantage of the work done in interactive visualizations such as D3.js [4] and AngularJS [14] or RShiny [15]. Although D3.js and Angular.js are arguably more powerful in terms of possible customizations and optimizations than RShiny, both of them would require a steep learning curve and time input we do not have. In the interest of time and given the team’s expertise in R, we are leaning towards using RShiny and will most likely take advantage of previous work available via github and the Shiny website. For example, we have found solutions to set up multiple plots [10], use linked views [11], filter data [12], and rearrange plot layout [13]. 
+The hive plot library HiveR.R developed by Hanson [9] provides us with the tools we need to create an interactive representation of the whole dataset.
 
 ##Implementation
 
 > medium-level implementation description. you must include specifics of what you did yourself versus what other components/libraries/toolkits you built upon. this section is one major divergence from standard research paper format, you need to provide much more detail than would normally be appropriate in a research context.
-    
 
-We will likely take advantage of the work done in interactive visualizations such as D3.js [4] and AngularJS [14] or RShiny [15]. Although D3.js and Angular.js are arguably more powerful in terms of possible customizations and optimizations than RShiny, both of them would require a steep learning curve and time input we do not have. In the interest of time and given the team’s expertise in R, we are leaning towards using RShiny and will most likely take advantage of previous work available via github and the Shiny website. For example, we have found solutions to set up multiple plots [10], use linked views [11], filter data [12], and rearrange plot layout [13]. 
-The hive plot library HiveR.R developed by Hanson [9] provides us with the tools we need to create an interactive representation of the whole dataset.
+###R-Shiny app (general)
+
+
+###Navigation/filtering panel
+
+    
+###Explore panel
+
+
+###Overview panel
+
+
 
 ##Results
 
