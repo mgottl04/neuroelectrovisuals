@@ -180,6 +180,124 @@ Heatmap, data table and hive plot respond to the filter panel, however, filterin
 
 > should include scenarios of use and multiple screenshots of your software in action. walk the reader through how your interface succeeds (or acknowledge how it falls short) in solving the intended problem. if you did any evaluation (deployment to target users, computational benchmarks), do report on that here. 
 
+> should include scenarios of use and multiple screenshots of your software in action. walk the reader through how your interface succeeds (or acknowledge how it falls short) in solving the intended problem. if you did any evaluation (deployment to target users, computational benchmarks), do report on that here.
+
+###Use Case Scenarios for Abstract Tasks
+
+Abstract Task: Browse data available for analysis
+Specific Use-Case 1: Browse attributes available for plotting and filtering.
+
+1. User navigates to "Overview" tab
+2. User clicks on x-axis selector drop-down for any of the four plots and scrolls through options.
+3. User repeats for y-axis selector and discovers that the lists are the same.
+4. User expands "Neuron Type" collapsible panel in filter menu and sees a list of selected brain regions.
+5. User expands a tree view node for a brain region of interest to see what neuron types are listed under that region.
+6. User expands the "Organism" collapsible panel to see what filters are available.
+
+Abstract Task: Identify distribution of counts across values of categorical attributes.
+Specific Use-Case 2: User identifies distribution of values for AnimalSpecies.
+
+1. User navigates to "Overview" tab
+2. User selects AnimalSpecies using x-axis selector for any of the four plots.
+3. User selects --- using the y-axis selector for the same plot, indicating no selection.
+4. User sees a histogram of values for animal species.
+
+Abstract Task: Identify distribution of counts across values at the intersectiong of two categorical attributes.
+Specific Use-Case 3: User identifies distribution of counts for each combination of BrainRegion and AnimalSpecies.
+
+1. User navigates to "Overview" tab
+2. User selects AnimalSpecies using x-axis selector for any of the four plots.
+3. User selects BrainRegion using the y-axis selector for the same plot.
+4. User sees a frequency matrix where each cell represents to number of data points at that intersection.
+
+Abstract Task: Identify distribution of a quantitivate attribute across different values of a categorical attributes.
+Specific Use-Case 4: User identifies distribution of spike amplitude property for animal species.
+
+1. User navigates to "Overview" tab
+2. User selects AnimalSpecies using x-axis selector for any of the four plots.
+3. User selects spike.amplitude using the y-axis selector for the same plot.
+4. User sees a stripplot of spike amplitude values for each species.
+
+Abstract Task: Identify correlations between quantitative attributes.
+Specific Use-Case 5: User identifies correlation between AnimalAge and spike.amplitude.
+
+1. User navigates to "Overview" tab
+2. User selects AnimalAge using x-axis selector for any of the four plots.
+3. User selects spike.amplitude using the y-axis selector for the same plot.
+4. User sees a stripplot of spike.amplitude values for each species.
+
+Abstract Task: Explore how much data exists for different combinations of data types.
+
+Specific Use-Case 6: Explore how much data exists for pairwise combinations of neuron types, ephys properties, and metadata.
+
+1. User navigates to Overview tab.
+2. User expands each of the collapse panels and manually clears all filters.
+3. User inspects hive-plot and sees that there is data for every combination of brain region, ephys property, and metadata property.
+4. User inspects hive-plot and sees that the brain region to epy property connections are most sparse.
+5. User inspects the numerical values on heatmap and sees:
+  + Each combination of ephys property and metadata property are well represented (>10 entries), 
+  + Each combination of brain region and metadata is present but not necessrily well represented
+  + Not every combination of brain region and ephys property is present
+  
+Shortcoming: User must manually remove all filters as there is currently no reset button. This feature will be added in the next iteration of development.
+
+Specific Use-Case 7: Identify ephys properties for which there is no data for the Pallidum brain region.
+
+1. User completes steps 1 and 2 from above.
+2. User finds the row in the heatmap for Pallidum.
+3. User locates cells that intersect with ephys property columns.
+4. User sees that there is no data for maximum firing rate.
+
+Abstract Task: Narrow scope of analysis
+
+Specific Use-Case 8: Limit scope of analysis to Cerebellum data from Mice
+
+1. User conducts steps of Specific Use-Case 2
+2. User expands "Neuron Type" collapse panel in filter menu
+3. User Untick "All" then ticks "Cerebellum"
+  + The plots are redrawn using only data points from the Cerebellum
+3. User expands "Organism"" collapse panel in filter menu
+4. User unticks "All" then ticks "Mice"
+  + The plots are redrawns using only data from Mice Cerebella; number of bars on histogram is reduced to 1
+  
+Specific Use-Case 9: Limit scope of analysis to data where input resistance and spike magnitude are in a specific range
+
+1. User conducts steps of Specific Use-Case 5
+2. User expands "Neuron Type" collapse panel in filter menu
+3. User Untick "All" then ticks "Cerebellum"
+  + The plots are redrawn using only data points from the Cerebellum
+3. User expands "Organism"" collapse panel in filter menu
+4. User unticks "All" then ticks "Mice"
+  + The plots are redrawns using only data from Mice Cerebella; number of bars on histogram is reduced to 1
+  
+Abstract Task: Explore how much data exists for different combinations of data types within a narrowed scope of analysis
+
+Specific Use-Case 10: Explore how much data exists for different combinations of data types when dataset is limited to the Cerebellum and Mice
+
+1. User conducts the steps in Specific Use-Case 8
+2. User navigates to Overview tab
+3. User examines hiveplot and sees that there is data for only one ephys property - input.resistance
+
+Shortcoming: No way to get the number directly. 
+
+Abstract Task: Lookup details for individual data points.
+
+Specific Use-Case 11: User looks up details for a data point on scatterplot.
+
+1. User conducts steps form Specific Use-Case 5
+2. User hovers over a point of interest in a scatterplot.
+2. User sees a tootip, which displays the PubMed ID and title. User takes note of title.
+3. User navigates to the Overview panel.
+4. User scrolls to the Table view below the hiveplot and heatmap view.
+5. User begins to type the title in the Title column. Results filter automatically.
+6. User locates row corresponding to data point of interest.
+
+Shortcoming: User must remember or write down the title as copy-paste functionality is not available from the tooltip. Ideally, the details would be available on click.
+
+### Evaluation by Stakeholder
+
+### Critique
+
 ##Discussion and Future Work
 
 Originally, we planned to use javascript with a few libraries (D3.js [[@bostok2011d3]], angular.js [[@darwin2013angularjs]]) for our project, however, the team's familiarity with R and the desire to learn Shiny [[@shiny]] played the decisive role in our framework choice. Given the chance to choose the framework again, we would have chosen Shiny due to its ability to handle large amounts of data and generate complex plots with relatively high speed. D3 has better integration with the front-end, but Javascript and CSS injections in Shiny serve a similar purpose, even if less elegantly. 
