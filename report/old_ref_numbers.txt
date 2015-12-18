@@ -1,0 +1,37 @@
+1. Tripathy, Shreejoy J., et al. "NeuroElectro: a window to the world's neuron electrophysiology data." Frontiers in neuroinformatics 8 (2014).
+2. Van Eck, Nees Jan, and Ludo Waltman. "Text mining and visualization using VOSviewer." arXiv preprint arXiv:1109.2058 (2011).
+3. Hinrichs, Uta, et al. "Trading Consequences: A Case Study of Combining Text Mining and Visualization to Facilitate Document Exploration." Digital Scholarship in the Humanities (2015).
+4. Bostock, Michael, Vadim Ogievetsky, and Jeffrey Heer. "DÂ³ data-driven documents." Visualization and Computer Graphics, IEEE Transactions on 17.12 (2011): 2301-2309.
+5. Krzywinski, Martin, et al. "Hive plotsârational approach to visualizing networks." Briefings in bioinformatics 13.5 (2012): 627-644.
+6. Rieder, Christian, et al. "Interactive visualization of multimodal volume data for neurosurgical tumor treatment." Computer Graphics Forum. Vol. 27. No. 3. Blackwell Publishing Ltd, (2008).
+7. Steve Haroz, Robert Kosara, Steven L. Franconeri. âThe Connected Scatterplot for Presenting Paired Time Series.â Transactions on Visualization and Computer Graphics, (2016): https://research.tableau.com/sites/default/files/Haroz-TVCG-2016.pdf
+8. Vidya Setlur, Maureen C. Stone. âA Linguistic Approach to Categorical Color Assignment for Data Visualizationâ The IEEE Information Visualization Conference (Chicago, October 25-30, 2015): https://research.tableau.com/sites/default/files/setlurstoneinfovis2015_2.pdf
+9. Bryan A. Hanson. âHiveR: 2D and 3D Hive Plots for R.â (2015):  academic.depauw.edu/~hanson/HiveR/HiveR.html
+10. https://gist.github.com/wch/5436415
+11. http://shiny.rstudio.com/gallery/plot-interaction-zoom.html
+12. http://shiny.rstudio.com/gallery/basic-datatable.html
+13. http://shiny.rstudio.com/articles/layout-guide.html
+14. https://material.angularjs.org/latest/
+15. http://shiny.rstudio.com/
+16. Michael Friendly, Daniel Denis. âThe early origins and development of the scatterplotâ Journal of the History of the Behavioral Sciences (2005): Vol. 41(2), 103â130 
+17. http://www.tableau.com/
+18. http://www.tableau.com/gartner-magic-quadrant-2015
+19. http://datablick.com/2015/04/13/circular-and-hive-plot-network-graphing-in-tableau-by-chris-demartini/
+20. Tamara Munzner. âVisualization Analysis and Designâ (2014) A K Peters/CRC Press, Print ISBN: 978-1-4665-0891-0, eBook ISBN: 978-1-4665-0893-4
+21. http://www.uxmatters.com/mt/archives/2009/09/best-practices-for-designing-faceted-search-filters.php/
+22. http://www.uxforthemasses.com/filter-bars/
+23. https://www.perceptualedge.com/articles/visual_business_intelligence/coordinated_highlighting_in_context.pdf
+24. Bearavolu, Ratna, et al. "A visualization tool for situational awareness of tactical and strategic security events on large and complex computer networks." Military Communications Conference, 2003. MILCOM'03. 2003 IEEE. Vol. 2. IEEE, 2003., 
+25. Dumas, Maxime, Jean-Marc Robert, and Michael J. McGuffin. "Alertwheel: radial bipartite graph visualization applied to intrusion detection system alerts."Network, IEEE 26.6 (2012): 12-18.
+26. French, Leon, and Paul Pavlidis. "Informatics in neuroscience." Briefings in bioinformatics 8.6 (2007): 446-456.
+27. Rebholz-Schuhmann, Dietrich, Anika Oellrich, and Robert Hoehndorf. "Text-mining solutions for biomedical research: enabling integrative biology." Nature Reviews Genetics 13.12 (2012): 829-839.
+28. Sopan, Awalin, et al. "Community Health Map: A geospatial and multivariate data visualization tool for public health datasets." Government Information Quarterly 29.2 (2012): 223-234.
+29. hive plot website: www.hiveplot.net
+30. Krzywinski M, Birol I, Jones S, Marra M. âHive Plots â Rational Approach to Visualizing Networks.â Briefings in Bioinformatics, doi: 10.1093/bib/bbr069
+31. Arc diagrams in R (network visualization): http://gastonsanchez.com/blog/got-plot/how-to/2013/02/02/Arc-Diagrams-in-R-Les-Miserables.html
+32. http://help.sap.com/boaolap40
+33. https://products.office.com/en-ca/excel
+34. Henry N, Fekete JD. Matrixexplorer: a dual-representation system to explore social networks. IEEE Trans Visu Comput Graph (2006). 12(5):677-84
+35. Aitaluk M, Sedova M, Ray A, et al. âBiological Networks: visualization and analysis tool for systems biology.â Nucleic Acids Res (2006). 34:W466-71
+36. https://github.com/rstudio/ggvis/blob/master/demo/rmarkdown/linked_brush.Rmd
+37. Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. âComparing genomes to computer operating systems in terms of the topology and evolution of their regulatory control networks.â Proc Natl Acad Sci USA. 107(20): 9186-9191
