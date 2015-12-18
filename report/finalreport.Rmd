@@ -14,19 +14,19 @@ csl: ieee.csl
 
 ##Abstract
 
-Integrating neuroscientific data across labs is a huge challenge, NeuroElectro.org collects electrophysiology, neuron type and experimental conditions data from published articles and provides all of the data in text format for analysis. Here, we present NED's Vis - NeuroElectro Data's Visualization app that was developed in Shiny and deployed to neuroelectro.org. The tool allows direct interaction with the database skipping data download and wrangling steps, it includes 3 panels: overview, explore, filter. Overview panel provides insight into the amount of data behind each comparison type, where as explore panel is focused on direct comparisons and filter panel enables the user to eliminate uninteresting data from the analysis. Explore panel plots are highly interactive: plot type is defined by the types of chosen variables to display (quantitative versus qualitative), outlier removal is as easy as clicking the points off the plot, with optional zooming to a specific set of data points (each point is an article in the NeuroElectro database and on mouseover displays information needed to access it).
+Integrating neuroscientific data across labs is a challenging endeaver, and extracting meaning from this data is even harder still. NeuroElectro.org collects electrophysiology, neuron type, and experimental conditions data from published articles and provides all of this data in text format for analysis. Here, we present NeuroElectro Data's Visualization (NED's Vis), an interactive visual interface to the data on Neuroelectro,org. The first tool of its kind in the Neuroscience domain, NED's Vis allows Neuroscientists to achieve insights without having to download and wrangle with the data themselves. NED's Vis consists of a filter menu sidebar and two tabbed panels: Overview and Explore. The Overview panel provides insight into the amount of data available for different combinations of data attributes. The Explore supports investigation of relationships between attributes of interest with interactively linked plots. The filter menu allows the user to narrow the scope of the analysis across both views dynamically. In summary, NED's Vis is an excellent point of entry for neurosicnetistsNED's Vis has the potential to help neurosciencts schieve new isnights and form new hypotheses.
 
 ##Introduction
 
 Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, Tripathy et al.[[@tripathy2014neuroelectro]] have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to "facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types" [[@tripathy2014neuroelectro]].
 
-NeuroElectro is a Django text mining and curation application [http://neuroelectro.org](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL database on the back end. It currently hosts experimental data from ~900 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles. 
+NeuroElectro is a Django text mining and curation application [http://neuroelectro.org](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL back end. It currently hosts experimental data from ~900 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles.
 
-However, the current visualizations provided by NeuroElectro are lacking: the user is only able to view data for one neuron type or one ephys property at a time using scatter plots. Our goal was to develop a new interface that supports seamless browsing and analysis of select subsets of the data.
+Neuroelectro stands apart from other text-mining projects in that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [[@french2007informatics],[@rebholz2012text]]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the original data. This limits the analyses a user can perform.
 
-Neuroelectro is a rare breed amongst text-mining projects in the fact that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [[@french2007informatics],[@rebholz2012text]]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the original data. This limits the analyses a user can perform.
+Nevertheless, the power of Neuroelectro is limited in that does not provide an interactive visual interface for the data. The current visualizations provided by NeuroElectro are static: the user is only able to view data for one neuron type or one ephys property at a time in the form of fixed scatterplots. 
 
-Taking that flaw into account, we designed our NeuroElectro visualization mainly to provide the user with the overview of the gathered data and with the ability to explore it as they see fit. To accomplish said goals in the most efficient manner we performed an extensive literature search into online biomedical databases visualization efforts and the most efficient general ways to display as well as interact with the data similar to ours (on the scope of hundreds to thousands data rows with a few dozen variables).
+NED's Vis was designed to address this shortcoming. Our vision was to develop a new interactive visual interface that supports seamless browsing and analysis of select subsets of the data. To this end, we met with the developer of Neuroelectro to discuss high-level goals for the system. The remainded of this report discusses the outcomes of these discussions, our design decisions, implementation, and results.
 
 ##Related Work
 
@@ -105,22 +105,71 @@ NeuroElectro also stores data about each article: title, publication year, autho
 5. Summarize the data in the current analysis scope.
 6. Look up details for individual evidence lines extracted from articles. 
 
-###Abstracted data and tasks
+###Abstract data and tasks
 
-####Abstracted data
-Ignoring all domain-specific complications, we are dealing with 1 csv spreadsheet that contains ~1000 lines of ~150 variables. We can split these variables up into 4 types: quantitative measurement data, qualitative location data, mixed type explanatory variables and qualitative information about each line. The line information can be used for tooltips or tables to provide more context, but in itself, it is not interesting for the analysis.
+####Abstract data
 
-####Abstracted tasks
-1. Explore relationships between three different data types.
-    + Browse data available for analysis (data overview).
-    + Identify distributions of quantitative attribute values for a particular categorical attribute values.
-    + Compare distributions of quantitative attribute values for different categorical attribute values.
-    + Identify correlations between quantitative attributes.
-2. Navigate data type hierarchy to identify data of interest.
-3. Identify how many data points exist for different combinations of data types.
-4. Identify how many data points support a specific analysis.
-5. Summarize the data in the current analysis scope.
-6. Look up details for individual data points (items).
+Our dataset is a table where each item (row) is data for particular neuron type taken from a single article. That is, each item is uniquely identified by the neuron type and article ID attributes. The attributes of the data include 18 experimental condition indicators, 36 ephys properties, and ten that provide additional information about the article, neuron type, and organism. The current dataset has 947 rows.
+
+At the advice of our stakeholder upon seeing the prototype, we have limited our application to analyses on the most interesting metadata properties. These attributes in detail are:
+
+#####Experimental Metadata Attributes
+
+Organism:
+1. Species (categorical)
+2. Strain (categorical)
+3. Weight (quantitative continuous, grams)
+4. Age (quantitative discrete, days)
+
+Other:
+1. Electrode Type (categorical)
+2. Prep Type (categorical)
+3. Jxn Potential (binary categorical)
+4. Recording Temperature (quantitative continuous, degrees C)
+
+#####Article Metadata Attributes
+
+1. PubMed ID (quantitative discrete)
+2. Title (categorical)
+3. Year (quantitative discrete)
+4. Author (categorical)
+
+#####Neuron Type Attributes:
+
+1. Brain Region (categorical)
+2. Neuron Name (catgorical)
+
+Additionally, we were advised to limit our application to the 10 most interesting ephys properties (according to our stakeholder). We were supplied with an additional data table containing a units column and a column indicating whether the property's axis should be log10 transformed when plotted. All of these attributes are quantitative continuous. They are:
+
+1. Input resistance (MΩ) - log10 axis
+2. Resting membrane potential (mV)
+3. Spike threshold (mV)
+4. Spike amplitude (mV)
+5. Spike half-width (ms) - log10 axis
+6. Membrane time constant (ms) - log10 axis
+7. AHP amplitude (mV)
+8. Cell capacitance (pF) - log10 axis
+9. Rheobase (pA) - log10 axis
+10. Maximum Firing Rate (Hz) - log10 axis
+
+
+
+####Abstract tasks
+
+The primary usage context for this tool is discovery. The purpose of the tool is to help Neuroscientists achieve new insights and develop new hypotheses. This tool is not concerned with any produce tasks at this time.
+
+Under the umbrella of discovery, a number of mid-level tasks can be identified: 
+
+1. Explore relationships between data attributes.
++ Browse data available for analysis
++ Identify distribution of counts across values of categorical attributes.
++ Identify distribution of counts across values at the intersectiong of two categorical attributes.
++ Identify distribution of a quantitivate attribute across different values of a categorical attributes.
++ Identify correlations between quantitative attributes.
+2. Explore how much data exists for different combinations of data types.
+3. Narrow scope of analysis
+  4. Explore how much data exists for different combinations of data types within a narrowed scope of analysis
+5. Lookup details for individual data items.
 
 ##Solution
 
