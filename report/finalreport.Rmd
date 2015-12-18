@@ -103,7 +103,7 @@ NeuroElectro also stores data about each article: title, publication year, autho
 3. Identify how many data points exist for different combinations of neuron types, ephys properties, and experimental conditions.
 4. Find out how many articles support a specific analysis.
 5. Summarize the data in the current analysis scope.
-6. Lookup details for individual evidence lines extracted from articles. 
+6. Look up details for individual evidence lines extracted from articles. 
 
 ###Abstracted data and tasks
 
@@ -120,11 +120,33 @@ Ignoring all domain-specific complications, we are dealing with 1 csv spreadshee
 3. Identify how many data points exist for different combinations of data types.
 4. Identify how many data points support a specific analysis.
 5. Summarize the data in the current analysis scope.
-6. Lookup details for individual data points (items).
+6. Look up details for individual data points (items).
 
 ##Solution
 
-> describe your solution idiom, analyze it according to the framework of the book, and justify your design choices with respect to alternative possibilities if you have done any significant algorithmic work, discuss the algorithm and data structures. You might choose to split out Interface into its own section
+NED's Vis uses linked views and multiple panels to enable the seamless exploration of NeuroElectro's database by the target user, which is mostly neuroscience students, postdocs, research associates and professors. To cater to our target audience's needs we provide an overview of the data and allow its filtering as well as exploration, all performed within the app. More specifically:
+
+1. System: NeuroElectro Data's Visualization
+2. What: Data
+    + Categorical brain regions and neuron types data
+    + Quantitative sequential electrophysiology data
+    + Mixed experimental setup data, some of it is categorial and some quantitative sequential but they carry similar meaning with respect to NeuroElectro analysis
+3. What: Derived
+    + Node degree, edge weight (number of articles that contain information for both nodes)
+    + Log transform specific electrophysiology and metadata variables to better fit target user's needs
+4. Why: Tasks
+    + locate, identify, compare, summarize, navigate, filter
+    + distribution, trend, similarity, correlation
+5. How: Encode
+    + Scatterplot, heatmap, re-orderable and searchable table, hive plot, histogram, strip plot
+6. How: Facet
+    + Partition; juxtapose; multiform, overview/detail; linked highlighting (explore tab)
+7. How: Manipulate
+    + Select; Navigate: attribute reduction: cut
+8. How: Reduce
+    + Filter: items, attributes
+
+Justifications for our design choices are discussed in detail in the *Related Work* section of this report. We built the current visualization system to best suit the needs of neuroscientists. No significant new algorithm or data structure developments have been performed - we used existing idioms, tools and libraries adjusting them to our needs and ensuring they perform well together. The bulk of the data wrangling, loading, plot generation and interaction work is carried out in the back-end part of our app (server.R, global.R, hive.R), while the front-end is defined by ui.R (layout, css, embedded javascript, tooltips, some interactivity).
 
 ##Implementation
 
@@ -132,7 +154,7 @@ Ignoring all domain-specific complications, we are dealing with 1 csv spreadshee
 
 Our solution was built using the Shiny web application framework [@shiny] for the R language [@r]. Shiny server and ui components handle all transactions between the front and back end of our application. Each major component took advantage of a number of existing libraries, which is explained in more detail in the following subsections. 
 
-The first step of our applications performs data loading, cleaning and wrangling. Our app takes a csv dump of Neuroelectro's database as input. We load, clean and manipulate data using base R and dplyr [@dplyr] functions. At this point we also generate and cache  or load the cached version of a modified dataset to speed up matrix view generation as the filters are changed. Once the data is loaded and prepped, it is passed to the ui and server components that house the core functionality of our app. 
+The first step of our application performs data loading, cleaning and wrangling. It takes a csv dump of Neuroelectro's database as input. We load, clean and manipulate data using base R and dplyr [@dplyr] functions. At this point we also generate and cache or load the cached version of a modified dataset to speed up matrix view generation as the filters are changed. Once the data is loaded and prepped, it is passed to the ui and server components that house the core functionality of our app. 
 
 ###Navigation/filtering panel
 
