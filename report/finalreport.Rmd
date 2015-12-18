@@ -19,13 +19,13 @@ csl: ieee.csl
 
 ##Introduction
 
-Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, Tripathy et al.[@tripathy2014neuroelectro] have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to "??facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types."??
+Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, Tripathy et al.[@tripathy2014neuroelectro] have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to "facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types" [@tripathy2014neuroelectro].
 
 NeuroElectro is a Django text mining and curation application [http://neuroelectro.org](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL database on the back end. It currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles. 
 
 However, the current visualizations provided by NeuroElectro are lacking: the user is only able to view data for one neuron type or one ephys property at a time using scatter plots. Our goal was to develop a new interface that supports seamless browsing and analysis of select subsets of the data.
 
-Neuroelectro is a rare breed amongst text-mining projects in the fact that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [26,27]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the original data. This limits the analyses a user can perform.
+Neuroelectro is a rare breed amongst text-mining projects in the fact that it allows end users to interact with curated data directly. Most text-mining tools in the biomedical domain assume that the end user will want an association matrix for terms in a controlled vocabulary, such as MEDLINE or MeSH terms [@french2007informatics,@rebholz2012text]. These tools automatically generate and output an association matrix without providing the user with a way to interface with the original data. This limits the analyses a user can perform.
 
 Taking that flaw into account, we designed our NeuroElectro visualization mainly to provide the user with the overview of the gathered data and with the ability to explore it as they see fit. To accomplish said goals in the most efficient manner we performed an extensive literature search into online biomedical databases visualization efforts and the most efficient general ways to display as well as interact with the data similar to ours (on the scope of hundreds to thousands data rows with a few dozen variables).
 
@@ -39,11 +39,11 @@ Neuroelectro provides some crude data visualizations in the form of static scatt
 
 Exploration of relationships between some of the properties in Neuroelectro’s dataset is supported by the current version of Neuroelectro (Brain region vs Electrophysiology only, metadata is only accessible via database). However, it is a static set of strip plots that do not account for all combinations of variables and do not allow any interaction.  
 
-Exploration of relationships is a common task in many analytics platforms such as Tableau [17], SAP BOBJ AOLAP [32] and  Microsoft  Excel [33]. Generally, these platforms provide a tabular view of the data in addition to customizable visualizations to enhance users’ exploration of the data. Our goal differs from these platforms as we are not including a tabular view, we are limiting the users’ choices to provide a simpler experience, and we are using plots that are not easily achieved with these platforms (e.g. interactive plots, hive plot).
+Exploration of relationships is a common task in many analytics platforms such as Tableau [[@tableau]], SAP BOBJ AOLAP [[@aolap]] and  Microsoft  Excel [[@excel]]. Generally, these platforms provide a tabular view of the data in addition to customizable visualizations to enhance users’ exploration of the data. Our goal differs from these platforms as we are not including a tabular view, we are limiting the users’ choices to provide a simpler experience, and we are using plots that are not easily achieved with these platforms (e.g. interactive plots, hive plot).
 
 ####Providing an overview of data
 
-Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [@aitaluk2006biological], matrix [@henry2006matrixexplorer], arc diagram [31], call network [@yan2010comparing], hive plot [29] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task: 
+Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [@aitaluk2006biological], matrix [@henry2006matrixexplorer], arc diagram [[@arc]], call network [@yan2010comparing], hive plot [[@hiveplot]] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task: 
 1. Our data is 3 dimensional (neuron type, ephys. property, metadata) and 3D matrices are usually very hard to interpret, we could provide a faceted view of 1 matrix per metadata as a possible solution, but the amount of screen space that would require is enormous. 
 2. Matrices do not scale well, the labels get too small to be legible at some point. That said, a count matrix could provide a similar overview information to a hive plot as long as the number of parameters is small enough. 
 
@@ -151,12 +151,13 @@ The four plots of the explore panel share data that is filtered based on the sta
 
 ###Overview panel
 
-The overview panel has three distinct components: The hive plot, the heat map and the table. The hive plot uses the HiveR package[[@hiver]] as well as the RColorBrewer package[[@rcolorbrewer]] for colour selection. It does some other stuff based on whatever Dmitri did.
+The overview panel has three distinct components: The hive plot, the heat map and the table. The hive plot uses the HiveR package[[@hiver]] as well as the RColorBrewer package[[@rcolorbrewer]] for colour selection. It also uses modified functions designed by an R blogger [[@vessy]] for the hive plot data wrangling. The hardest part was to optimize hive plot data gathering (counting number of co-occurrences for each pair of ephys, brain regions and metadata). Initially, with a naive implementation it took about 2 minutes to generate and refresh the hive plot. Through a much more effective algorithm and built-in R co-occurrences counting functions the 2 minutes have been cut down to a couple of seconds. Nodes have been positioned identical distance apart on the axes for readability. Potentially, node distance could encode some information in the future. Node colour represents its degree, edge colour correlates with the number of articles supporting that edge. At first, we have encoded a few network properties into node position, size, edge width (e.g. node centrality, reachability, edge weight), however, we then realized that this information is not valuable and serves only to make the hive plot confusing.
 
 The heatmap uses a derived dataset that contains whether or not each datum contains information regarding features of particular interest to the stakeholder. It computes an association matrix on demand which is passed to the pheatmap package[[@pheatmap]] to display the associations and annotations. Like the hive plot, it uses the RColorBrewer package for its colour pallette.
 
 The table is generated based on filter rules and is made entirely using the DT package[[@dt]] with some non-default parameters. As its title implies, it is simply a wrapper for the DataTables JavaScript library.
 
+Heatmap, data table and hive plot respond to the filter panel, however, filtering and sorting done in the data table do not get reflected in the other views at this time.
 
 ##Results
 
@@ -165,6 +166,8 @@ The table is generated based on filter rules and is made entirely using the DT p
 ##Discussion and Future Work
 
 > Strengths, weaknesses, limitations (reflect on your approach)  Lessons learned (what do you know now that you didn't when you started?)  Future work (what would you do if you had more time?)
+
+Originally, we planned to use javascript with a few libraries (D3.js, node.js, angular.js, JQuery) for our project 
 
 ##Conclusions
 
