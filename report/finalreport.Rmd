@@ -19,11 +19,9 @@ csl: ieee.csl
 
 ##Introduction
 
-> give the big picture. establish the scope of what you did, some background material may be appropriate here.
-    
-Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, [@tripathy2014neuroelectro] et al. have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to “facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types.”
+Neuroscientists have conducted extensive research on the electrophysiological (ephys) properties of different neuron types, but there are barriers to comparing and aggregating results across different studies. This can be attributed to a lack of standard definitions and procedures as well as paywalls maintained by closed-access journals. To alleviate this, Tripathy et al.[@tripathy2014neuroelectro] have developed NeuroElectro - a freely available web-tool that allows users to directly compare data from different neuroscience articles. The primary goal is to "??facilitate the discovery of neuron-to-neuron relationships and better understand the role of functional diversity across neuron types."??
 
-NeuroElectro is a Django text mining and curation application [link](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL database on the back end. It currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles. 
+NeuroElectro is a Django text mining and curation application [http://neuroelectro.org](http://neuroelectro.org/) developed mainly in C-Python with a javascript-based front end and an SQL database on the back end. It currently hosts experimental data from over 500 articles and is expected to grow to host the experimental data of thousands of articles. The data for each article can be accessed by the type of neuron, its electrophysiological properties, or via a table of articles. 
 
 However, the current visualizations provided by NeuroElectro are lacking: the user is only able to view data for one neuron type or one ephys property at a time using scatter plots. Our goal was to develop a new interface that supports seamless browsing and analysis of select subsets of the data.
 
@@ -32,9 +30,6 @@ Neuroelectro is a rare breed amongst text-mining projects in the fact that it al
 Taking that flaw into account, we designed our NeuroElectro visualization mainly to provide the user with the overview of the gathered data and with the ability to explore it as they see fit. To accomplish said goals in the most efficient manner we performed an extensive literature search into online biomedical databases visualization efforts and the most efficient general ways to display as well as interact with the data similar to ours (on the scope of hundreds to thousands data rows with a few dozen variables).
 
 ##Related Work
-
-> include both work aimed at similar problems and work that employs similar solutions to yours structure into subsections based on your own synthesis of themes in the related work although there is no requirement to establish research novelty since it's a course project, you should still discuss how the previous work is similar to or different from your own work (either individually or with respect to an entire group) definitely cover academic work; it's often good to cover non-academic work as well (commercial software, thoughtful blog posts) you may choose to reorder sections to put this one after Abstractions, if it will help you write this section more concisely/clearly.
-
 
 ###Solutions to Similar Problems
 
@@ -83,8 +78,6 @@ Overviews of the data will make use of the work done by Krzywinski et al. [@krzy
 We have decided to use colour as a channel for linked-highlighting. Previous research suggests that colour is one of the most powerful visualization channels [@munzner2014visualization, @setlur2015linguistic] and, when used correctly, it can provide insight into the data so intuitively that the user wouldn’t even need a legend to understand what kind of data the channel encodes for. On the overview panel colour is used as a measure of how many articles exist for each connection between nodes.
 
 ##Data and Task Abstractions
-
-> you should analyze your domain problem according to the framework of the book, translating from domain language into abstract descriptions of both tasks and data typically data will need to come first, since you will need to refer to that data in your task descriptions. it is very likely that you will need to first have domain-specific descriptions, followed by the abstracted versions.it is often helpful to split these sections into two pieces: first have subsection where data is described in domain-specific terms, and then follow up with a next subsection where you've abstracted into domain-independent language. you may choose to have a separate Domain Background section before this one if there's a lot of specialized vocabulary/material to explain in order to have a comprehensible and concise data description. similarly, it can be easier to write the tasks section by first providing a domain-specific list of tasks, and then present the abstracted version. you should decide whether to split by domain vs abstract (first have both data and task domain-specific sections, followed by the abstractions for data and task) or to split by data/task (first have data domain-specific then data abstract, then have task domain-specific and finally task abstract).
 
 ###Domain-specific data and tasks
 
@@ -135,9 +128,6 @@ Ignoring all domain-specific complications, we are dealing with 1 csv spreadshee
 ##Solution
 
 > describe your solution idiom, analyze it according to the framework of the book, and justify your design choices with respect to alternative possibilities if you have done any significant algorithmic work, discuss the algorithm and data structures. You might choose to split out Interface into its own section
-    
-We will likely take advantage of the work done in interactive visualizations such as D3.js [4] and AngularJS [14] or RShiny [15]. Although D3.js and Angular.js are arguably more powerful in terms of possible customizations and optimizations than RShiny, both of them would require a steep learning curve and time input we do not have. In the interest of time and given the team’s expertise in R, we are leaning towards using RShiny and will most likely take advantage of previous work available via github and the Shiny website. For example, we have found solutions to set up multiple plots [10], use linked views [11], filter data [12], and rearrange plot layout [13]. 
-The hive plot library HiveR.R developed by Hanson [9] provides us with the tools we need to create an interactive representation of the whole dataset.
 
 ##Implementation
 
@@ -145,15 +135,27 @@ The hive plot library HiveR.R developed by Hanson [9] provides us with the tools
 
 ###R-Shiny app (general)
 
+Our solution was built using the Shiny web application framework[[@shiny]] for the R language[[@r]]. Shiny server and ui components handle all transactions between the front and back end of our application. Each major component took advantage of a number of existing libraries, which is explained in more detail in the following subsections. 
+
+The first step of our applications performs data loading, cleaning and wrangling. Our app takes a csv dump of Neuroelectro's database as input. We load, clean and manipulate data using base R and dplyr[[@dplyr]] functions. At this point we also generate and cache  or load the cached version of a modified dataset to speed up matrix view generation as the filters are changed. Once the data is loaded and prepped, it is passed to the ui and server components that house the core functionality of our app. 
 
 ###Navigation/filtering panel
 
+The filtering panel uses collapse panels from the shinyBS package[[@shinybs]]. The Neuron Type and Organism trees use the shinyTree package[[@shinytree]]. The shinyTree source code was modified to improve appearance and introduce text wrap to long labels that encrouched on the space of other components. The shinyjs and V8 packages[[@shinyjs] & [@v8]] were used to add JavaScript commands on startup to modify the shinyTree component's unruly behaviour.
+The filter options for continuous features use slider bars from the base Shiny framework. As with the shinyTree component, they were not perfectly suited for our needs. We modified the sliders to use log scales via JavaScript commands called via shinyjs and V8.
+  We implemented how the filter states were applied to the data set and observers to update the plots only when the selected data had been changed. Default behaviour resulted in all plots being redrawn whenever a filter element was touched, even if its value was not changed (e.g. expanding a node on a filter tree or moving a slider without deselecting any data points).
     
 ###Explore panel
 
+The four plots of the explore panel share data that is filtered based on the state of the filter panel. The data displayed on each plot is determined by the two axis selectors above each plot. The axis selectors are standard Shiny ui components that did not require modification. The plots in the explore panel are generated dynamically depending on the type of data that the user selects to view. We used the ggvis package[[@ggvis]] to generate the plots in the explore panel as they promised easy interactivity. Our dataset changed based on filtering rules and axes selected and was passed to a  function we implemented to determine what type of plot to show and to reduce repeated code. This lead to problems, as interactive ggvis features, such as hover and brush handlers, do not work with well or at all with  dynamic datasets and inside functions. While we consider other plotting options, we have implemented an on click handler that highlights points in all plots in which they appear. We also implemented action buttons to clear highlighting, remove highlighted points from all plots and restore removed points.
 
 ###Overview panel
 
+The overview panel has three distinct components: The hive plot, the heat map and the table. The hive plot uses the HiveR package[[@hiver]] as well as the RColorBrewer package[[@rcolorbrewer]] for colour selection. It does some other stuff based on whatever Dmitri did.
+
+The heatmap uses a derived dataset that contains whether or not each datum contains information regarding features of particular interest to the stakeholder. It computes an association matrix on demand which is passed to the pheatmap package[[@pheatmap]] to display the associations and annotations. Like the hive plot, it uses the RColorBrewer package for its colour pallette.
+
+The table is generated based on filter rules and is made entirely using the DT package[[@dt]] with some non-default parameters. As its title implies, it is simply a wrapper for the DataTables JavaScript library.
 
 
 ##Results
@@ -162,53 +164,11 @@ The hive plot library HiveR.R developed by Hanson [9] provides us with the tools
 
 ##Discussion and Future Work
 
-> Strengths, weaknesses, limitations (reflect on your approach).  Lessons learned (what do you know now that you didn't when you started?). Future work (what would you do if you had more time?)
+> Strengths, weaknesses, limitations (reflect on your approach)  Lessons learned (what do you know now that you didn't when you started?)  Future work (what would you do if you had more time?)
 
 ##Conclusions
 
 > summarize what you've done in a way that's different from the abstract because you can count on the reader having now seen all of the content of the paper in between 
 
-##Bibliography
-
-> make sure to use real references for any work that's been published academically, not just URLs do pay particular attention to my instructions for checking reference consistency
-    
-1. Tripathy, Shreejoy J., et al. "NeuroElectro: a window to the world's neuron electrophysiology data." Frontiers in neuroinformatics 8 (2014).
-2. Van Eck, Nees Jan, and Ludo Waltman. "Text mining and visualization using VOSviewer." arXiv preprint arXiv:1109.2058 (2011).
-3. Hinrichs, Uta, et al. "Trading Consequences: A Case Study of Combining Text Mining and Visualization to Facilitate Document Exploration." Digital Scholarship in the Humanities (2015).
-4. Bostock, Michael, Vadim Ogievetsky, and Jeffrey Heer. "D³ data-driven documents." Visualization and Computer Graphics, IEEE Transactions on 17.12 (2011): 2301-2309.
-5. Krzywinski, Martin, et al. "Hive plots—rational approach to visualizing networks." Briefings in bioinformatics 13.5 (2012): 627-644.
-6. Rieder, Christian, et al. "Interactive visualization of multimodal volume data for neurosurgical tumor treatment." Computer Graphics Forum. Vol. 27. No. 3. Blackwell Publishing Ltd, (2008).
-7. Steve Haroz, Robert Kosara, Steven L. Franconeri. “The Connected Scatterplot for Presenting Paired Time Series.” Transactions on Visualization and Computer Graphics, (2016): https://research.tableau.com/sites/default/files/Haroz-TVCG-2016.pdf
-8. Vidya Setlur, Maureen C. Stone. “A Linguistic Approach to Categorical Color Assignment for Data Visualization” The IEEE Information Visualization Conference (Chicago, October 25-30, 2015): https://research.tableau.com/sites/default/files/setlurstoneinfovis2015_2.pdf
-9. Bryan A. Hanson. “HiveR: 2D and 3D Hive Plots for R.” (2015):  academic.depauw.edu/~hanson/HiveR/HiveR.html
-10. https://gist.github.com/wch/5436415
-11. http://shiny.rstudio.com/gallery/plot-interaction-zoom.html
-12. http://shiny.rstudio.com/gallery/basic-datatable.html
-13. http://shiny.rstudio.com/articles/layout-guide.html
-14. https://material.angularjs.org/latest/
-15. http://shiny.rstudio.com/
-16. Michael Friendly, Daniel Denis. “The early origins and development of the scatterplot” Journal of the History of the Behavioral Sciences (2005): Vol. 41(2), 103–130 
-17. http://www.tableau.com/
-18. http://www.tableau.com/gartner-magic-quadrant-2015
-19. http://datablick.com/2015/04/13/circular-and-hive-plot-network-graphing-in-tableau-by-chris-demartini/
-20. Tamara Munzner. “Visualization Analysis and Design” (2014) A K Peters/CRC Press, Print ISBN: 978-1-4665-0891-0, eBook ISBN: 978-1-4665-0893-4
-21. http://www.uxmatters.com/mt/archives/2009/09/best-practices-for-designing-faceted-search-filters.php/
-22. http://www.uxforthemasses.com/filter-bars/
-23. https://www.perceptualedge.com/articles/visual_business_intelligence/coordinated_highlighting_in_context.pdf
-24. Bearavolu, Ratna, et al. "A visualization tool for situational awareness of tactical and strategic security events on large and complex computer networks." Military Communications Conference, 2003. MILCOM'03. 2003 IEEE. Vol. 2. IEEE, 2003., 
-25. Dumas, Maxime, Jean-Marc Robert, and Michael J. McGuffin. "Alertwheel: radial bipartite graph visualization applied to intrusion detection system alerts."Network, IEEE 26.6 (2012): 12-18.
-26. French, Leon, and Paul Pavlidis. "Informatics in neuroscience." Briefings in bioinformatics 8.6 (2007): 446-456.
-27. Rebholz-Schuhmann, Dietrich, Anika Oellrich, and Robert Hoehndorf. "Text-mining solutions for biomedical research: enabling integrative biology." Nature Reviews Genetics 13.12 (2012): 829-839.
-28. Sopan, Awalin, et al. "Community Health Map: A geospatial and multivariate data visualization tool for public health datasets." Government Information Quarterly 29.2 (2012): 223-234.
-29. hive plot website: www.hiveplot.net
-30. Krzywinski M, Birol I, Jones S, Marra M. “Hive Plots — Rational Approach to Visualizing Networks.” Briefings in Bioinformatics, doi: 10.1093/bib/bbr069
-31. Arc diagrams in R (network visualization): http://gastonsanchez.com/blog/got-plot/how-to/2013/02/02/Arc-Diagrams-in-R-Les-Miserables.html
-32. http://help.sap.com/boaolap40
-33. https://products.office.com/en-ca/excel
-34. Henry N, Fekete JD. Matrixexplorer: a dual-representation system to explore social networks. IEEE Trans Visu Comput Graph (2006). 12(5):677-84
-35. Aitaluk M, Sedova M, Ray A, et al. “Biological Networks: visualization and analysis tool for systems biology.” Nucleic Acids Res (2006). 34:W466-71
-36. https://github.com/rstudio/ggvis/blob/master/demo/rmarkdown/linked_brush.Rmd
-37. Yan KK, Fang G, Bhardwaj N, Alexander RP, Gerstein M. 2010. “Comparing genomes to computer operating systems in terms of the topology and evolution of their regulatory control networks.” Proc Natl Acad Sci USA. 107(20): 9186-9191
-
-# References
+## References
  
