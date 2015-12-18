@@ -168,12 +168,45 @@ Under the umbrella of discovery, a number of mid-level tasks can be identified:
 + Identify correlations between quantitative attributes.
 2. Explore how much data exists for different combinations of data types.
 3. Narrow scope of analysis
-  4. Explore how much data exists for different combinations of data types within a narrowed scope of analysis
+4. Explore how much data exists for different combinations of data types within a narrowed scope of analysis
 5. Lookup details for individual data items.
 
 ##Solution
 
-NED's Vis uses linked views and multiple panels to enable the seamless exploration of NeuroElectro's database by the target user, which is mostly neuroscience students, postdocs, research associates and professors. To cater to our target audience's needs we provide an overview of the data and allow its filtering as well as exploration, all performed within the app. More specifically:
+NED's Vis uses linked views and multiple panels to enable the seamless exploration of NeuroElectro's database by the target user, which is mostly neuroscience students, postdocs, research associates and professors. To cater to our target audience's needs we provide an overview of the data and allow its filtering as well as exploration, all performed within the app.
+
+###High-Level Design Idioms
+
+In this section, we describe the idioms we used to support the tasks above. We discuss our specific design choices (e.g. widgets) in the illustration section.
+
+We faceted the display into two panels - Overview and Explore. One panel may be viewed at a time, and the user may switch between panels using a tab selector. The content of both panels will be linked via a common filter menu.
+
+Filter Menu
+
+The filter menu partitions attributes available for for filtering into three groups: Neuron Type, Organism, and Ephy Property. Each groups of filters was placed in a collapse panel to grant the user flexibility in terms of how screen real estate is used. THe filter menu supports abstract tasks 1a and 3.
+
+The Neuron Type panel provides a nested treeview with tickbox selectors for neuron types and brain regions. Neuron types are grouped by brain region for ease of navigation. An "All" node is provided to make it easy for the user to select and deselect all nodes at once. A search bar is provided at the top of the tree view for ease of lookup. 
+
+The Organism panel provides a nested treeview with tickbox selectors for species and two range sliders for each of Age and Weight. The scale of the Age slider was adjusted to a log 2 scale in order to better use the space alocated to the slider (as most of the ages oare in the lower range).
+
+The ephys panels provides range sliders for the ten ephys properties. These have been partitioned into two panels alphabetically to reduce use of screen space.
+encode attributes available for analysis in the form of a list (supporting task 1a). This list will contain, at the very least, neuron type, each ephys property, and each experimental condition. Each of these list items may be expanded to reveal possible attribute values - either in the form of a list (for categorical attributes) or range (continuous quantitative attributes). The user may then filter the data in the scope of analysis by either selecting/deselecting values to include or by specifying a range. All three views will dynamically apply the any filters selected here. (Supports tasks 3 and 4, in conjunction with the other views.)
+
+Overview Panel
+
+This panel facets the data into a hive plot contain a hive plot (or alternative encoding) with three axes - neuron type, ephys property, and experimental condition. The coordinates along the ephys property and experimental condition axes are attributes, and the coordinates along the neuron type axis are attribute values (one for each type of neuron).  A link between axis coordinates means that data exists for that pair. These links will be size coded according to the number of items that exist for that pair. When the analysis scope is the entire dataset, this will allow users to see which combinations have been considered in previous studies at a glance. When the analysis scope is a subset of the data, it will allow users to see the degree to which particular combinations are represented in the current scope. (Supports tasks 3 - 5).
+
+
+The Explore Panel
+
+The explore panel facets the data into four side-by-side plots. The user is able to select which attributes to plot on the x and y axes from dropdowns above each of the plots.
+
+Rather than having the user select a plot type, we simplify the user experience by automatically selecting a plot that best suits to the data. When both attributes are quantitative, a scatterplot is created where each point represents a single data item. When one is quantitative and the other is categorical, a stripplot is created. When both attributes are categorical, a frequency matrix is created where each count represents a single data item that has those values. This eliminates the point occlusion problem that frequently occurs when two categorical variables are plotted against each other on a stripplot. Finally, there is a blank value to the y-axis selector so that the user may select an attribute for the x-axis only. This yields a histogram of x-axis attribute values. Together, these support Abstract Task 1b - 1e.
+
+We have kept the default behavior of R plots, which is to scale the axes according to the range of values plotted. This means that the axes ranges may change as filters are adjusted.
+
+Additionally, the user is able to interact with the data points on the scatterplots and stripplots. Hovering over a point displays a tooltip with the x and y values and the PubMed ID and Title of the article the item is from (supporting Abstract Task 5). Clicking on a point highlights that point in all stripplot and scatterplots on the page. Multiple points may be highlighted at a given time. Highlighted points can then be removed by clicking "Remove Highlighted" button. This allows the user to remove outliers from the plot without using the filter menu. Ultimately, we would like to allow the user to highlight points on brush rather than click, but the highlight on brush feature for R Shiny is not ... Similarly, we ran into problems with highlight on hover ...
+
 
 1. System: NeuroElectro Data's Visualization
 2. What: Data
@@ -195,7 +228,7 @@ NED's Vis uses linked views and multiple panels to enable the seamless explorati
 8. How: Reduce
     + Filter: items, attributes
 
-Justifications for our design choices are discussed in detail in the *Related Work* section of this report. We built the current visualization system to best suit the needs of neuroscientists. No significant new algorithm or data structure developments have been performed - we used existing idioms, tools and libraries adjusting them to our needs and ensuring they perform well together. The bulk of the data wrangling, loading, plot generation and interaction work is carried out in the back-end part of our app (server.R, global.R, hive.R), while the front-end is defined by ui.R (layout, css, embedded javascript, tooltips, some interactivity).
+No significant new algorithm or data structure developments have been performed - we used existing idioms, tools and libraries adjusting them to our needs and ensuring they perform well together. The bulk of the data wrangling, loading, plot generation and interaction work is carried out in the back-end part of our app (server.R, global.R, hive.R), while the front-end is defined by ui.R (layout, css, embedded javascript, tooltips, some interactivity).
 
 ##Implementation
 
