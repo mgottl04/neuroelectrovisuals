@@ -154,7 +154,11 @@ The filter options for continuous features use slider bars from the base Shiny f
 The four plots of the explore panel share data that is filtered based on the state of the filter panel. The data displayed on each plot is determined by the two axis selectors above each plot. The axis selectors are standard Shiny ui components that did not require modification. The plots in the explore panel are generated dynamically depending on the type of data that the user selects to view. We used the ggvis package[[@ggvis]] to generate the plots in the explore panel as they promised easy interactivity. Our dataset changed based on filtering rules and axes selected and was passed to a  function we implemented to determine what type of plot to show and to reduce repeated code. This lead to problems, as interactive ggvis features, such as hover and brush handlers, do not work with well or at all with  dynamic datasets and inside functions. While we consider other plotting options, we have implemented an on click handler that highlights points in all plots in which they appear. We also implemented action buttons to clear highlighting, remove highlighted points from all plots and restore removed points.
 
 ###Overview panel
+The overview panel has three distinct components: The hiveplot, the heat map and the table. The hiveplot uses the HiveR package[[@hiver]] as well as the RColorBrewer package[[@rcolorbrewer]] for color selection. It does some other stuff based on whatever Dmitri did.
 
+The heatmap uses a derived dataset that  contains whether or not each datum contains information regarding features of particular interest to the stakeholder. It computes an association matrix on demand which is passed to the pheatmap package[[@pheatmap]] to display the associations an annotations. Like the hive plot, it uses the RColorBrewer package for its color pallette.
+
+The table is generated based on filter rules and is made entirely using the DT package[[@dt]] with some non-default parameters. As its title implies, it is simply a wrapper for the DataTables JavaScript library.
 
 
 ##Results
