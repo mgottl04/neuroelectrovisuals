@@ -2,11 +2,19 @@
 
 [Final report](https://github.com/mgottl04/neuroelectrovisuals/blob/master/report/finalreport.pdf)
 
-# Project Overview
+# Code Structure
 
-##Abstract
+- Our main code files: global.R, server.R, ui.R
+- Other code files in lib directory
+- Tweaks to shnyTree library in shinyTree-master directory
 
-Integrating neuroscientific data across labs is a huge challenge, NeuroElectro.org collects electrophysiology, neuron type and experimental conditions data from published articles and provides all of the data in text format for analysis. Here, we present NED's Vis - NeuroElectro Data's Visualization app that was developed in Shiny and deployed to neuroelectro.org. The tool allows direct interaction with the database skipping data download and wrangling steps, it includes 3 panels: overview, explore, filter. Overview panel provides insight into the amount of data behind each comparison type, where as explore panel is focused on direct comparisons and filter panel enables the user to eliminate uninteresting data from the analysis. Explore panel plots are highly interactive: plot type is defined by the types of chosen variables to display (quantitative versus qualitative), outlier removal is as easy as clicking the points off the plot, with optional zooming to a specific set of data points (each point is an article in the NeuroElectro database and on mouseover displays information needed to access it).
+# Run instructions
+
+1. Go to shinyTree-master directory and open shinyTree.Rproj in RStudio
+2. Build this (this makes nicer-looking trees happen)
+3. Open global.R in RStudio
+4. Go Session -> Restart R
+5. Click Run App
 
 ![Mesmerising hive plot](https://github.com/mgottl04/neuroelectrovisuals/blob/master/report/hiveplot.jpeg)
 
