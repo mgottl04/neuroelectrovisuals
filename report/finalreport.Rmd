@@ -1,5 +1,5 @@
 ---
-title: "Final Report: NED's Vis"
+title: "Final Report: NED Vis"
 author: |
   | Michael Gottlieb mikemgottlieb@gmail.com
   | Emily Hindalong ehindalong@gmail.com
@@ -14,7 +14,7 @@ csl: ieee.csl
 
 ##Abstract
 
-Integrating neuroscientific data across labs is a challenging endeaver, and extracting meaning from this data is even harder still. NeuroElectro.org collects electrophysiology, neuron type, and experimental conditions data from published articles and provides all of this data in text format for analysis. Here, we present NeuroElectro Data's Visualization (NED's Vis), an interactive visual interface to the data on Neuroelectro,org. The first tool of its kind in the Neuroscience domain, NED's Vis allows Neuroscientists to achieve insights without having to download and wrangle with the data themselves. NED's Vis consists of a filter menu sidebar and two tabbed panels: Overview and Explore. The Overview panel provides insight into the amount of data available for different combinations of data attributes. The Explore supports investigation of relationships between attributes of interest with interactively linked plots. The filter menu allows the user to narrow the scope of the analysis across both views dynamically. In summary, NED's Vis is an excellent point of entry for neurosicnetistsNED's Vis has the potential to help neurosciencts schieve new isnights and form new hypotheses.
+Integrating neuroscientific data across labs is a challenging endeaver, and extracting meaning from this data is even harder still. NeuroElectro.org collects electrophysiology, neuron type, and experimental conditions data from published articles and provides all of this data in text format for analysis. Here, we present NeuroElectro Data's Visualization (NED Vis), an interactive visual interface to the data on Neuroelectro.org. It is the first tool of its kind in the Neuroscience domain and allows Neuroscientists to form hypotheses without having to download and wrangle with the data themselves. NED Vis consists of a filter menu sidebar and two tabbed panels: Overview and Explore. The Overview panel provides insight into the amount of data available for different combinations of data attributes. The Explore supports investigation of relationships between attributes of interest with interactively linked plots. The filter menu allows the user to narrow the scope of the analysis across both panels dynamically.
 
 ##Introduction
 
@@ -26,7 +26,7 @@ Neuroelectro stands apart from other text-mining projects in that it allows end 
 
 Nevertheless, the power of Neuroelectro is limited in that does not provide an interactive visual interface for the data. The current visualizations provided by NeuroElectro are static: the user is only able to view data for one neuron type or one ephys property at a time in the form of fixed scatterplots. 
 
-NED's Vis was designed to address this shortcoming. Our vision was to develop a new interactive visual interface that supports seamless browsing and analysis of select subsets of the data. To this end, we met with the developer of Neuroelectro to discuss high-level goals for the system. The remainded of this report discusses the outcomes of these discussions, our design decisions, implementation, and results.
+NED Vis was designed to address this shortcoming. Our vision was to develop a new interactive visual interface that supports seamless browsing and analysis of select subsets of the data. To this end, we met with the developer of Neuroelectro to discuss high-level goals for the system. We abstracted these goals into abstract tasks and designed and developed a system accordingly. The remainder of this report discusses this process in detail.
 
 ##Related Work
 
@@ -42,8 +42,10 @@ Exploration of relationships is a common task in many analytics platforms such a
 
 ####Providing an overview of data
 
-Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [[@baitaluk2006biologicalnetworks]], matrix [[@henry2006matrixexplorer]], arc diagram [[@arc]], call network [[@yan2010comparing]], hive plot [[@hiveplot]] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task:  
+Essentially, we are facing a problem of visualizing a network when we are trying to give an overview of our data. Over the years many solutions have been proposed for this type of task: hairball [[@baitaluk2006biologicalnetworks]], matrix [[@henry2006matrixexplorer]], arc diagram [[@arc]], call network [[@yan2010comparing]], hive plot [[@hiveplot]] are among the most common. Simply visualizing the network as a collection of nodes connected with edges (the hairball approach) seems impractical due to a large number of nodes and connections (currently: 150 nodes and ~10k edges), scaling is also a problem since the hairball only gets bigger with time. The matrix approach deserves some credit in terms of data visibility and it is a familiar visualization style to biologists, but there are 2 issues with utilizing matrices for this task:
+
 1. Our data is 3 dimensional (neuron type, ephys. property, metadata) and 3D matrices are usually very hard to interpret, we could provide a faceted view of 1 matrix per metadata as a possible solution, but the amount of screen space that would require is enormous.  
+
 2. Matrices do not scale well, the labels get too small to be legible at some point. That said, a count matrix could provide a similar overview information to a hive plot as long as the number of parameters is small enough. In the implementation section we will discuss further our decision to use both a hive plot and a matrix approach.
 
 A call network visualization would end up looking very similar to a hairball in our case, as a result we had to discard this possibility due to scalability issues. Arc diagrams came in as a close second as our visualization of choice - they are easy to interpret, pleasant to look at and they can scale reasonably well with the amount of evidence in the database. The problem with arc diagrams is that all nodes would end up being on one line and that does not represent the 3 distinct groups of nodes (neuron types, ephys. properties, metadata) in our data.
@@ -81,6 +83,7 @@ We have decided to use colour as a channel for linked-highlighting. Previous res
 NeuroElectro is a database of neuroscience articles and it applies text-mining as well as curation approaches to extract electrophysiology measurements, neuron type information and experimental setup conditions (metadata) from the html-encoded articles. At this point, text-mining alone is not reliable enough since neuroscientists authoring the articles in questions were not writing them using guidelines. As a result, each article is a snowflake of sorts - even with very well written algorithms automated text-mining is not at human text interpretation level yet. Hence the need for training undergraduate curators to verify the text-mining results and correct its errors. We focus on visualizing only the curated data, meaning that we have ~1000 articles worth of data. Note that not all articles contain all data types that NeuroElectro is able to store.
 
 ####Domain-specific data types
+
 1. Electrophysiology measurements
     + These are intrinsic neuron properties: membrane potential at rest, spike threshold (minimum membrane potential that causes a spike), input resistance, rheobase (minimum amount of current one needs to inject to cause an spike), etc.
     + Neurons communicate with the help of action potentials (voltage spikes) which are caused by cell's membrane voltage rising above the spike threshold causing a cascade of Sodium ions to flood into the neuron, propagating the action potential signal down its axon and to other neurons. The cell then closes Sodium channels and opens Potassium channels in order to return to its original state.
@@ -94,16 +97,16 @@ NeuroElectro is a database of neuroscience articles and it applies text-mining a
 NeuroElectro also stores data about each article: title, publication year, authors, etc.
 
 ####Domain-specific tasks
+
 1. Explore relationships between neuron types, ephys properties, and experimental conditions.
-    + Find the neuron type, ephys measurement and metadata of interest.
-    + View specific electrophysiology measurement for a specific neuron type (e.g. view rheobase values for Hippocampal CA1 pyramidal cells).
-    + Compare ephys measurements across neuron types (e.g. resting membrane potential across all or a selected set of neuron types).
-    + Explore the effect of metadata on an ephys measurement (e.g. action potential amplitude change with animal age).
-2. Identify regions of the brain where particular neuron types are found.
-3. Identify how many data points exist for different combinations of neuron types, ephys properties, and experimental conditions.
-4. Find out how many articles support a specific analysis.
-5. Summarize the data in the current analysis scope.
-6. Look up details for individual evidence lines extracted from articles. 
+    (a) Find the neuron type, ephys measurement and metadata of interest.
+    (b) View specific electrophysiology measurement for a specific neuron type (e.g. view rheobase values for Hippocampal CA1 pyramidal cells).
+    (c) Compare ephys measurements across neuron types (e.g. resting membrane potential across all or a selected set of neuron types).
+    (d) Explore the effect of metadata on an ephys measurement (e.g. action potential amplitude change with animal age).
+2. Identify how many data points exist for different combinations of neuron types, ephys properties, and experimental conditions.
+3. Find out how many articles support a specific analysis.
+4. Summarize the data in the current analysis scope.
+5. Look up details for individual evidence lines extracted from articles. 
 
 ###Abstract data and tasks
 
@@ -113,28 +116,30 @@ Our dataset is a table where each item (row) is data for particular neuron type 
 
 At the advice of our stakeholder upon seeing the prototype, we have limited our application to analyses on the most interesting metadata properties. These attributes in detail are:
 
-#####Experimental Metadata Attributes
+**Experimental Metadata Attributes**
 
 Organism:
+
 1. Species (categorical)
 2. Strain (categorical)
 3. Weight (quantitative continuous, grams)
 4. Age (quantitative discrete, days)
 
 Other:
+
 1. Electrode Type (categorical)
 2. Prep Type (categorical)
 3. Jxn Potential (binary categorical)
 4. Recording Temperature (quantitative continuous, degrees C)
 
-#####Article Metadata Attributes
+**Article Metadata Attributes**
 
 1. PubMed ID (quantitative discrete)
 2. Title (categorical)
 3. Year (quantitative discrete)
 4. Author (categorical)
 
-#####Neuron Type Attributes:
+**Neuron Type Attributes**
 
 1. Brain Region (categorical)
 2. Neuron Name (catgorical)
@@ -152,8 +157,6 @@ Additionally, we were advised to limit our application to the 10 most interestin
 9. Rheobase (pA) - log10 axis
 10. Maximum Firing Rate (Hz) - log10 axis
 
-
-
 ####Abstract tasks
 
 The primary usage context for this tool is discovery. The purpose of the tool is to help Neuroscientists achieve new insights and develop new hypotheses. This tool is not concerned with any produce tasks at this time.
@@ -161,11 +164,11 @@ The primary usage context for this tool is discovery. The purpose of the tool is
 Under the umbrella of discovery, a number of mid-level tasks can be identified: 
 
 1. Explore relationships between data attributes.
-+ Browse data available for analysis
-+ Identify distribution of counts across values of categorical attributes.
-+ Identify distribution of counts across values at the intersectiong of two categorical attributes.
-+ Identify distribution of a quantitivate attribute across different values of a categorical attributes.
-+ Identify correlations between quantitative attributes.
+  (a) Browse data available for analysis
+  (b) Identify distribution of counts across values of categorical attributes.
+  (c) Identify distribution of counts across values at the intersectiong of two categorical attributes.
+  (d) Identify distribution of a quantitivate attribute across different values of a categorical attributes.
+  (e) Identify correlations between quantitative attributes.
 2. Explore how much data exists for different combinations of data types.
 3. Narrow scope of analysis
 4. Explore how much data exists for different combinations of data types within a narrowed scope of analysis
@@ -173,11 +176,11 @@ Under the umbrella of discovery, a number of mid-level tasks can be identified:
 
 ##Solution
 
-NED's Vis uses linked views and multiple panels to enable the seamless exploration of NeuroElectro's database by the target user, which is mostly neuroscience students, postdocs, research associates and professors. To cater to our target audience's needs we provide an overview of the data and allow its filtering as well as exploration, all performed within the app.
+NED Vis uses linked views and multiple panels to enable the seamless exploration of NeuroElectro's database by the target user, which is mostly neuroscience students, postdocs, research associates and professors. To cater to our target audience's needs we provide an overview of the data and allow its filtering as well as exploration, all performed within the app.
 
 ###High-Level Design Idioms
 
-In this section, we describe the idioms we used to support the tasks above. We discuss our specific design choices (e.g. widgets) in the illustration section.
+In this section, we describe the idioms we used to support the tasks above.
 
 We faceted the display into two panels - Overview and Explore. One panel may be viewed at a time, and the user may switch between panels using a tab selector. The content of both panels will be linked via a common filter menu.
 
@@ -208,11 +211,17 @@ We have kept the default behavior of R plots, which is to scale the axes accordi
 Additionally, the user is able to interact with the data points on the scatterplots and stripplots. Hovering over a point displays a tooltip with the x and y values and the PubMed ID and Title of the article the item is from (supporting Abstract Task 5). Clicking on a point highlights that point in all stripplot and scatterplots on the page. Multiple points may be highlighted at a given time. Highlighted points can then be removed by clicking "Remove Highlighted" button. This allows the user to remove outliers from the plot without using the filter menu. Ultimately, we would like to allow the user to highlight points on brush rather than click, but the highlight on brush feature for R Shiny is not ... Similarly, we ran into problems with highlight on hover ...
 
 
+
+
+No significant new algorithm or data structure developments have been performed - we used existing idioms, tools and libraries adjusting them to our needs and ensuring they perform well together. The bulk of the data wrangling, loading, plot generation and interaction work is carried out in the back-end part of our app (server.R, global.R, hive.R), while the front-end is defined by ui.R (layout, css, embedded javascript, tooltips, some interactivity).
+
+###What-Why-How: Recap
+
 1. System: NeuroElectro Data's Visualization
 2. What: Data
     + Categorical brain regions and neuron types data
     + Quantitative sequential electrophysiology data
-    + Mixed experimental setup data, some of it is categorial and some quantitative sequential but they carry similar meaning with respect to NeuroElectro analysis
+    + Mixed experimental setup data, some of it is categorial and some quantitative sequential 
 3. What: Derived
     + Node degree, edge weight (number of articles that contain information for both nodes)
     + Log transform specific electrophysiology and metadata variables to better fit target user's needs
@@ -228,15 +237,13 @@ Additionally, the user is able to interact with the data points on the scatterpl
 8. How: Reduce
     + Filter: items, attributes
 
-No significant new algorithm or data structure developments have been performed - we used existing idioms, tools and libraries adjusting them to our needs and ensuring they perform well together. The bulk of the data wrangling, loading, plot generation and interaction work is carried out in the back-end part of our app (server.R, global.R, hive.R), while the front-end is defined by ui.R (layout, css, embedded javascript, tooltips, some interactivity).
-
 ##Implementation
 
 ###Shiny app (general)
 
-Our solution was built using the Shiny web application framework [[@shiny]] for the R language [[@r]]. Shiny server and ui components handle all transactions between the front and back end of our application. Each major component took advantage of a number of existing libraries, which is explained in more detail in the following subsections. 
+Our solution was built using the Shiny web application framework [[@shiny]] for the R language [[@r]]. Shiny server and UI components handle all transactions between the front and back end of our application. Each major component took advantage of a number of existing libraries, which is explained in more detail in the following subsections. 
 
-The first step of our application performs data loading, cleaning and wrangling. It takes a csv dump of Neuroelectro's database as input. We load, clean and manipulate data using base R and dplyr [[@dplyr]] functions. At this point we also generate and cache or load the cached version of a modified dataset to speed up matrix view generation as the filters are changed. Once the data is loaded and prepped, it is passed to the ui and server components that house the core functionality of our app. 
+The first step of our application performs data loading, cleaning, and wrangling. It takes a csv dump of Neuroelectro's database as input. We load, clean, and manipulate data using base R and dplyr [[@dplyr]] functions. At this point we also generate and cache or load the cached version of a modified dataset to speed up matrix view generation as the filters are changed. Once the data is loaded and prepped, it is passed to the UI and server components that house the core functionality of our app. 
 
 ###Navigation/filtering panel
 
@@ -246,23 +253,19 @@ We implemented how the filter states were applied to the data set and observers 
     
 ###Explore panel
 
-The four plots of the explore panel share data that is filtered based on the state of the filter panel. The data displayed on each plot is determined by the two axis selectors above each plot. The axis selectors are standard Shiny ui components that did not require modification. The plots in the explore panel are generated dynamically depending on the type of data that the user selects to view. We used the ggvis package [[@ggvis]] to generate the plots in the explore panel as they promised easy interactivity. Our dataset changed based on filtering rules and axes selected and was passed to a  function we implemented to determine what type of plot to show and to reduce repeated code. This lead to problems, as interactive ggvis features, such as hover and brush handlers, do not work with well or at all with  dynamic datasets and inside functions. While we consider other plotting options, we have implemented an on click handler that highlights points in all plots in which they appear. We also implemented action buttons to clear highlighting, remove highlighted points from all plots and restore removed points.
+The four plots of the explore panel share data that is filtered based on the state of the filter panel. The data displayed on each plot is determined by the two axis selectors above each plot. The axis selectors are standard Shiny UI components that did not require modification. The plots in the explore panel are generated dynamically depending on the type of data that the user selects to view. We used the ggvis package [[@ggvis]] to generate the plots in the explore panel as they promised easy interactivity. Our dataset changed based on filtering rules and axes selected and was passed to a function we implemented to determine what type of plot to show and to reduce repeated code. This led to problems, as interactive ggvis features, such as hover and brush handlers, do not work with well or at all with dynamic datasets and inside functions. While we considered other plotting options, we have implemented an on click handler that highlights points in all plots in which they appear. We also implemented action buttons to clear highlighting, remove highlighted points from all plots, and restore removed points.
 
 ###Overview panel
 
-The overview panel has three distinct components: The hive plot, the heat map and the table. The hive plot uses the HiveR package[[@hiver]] as well as the RColorBrewer package [[@rcolorbrewer]] for colour selection. It also uses modified functions designed by an R blogger [[@vessy]] for the hive plot data wrangling. The hardest part was to optimize hive plot data gathering (counting number of co-occurrences for each pair of ephys, brain regions and metadata). Initially, with a naive implementation it took about 2 minutes to generate and refresh the hive plot. Through a much more effective algorithm and built-in R co-occurrences counting functions the 2 minutes have been cut down to a couple of seconds. Nodes have been positioned identical distance apart on the axes for readability. Potentially, node distance could encode some information in the future. Node colour represents its degree, edge colour correlates with the number of articles supporting that edge. At first, we have encoded a few network properties into node position, size, edge width (e.g. node centrality, reachability, edge weight), however, we then realized that this information is not valuable and serves only to make the hive plot confusing.
+The overview panel has three distinct components: The hive plot, the heat map, and the table. The hive plot uses the HiveR package[[@hiver]] as well as the RColorBrewer package [[@rcolorbrewer]] for colour selection. It also uses modified functions designed by an R blogger [[@vessy]] for the hive plot data wrangling. The hardest part was to optimize hive plot data gathering (counting number of co-occurrences for each pair of ephys, brain regions and metadata). Initially, with a naive implementation it took about two minutes to generate and refresh the hive plot. Through a much more effective algorithm and built-in R co-occurrences counting functions, the two minutes have been cut down to a couple of seconds. Nodes have been positioned identical distances apart on the axes for readability. Potentially, node distance could encode some information in the future. Node colour represents its degree and edge colour correlates with the number of articles supporting that edge. At first, we had encoded a few network properties into node position, size, edge width (e.g. node centrality, reachability, edge weight), however, we realized that this information is not valuable and serves only to make the hive plot confusing.
 
 The heatmap uses a derived dataset that contains whether or not each datum contains information regarding features of particular interest to the stakeholder. It computes an association matrix on demand which is passed to the pheatmap package [[@pheatmap]] to display the associations and annotations. Like the hive plot, it uses the RColorBrewer package for its colour pallette.
 
 The table is generated based on filter rules and is made entirely using the DT package [[@dt]] with some non-default parameters. As its title implies, it is simply a wrapper for the DataTables JavaScript library.
 
-Heatmap, data table and hive plot respond to the filter panel, however, filtering and sorting done in the data table do not get reflected in the other views at this time.
+Heatmap, data table, and hive plot respond to the filter panel. However, filtering and sorting done in the data table do not get reflected in the other views at this time.
 
 ##Results
-
-> should include scenarios of use and multiple screenshots of your software in action. walk the reader through how your interface succeeds (or acknowledge how it falls short) in solving the intended problem. if you did any evaluation (deployment to target users, computational benchmarks), do report on that here. 
-
-> should include scenarios of use and multiple screenshots of your software in action. walk the reader through how your interface succeeds (or acknowledge how it falls short) in solving the intended problem. if you did any evaluation (deployment to target users, computational benchmarks), do report on that here.
 
 ###Use Case Scenarios for Abstract Tasks
 
