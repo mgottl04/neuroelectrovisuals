@@ -23,10 +23,10 @@
 1. [Emily Hindalong](https://ca.linkedin.com/in/emily-hindalong-18409630)
     * Current Program: Computer Science Doctor of Philosophy Candidate, Shah lab
     * Academic Background: BSc. Cognitive Systems
-    * Interests: oatmeal, cats, music
-4. [Mike Gottleib](https://www.facebook.com/qwerty.gui)
+    * Interests: oatmeal, cats, gothic rock
+4. [Mike Gottlieb](http://i.imgur.com/np5GvjB.jpg)
     * Current Program: Bioinformatics Training Program, Karsan lab
-    * Academic Background: BA Asian Studies & Psychology
+    * Academic Background: BA Asian Studies & Psychology (i.e. extreme factoid memorization)
     * Interests: Beer, Bikes & Bioinformatics (BBB)
 3. [Dmitry Tebaykin](https://www.facebook.com/dmitry.tebaykin)
     * Current Program: Bioinformatics Training Program, Pavlidis lab
