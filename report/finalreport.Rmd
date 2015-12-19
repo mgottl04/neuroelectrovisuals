@@ -277,18 +277,18 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![A1. User navigates to "Explore" tab.](caps/explore1.PNG)    
+![A1. User navigates to "Explore" tab.](caps/explore1.jpg)    
 
-![A2.User clicks on x-axis selector drop-down for any of the four plots and scrolls through options.](caps/axisSelection.PNG)    
+![A2.User clicks on x-axis selector drop-down for any of the four plots and scrolls through options.](caps/axisSelection.jpg)    
 
-![A3. User repeats for y-axis selector and discovers that the lists are the same.](caps/axisSelectionY.PNG)    
+![A3. User repeats for y-axis selector and discovers that the lists are the same.](caps/axisSelectionY.jpg)    
 
-![A4. User expands "Neuron Type" collapsible panel in filter menu and sees a list of selected brain regions.](caps/openNeuronType.PNG)      
+![A4. User expands "Neuron Type" collapsible panel in filter menu and sees a list of selected brain regions.](caps/openNeuronType.jpg)      
 
 
-![A5. User expands a tree view node for a brain region of interest to see what neuron types are listed under that region.](caps/expandNeuron.PNG)    
+![A5. User expands a tree view node for a brain region of interest to see what neuron types are listed under that region.](caps/expandNeuron.jpg)    
 
-![A6. User expands the "Organism" collapsible panel to see what filters are available.](caps/openOrganism.PNG)    
+![A6. User expands the "Organism" collapsible panel to see what filters are available.](caps/openOrganism.jpg)    
 
 \FloatBarrier
 
@@ -301,13 +301,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![B1. User navigates to "Explore" tab.](caps/openOrganism.PNG)    
+![B1. User navigates to "Explore" tab.](caps/openOrganism.jpg)    
 
-![B2. User selects AnimalSpecies using x-axis selector for any of the four plots.](caps/selectSpecies.PNG)    
+![B2. User selects AnimalSpecies using x-axis selector for any of the four plots.](caps/selectSpecies.jpg)    
 
-![B3. User selects --- using the y-axis selector for the same plot, indicating no selection.](caps/histSelect.PNG)    
+![B3. User selects --- using the y-axis selector for the same plot, indicating no selection.](caps/histSelect.jpg)    
 
-![B4. User sees a histogram of values for animal species.](caps/seeHistGo.PNG)  
+![B4. User sees a histogram of values for animal species.](caps/seeHistGo.jpg)  
 
 \FloatBarrier
 
@@ -319,13 +319,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![C1. User navigates to "Explore" tab.](caps/openOrganism.PNG)    
+![C1. User navigates to "Explore" tab.](caps/openOrganism.jpg)    
 
-![C2. User selects Species using x-axis selector for any of the four plots.](caps/selectSpecies.PNG)    
+![C2. User selects Species using x-axis selector for any of the four plots.](caps/selectSpecies.jpg)    
 
-![C3. User selects BrainRegion using the y-axis selector for the same plot.](caps/brainY.PNG)    
+![C3. User selects BrainRegion using the y-axis selector for the same plot.](caps/brainY.jpg)    
 
-![C4. User sees a frequency matrix where each cell represents to number of data points at that intersection.](caps/brainSpecies.PNG)    
+![C4. User sees a frequency matrix where each cell represents to number of data points at that intersection.](caps/brainSpecies.jpg)    
 
 \FloatBarrier
 
@@ -337,13 +337,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![D1. User navigates to "Explore" tab.](caps/openOrganism.PNG)    
+![D1. User navigates to "Explore" tab.](caps/openOrganism.jpg)    
 
-![D2. User selects AnimalSpecies using x-axis selector for any of the four plots.](caps/selectSpecies.PNG)    
+![D2. User selects AnimalSpecies using x-axis selector for any of the four plots.](caps/selectSpecies.jpg)    
 
-![D3. User selects spike.amplitude using the y-axis selector for the same plot.](caps/spikeY.PNG)  
+![D3. User selects spike.amplitude using the y-axis selector for the same plot.](caps/spikeY.jpg)  
 
-![D4. User sees a stripplot of spike amplitude values for each species.](caps/speciesSpike.PNG)    
+![D4. User sees a stripplot of spike amplitude values for each species.](caps/speciesSpike.jpg)    
 
 \FloatBarrier
 
@@ -355,13 +355,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![E1. User navigates to "Explore" tab.](caps/openOrganism.PNG)    
+![E1. User navigates to "Explore" tab.](caps/openOrganism.jpg)    
 
-![E2. User selects AnimalAge using x-axis selector for any of the four plots.](caps/animalAge.PNG)    
+![E2. User selects AnimalAge using x-axis selector for any of the four plots.](caps/animalAge.jpg)    
 
-![E3. User selects spike.amplitude using the y-axis selector for the same plot.](caps/ageSpikeSelect.PNG)    
+![E3. User selects spike.amplitude using the y-axis selector for the same plot.](caps/ageSpikeSelect.jpg)    
 
-![E4. User sees a scatterplot of spike.amplitude values versus animal age.](caps/ageSpikeStrip.PNG)    
+![E4. User sees a scatterplot of spike.amplitude values versus animal age.](caps/ageSpikeStrip.jpg)    
 
 \FloatBarrier
 
@@ -373,13 +373,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![F1. User navigates to Overview tab.](caps/overview1.PNG)    
+![F1. User navigates to Overview tab.](caps/overview1.jpg)    
 
-![F2. User expands each of the collapse panels and manually clears all filters.](caps/overviewExpandFilt.PNG)    
+![F2. User expands each of the collapse panels and manually clears all filters.](caps/overviewExpandFilt.jpg)    
 
-![F3. User inspects hive-plot and sees that the brain region to ephys property connections are most sparse.](caps/bigHive.PNG)    
+![F3. User inspects hive-plot and sees that the brain region to ephys property connections are most sparse.](caps/bigHive.jpg)    
 
-![F4. User inspects the numerical values on heat map and sees: Each combination of ephys property and metadata property are well represented (>10 entries); each combination of brain region and metadata is present but not necessarily well represented; not every combination of brain region and ephys property is present.](caps/bigMat.PNG)    
+![F4. User inspects the numerical values on heat map and sees: Each combination of ephys property and metadata property are well represented (>10 entries); each combination of brain region and metadata is present but not necessarily well represented; not every combination of brain region and ephys property is present.](caps/bigMat.jpg)    
 
 \FloatBarrier
 
@@ -391,13 +391,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![G1. User completes steps 1 and 2 from previous use case.](caps/overviewExpandFilt.PNG)    
+![G1. User completes steps 1 and 2 from previous use case.](caps/overviewExpandFilt.jpg)    
 
-![G2. User finds the row in the heat map for Pallidum.](caps/bigMatPal.PNG)    
+![G2. User finds the row in the heat map for Pallidum.](caps/bigMatPal.jpg)    
 
-![G3. User locates cells that intersect with ephys property columns.](caps/bigMatEphysInt.PNG)    
+![G3. User locates cells that intersect with ephys property columns.](caps/bigMatEphysInt.jpg)    
 
-![G4. User sees that there is no data for maximum firing rate.](caps/noMax.PNG)    
+![G4. User sees that there is no data for maximum firing rate.](caps/noMax.jpg)    
 
 \FloatBarrier
 
@@ -409,13 +409,13 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![H1. User conducts steps of Specific Use-Case B.](caps/seeHistGo.PNG)       
+![H1. User conducts steps of Specific Use-Case B.](caps/seeHistGo.jpg)       
 
-![H2. User unticks "All" then ticks "Cerebellum" - The plots are redrawn using only data points from the Cerebellum.](caps/h3.PNG)    
+![H2. User unticks "All" then ticks "Cerebellum" - The plots are redrawn using only data points from the Cerebellum.](caps/h3.jpg)    
 
-![H3. User expands "Organism" collapse panel in filter menu.](caps/h4.PNG)    
+![H3. User expands "Organism" collapse panel in filter menu.](caps/h4.jpg)    
 
-![H4. User unticks "All" then ticks "Mice" - The plots are redrawn using only data from Mice Cerebella; number of bars on histogram is reduced to 1.](caps/h5.PNG)    
+![H4. User unticks "All" then ticks "Mice" - The plots are redrawn using only data from Mice Cerebella; number of bars on histogram is reduced to 1.](caps/h5.jpg)    
 
 \FloatBarrier  
   
@@ -425,13 +425,15 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![I1. User conducts steps of Specific Use-Case E.](caps/ageSpikeStrip.PNG)      
+![I1. User conducts steps of Specific Use-Case E.](caps/ageSpikeStrip.jpg)      
 
-![I2. User expands the "Ephys Properties" collapse panel, followed by the "A-M" collapse panel.](ca2s/i2.PNG)    
+![I2. User expands the "Ephys Properties" collapse panel, followed by the "A-M" collapse panel.](caps/i2.jpg)    
 
-![I3. User adjusts range slider for input resistance - The plots are redrawn using only data where input resistance is in the specified range.](caps/i3.PNG)    
-![I4. User collapses the "A-M" panel and expands the "N-Z" panel.](caps/i5.PNG)   
-![I5. User adjusts range slider for spike amplitude - The plots are redrawn using only data where spike amplitude is in the specified range.](caps/i5.PNG) 
+![I3. User adjusts range slider for input resistance - The plots are redrawn using only data where input resistance is in the specified range.](caps/i3.jpg)   
+
+![I4. User collapses the "A-M" panel and expands the "N-Z" panel.](caps/i4.jpg)  
+
+![I5. User adjusts range slider for spike amplitude - The plots are redrawn using only data where spike amplitude is in the specified range.](caps/i5.jpg) 
   
 \FloatBarrier
 
@@ -443,15 +445,15 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![J1. User conducts the steps in Specific Use-Case H.](caps/h5.PNG)    
+![J1. User conducts the steps in Specific Use-Case H.](caps/h5.jpg)    
 
-![J2. User navigates to Overview tab.](caps/j2.PNG)    
+![J2. User navigates to Overview tab.](caps/j2.jpg)    
 
-![J3. User examines hiveplot and sees that there is data for only one ephys property - input resistance.](caps/j3.PNG)    
+![J3. User examines hiveplot and sees that there is data for only one ephys property - input resistance.](caps/j3.jpg)    
 
 \FloatBarrier
 
-*Shortcoming: No way to get the number directly.*
+*Shortcoming: No way to get the number without counting.*
 
 ###Abstract Task 5: Look up details for individual data points.
 
@@ -461,19 +463,19 @@ The heat map, data table and hive plot respond to the filter panel. However, fil
 
 \FloatBarrier
 
-![K1. User conducts steps form Specific Use-Case E.](caps/ageSpikeStrip.PNG)    
+![K1. User conducts steps form Specific Use-Case E.](caps/ageSpikeStrip.jpg)    
 
-![K2. User hovers over a point of interest in a scatterplot.](caps/k2.PNG)    
+![K2. User hovers over a point of interest in a scatterplot.](caps/k2.jpg)    
 
-![K2. User sees a tootip, which displays the PubMed ID and title. User takes note of title.](caps/k3.PNG)    
+![K2. User sees a tootip, which displays the PubMed ID and title. User takes note of title.](caps/k3.jpg)    
 
-![K3. User navigates to the Overview panel.](caps/overview1.PNG)    
+![K3. User navigates to the Overview panel.](caps/overview1.jpg)    
 
-![K4. User scrolls to the Table view below the hiveplot and heat map view.](caps/k4.PNG)    
+![K4. User scrolls to the Table view below the hiveplot and heat map view.](caps/k4.jpg)    
 
-![K5. User begins to type the title in the Title column. Results filter automatically.](caps/k5.PNG)    
+![K5. User begins to type the title in the Title column. Results filter automatically.](caps/k5.jpg)    
 
-![K6. User locates row corresponding to data point of interest.](caps/k6.PNG)    
+![K6. User locates row corresponding to data point of interest.](caps/k6.jpg)    
 
 \FloatBarrier
 
@@ -503,7 +505,7 @@ Data wrangling speed is a usual concern when dealing with large volumes of data 
 
 As noted above, we ran into major problems using the ggvis package. The decision to use this package was made based on the considerable buzz surrounding its ease of use and rich interactive features. These features, particularly brush and hover handlers, are incompatible with functions and dynamic data sets. While there are work-arounds to make these features work to some degree with dynamic data sets, we were unable to find a way to make them work when called via a function. Our function to determine the nature of the data to plot and remove missing values (something that ggvis also does not do, unlike its ancestor ggplot) is used by all four plots in the Explore panel and is about 120 lines long. It would be possible for us to move this functionality out of our plot generating function, but it would result in 480 lines of duplicated spaghetti code, which would make future work on the project extremely difficult (and according to one of the authors, it would 'hurt his soul'). As we aspire to follow the DRY principles [[@venners2003orthogonality]] in our work, we will explore other plotting libraries going forward that support clean code. 
 
-###Analytical and Semantic Shortcoming
+###Analytical and Semantic Shortcomings
 
 One limitation of the current system is that it is restricted to a select subset of ephys and metadata properties. This decision was made in conjunction with the stakeholder in order to improve user experience. Paring down the properties list made it so that the number of entries in the axis selector drop-downs was reasonable and the hive plot less busy.
 
