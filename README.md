@@ -6,7 +6,7 @@
 
 - Our main code files: global.R, server.R, ui.R
 - Other code files in lib directory
-- Tweaks to shnyTree library in shinyTree-master directory
+- Tweaks to shinyTree library in shinyTree-master directory
 
 # Run instructions
 
@@ -16,7 +16,7 @@
 4. Go Session -> Restart R
 5. Click Run App
 
-![Mesmerising hive plot](https://github.com/mgottl04/neuroelectrovisuals/blob/master/report/hiveplot.jpeg)
+![Mesmerising hive plot](https://github.com/mgottl04/neuroelectrovisuals/blob/master/hiveplot.jpeg)
 
 # Group Members
 
