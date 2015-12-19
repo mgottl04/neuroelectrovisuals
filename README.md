@@ -5,7 +5,7 @@
 # Code Structure
 
 - Our main code files: global.R, server.R, ui.R
-- Other code files in lib directory
+- Other code files written by us are in the lib directory
 - Tweaks to shinyTree library in shinyTree-master directory
 
 # Run instructions
