@@ -378,9 +378,21 @@ Shortcoming: User must remember or write down the title as copy-paste functional
 
 ### Evaluation by Stakeholder
 
-### Critique
+Our stakeholder has evaluated the result of our project and has given the f
+
+The thing he likes most about the app is that it very cleanly allows the user to visualize only the data that they’re interested in, be it specific brain regions, neuron types, or data matching specific experimental conditions, using the organism/metadata filter tab. This was one of his key requirements, and he think it is has been implemented very well. In the short time of playing with the application, he has found new things that he was not able to fully apprecaite before. For instance, he had not appreciated how correlated the ephys properties rheobase and input resistance are.
+
+He quite likes the heatmap on the overview page because it clearly indicates how much data is at the intersection of each pair of attributes. But he expressed concern that the hiveplot and heatmap express much of the same thing, and are therefore not the best use of screen real estate. He prefers the heatmap because it is harder to see specific data using the hive plot because all nodes are more or less connected to eachother.
+
+He requested that the heatmap and hive plot colormap be log transformed because it is hard to tell the difference between features pairs with no data and just a small amount of data.
+
+He said that detail lookup is good but could be improved by linking data points in the Explore tab to the underyling data source directly.
+
+Overall, he feels the application is particularly “feature rich” at this point and I worry that the naive user would be overwhelmed with the overall smorgasbord of data.
 
 ##Discussion and Future Work
+
+###Implementation Approach
 
 Originally, we planned to use javascript with a few libraries (D3.js [[@bostok2011d3]], angular.js [[@darwin2013angularjs]]) for our project, however, the team's familiarity with R and the desire to learn Shiny [[@shiny]] played the decisive role in our framework choice. Given the chance to choose the framework again, we would have chosen Shiny due to its ability to handle large amounts of data and generate complex plots with relatively high speed. D3 has better integration with the front-end, but Javascript and CSS injections in Shiny serve a similar purpose, even if less elegantly. 
 
@@ -391,6 +403,40 @@ Data wrangling speed is a usual concern when dealing with large volumes of data 
 As noted above, we ran into major problems using the ggvis package. The decision to use this package was made based on the considerable buzz surrounding its ease of use and rich interactive features. These features, particularly brush and hover handlers, are incompatible with functions and dynamic data sets. While there are work arounds to make these features work to some degree with dynamic data sets, we were unable to find a way to make them worked when called via a funciton. Our function to determine the nature of the data to plot and remove missing values (something that ggvis also does not do, unlike it's ancestor ggplot) is used by all four plots in the explore panel and is about 120 lines long. It would be possible for us to move this funcitonality out of our plot generating function, but it would result in 480 lines of duplicated, spaghetti code, which would make future work on the project extremely difficult (and according to one of the authors, it would 'hurt his soul'). As we aspire to follow the DRY principles [[@venners2003orthogonality]] in our work, we will explore other plotting libraries going forward that support clean code. 
 
 In the near future we would like to add more interactivity to the hive plot: each point and edge should provide a detailed tooltip upon mouseover or click, brush selection should allow to filter the data similar to the filter panel (and brush selection in the explore view). The explore view brush selection currently does not work - the user has to click each point that they want to remove individually (or use the filtering panel). The scatter plots in the explore panel still have the colour channel available, we could make use of that by allowing multi-variable plotting or splitting up one of the variables into groups. 
+
+###Analytical and Semantic Shortcoming
+
+One limitation of the current system is that it is limited to a select subset of ephys and metadata properties. This decision was made in conjunction with the stakeholder in order to improve user experience. Paring down the properties list made it so that the number of entries in the axis selector dropdowns was reasonable and the hiveplot less cluttery.
+
+However, there could be value in exploring less common ephys properties and metadata measurements. In fact, one of the original motivations for the Overview panel was to discover attributes for which little data exists, i.e. rare attributes. With these removed, the utility of the Overview panel is less obvious. Ideally, there would be a way for the user to access this data without increasing the clutter in the system, perhaps by having an advanced options menu.
+
+A potentially misleading aspect of the system is how it handles NA values in conjunction with filters. There are many missing values in our data, and if we removed every row with a missing value, we would have very little data to work with. However, when a user applies a filter, the assumption is that they want to look at values that are within that range for certain. Currently, we include data points with null values unless a filter on that value is explicitly applied. For instance, data points for which AnimalWeight is NA are plotted unless the user applies a filter using the range slider for Weight. Because there are so many NA values for AnimalWeight, the user need only move the slider a little bit and many points are removed fromt he plot. This creates the illusion that the removed points fell outside of the specified range.
+
+Another problematic aspect of the filter menu is that the user can collapse a panel while a filter is applied and then forget about it, producing an "out of sight out of mind" effect. Ideally, we would have a non-intrusive way to encode the fact that a filter has been applied on a given panel, perhaps by altering the color.
+
+The Overview tab is busy and difficult to make sense of unless much of the data is filtered out. One problem is that the heatmap contains a number of redundant cells (the upper triangle) as well as intersection within data type (Brain Region by Brain Region). We could increase the signal-to-noise ratio by plotting Ephys Properties and Metadata on one axis and Brain Region and Metadata on the other, which would eliminate much of the uninteresting and redundant data. However, we will need to consult with our stakeholder to confirm that within-type intersections are not of interest. Another feature that could make the heatmap more approachable would be a row/column for the sums of values across columns and rows.
+
+As it stands, the system only supports hypothesis generation, not hypothesis testing. The analystical power of the system could be improved considerably by integrating some basic statistical functionality, such as means, ranges, correlation coefficients, and p-values. Doing so would allow the system to benefit most fully from the strengths of the R framework.
+
+###User Experience and Style Shortcomings
+
+There should be an easier way for users to get data from specific points on demand. Currently, the tooltip gives the title and PubMed ID for an article, but if the user wants more information of the article, they must note the title, switch to the OVerview tab, and enter it in the search bar. This information should be available on demand without requiring a tab switch.
+
+There are a number of improvements that could be made to the filter menu. First, there should be a reset button so that the user can remove all filters in one click. Second, there should be a scrollbar for the filters menu that appears when its contents extend below the plots. This is not trivial to do in R-Shiny panels and will require direct manipulation of underlying Javascript objects.
+
+Other stylistic improvements that could be made include:
+
+1. More consistent styling of axis labels and dropdown menu items
+2. Cleaner, shorter axis labels with smarter spacing
+3. Better placement of data type legend for heatmap (not trivial to do with pheatmap library)
+
+####Filters Menu
+
+First, there should be a reset button for the filters menu so tha the user does not have to manually remove all filters. This should be easy to add in the next iteration.
+
+Ideally, the filters menu to would have scrollbars when its content extends below the plots. 
+
+
 
 ##Conclusions
 
