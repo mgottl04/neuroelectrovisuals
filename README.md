@@ -16,7 +16,7 @@
 4. Go Session -> Restart R
 5. Click Run App
 
-![Mesmerising hive plot](https://github.com/mgottl04/neuroelectrovisuals/blob/master/hiveplot.jpeg)
+
 
 # Group Members
 

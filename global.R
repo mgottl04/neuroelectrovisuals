@@ -28,9 +28,6 @@ if(!require(L,character.only=TRUE)){
 # library(shinyTree)
 # library(V8)
 # library(pheatmap)
-source("./lib/mod.edge2HPD.R")
-source("./lib/mod.mineHPD.R")
-source("./lib/hive.R")
 source('./lib/make_frequency_matrix.R')
 
 load('data/matrix.rda')
