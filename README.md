@@ -15,20 +15,3 @@
 3. Open global.R in RStudio
 4. Go Session -> Restart R
 5. Click Run App
-
-
-
-# Group Members
-
-1. [Emily Hindalong](https://ca.linkedin.com/in/emily-hindalong-18409630)
-    * Current Program: Computer Science Doctor of Philosophy Candidate, Shah lab
-    * Academic Background: BSc. Cognitive Systems
-    * Interests: oatmeal, cats, gothic rock
-4. [Mike Gottlieb](http://i.imgur.com/np5GvjB.jpg)
-    * Current Program: Bioinformatics Training Program, Karsan lab
-    * Academic Background: BA Asian Studies & Psychology (i.e. extreme factoid memorization)
-    * Interests: Beer, Bikes & Bioinformatics (BBB)
-3. [Dmitry Tebaykin](https://www.facebook.com/dmitry.tebaykin)
-    * Current Program: Bioinformatics Training Program, Pavlidis lab
-    * Academic Background: BSc. Computer Science & Biology
-    * Interests: algorithms, snowboarding, chess
