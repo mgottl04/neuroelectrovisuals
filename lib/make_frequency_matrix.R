@@ -1,13 +1,15 @@
 make_frequency_matrix <- function(keys) {  
-  f <- frequency_data[frequency_data$key %in% keys,]
-  f$key <- NULL
-  f <- as.matrix(f)
+  f <- as.matrix(subset(frequency_data, key %in% keys, -key))
   f <- crossprod(f, f) # equivalent to t(f) %*% f, ie, dot products between pairs of columns
 
-  plz <- data.frame('Data Type' = c(rep('Ephys',10),rep('Metadata',7),rep('Brain Region',11)),
+  anno <- data.frame('Data Type' = c(
+      rep('Ephys', length(ephys_props)), 
+      rep('Metadata', length(metadata)),
+      rep('Brain Region', length(brain_regions))),
     row.names = rownames(f), check.names = FALSE)
 
-  pheatmap(f, cluster_rows = FALSE, cluster_cols = FALSE, annotation_row = plz, annotation_col = plz,
-          color = colorRampPalette(rev(brewer.pal(n = 7, name ="YlGnBu")))(801), breaks = c(-1:800),
-          display_numbers = TRUE, number_format = "%.0f", number_color = '#edf8b1')
+  n <- floor(nrow(frequency_data) * 1.1)
+  pheatmap(f, cluster_rows = FALSE, cluster_cols = FALSE, annotation_row = anno, annotation_col = anno,
+    color = colorRampPalette(rev(brewer.pal(n = 7, name ="YlGnBu")))(n+1), breaks = c(-1:n),
+    display_numbers = TRUE, number_format = "%d", number_color = '#ffffff') # '#edf8b1'
 }
