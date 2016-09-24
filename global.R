@@ -30,9 +30,6 @@ if(!require(L,character.only=TRUE)){
 # library(pheatmap)
 source('./lib/make_frequency_matrix.R')
 
-load('data/matrix.rda')
-#load('data/hive_plot_data.RData')
-#hive_data <- read.csv(file='data/hive_data.csv')
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
 ephys_info <- read.csv('data/ephys_prop_definitions.csv',sep = '\t',stringsAsFactors = FALSE, row.names = 1)
 plottables <- scan('data/plotting_attribs.csv',what="",sep=",")
@@ -116,3 +113,9 @@ metadata <- c("Species", "Strain", "ElectrodeType", "PrepType", "JxnPotential", 
 ephys_props <- c("input.resistance","resting.membrane.potential","spike.threshold",
                  "spike.amplitude","spike.half.width","membrane.time.constant",
                  "AHP.amplitude","cell.capacitance", "rheobase","maximum.firing.rate")
+brain_regions <- unique(bigData$BrainRegion)
+
+# raw indicator matrix used to build frequency matrix
+frequency_data <- as.data.frame(cbind(key = bigData$key,
+  sapply(c(ephys_props, metadata), function(x) as.integer(!is.na(bigData[x]))),
+  sapply(brain_regions, function(b) as.integer(bigData$BrainRegion == b))))                 
