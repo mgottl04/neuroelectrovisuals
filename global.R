@@ -1,5 +1,5 @@
-libs <- c('plyr','dplyr','ggvis','ggplot2',
-        'HiveR','igraph','psych','RColorBrewer',
+libs <- c('dplyr','ggvis','ggplot2',
+        'RColorBrewer',
         'reshape2','shiny','DT','shinyBS',
         'shinyjs','shinyTree','V8','pheatmap')
 for (L in libs){
@@ -8,26 +8,7 @@ if(!require(L,character.only=TRUE)){
 }
 
 }
-# remove.packages(libs)
 
-# library(DT)
-# library(dplyr)
-# library(grid)
-# library(ggvis)
-# library(ggplot2)
-# library(grDevices)
-# library(HiveR)
-# library(igraph)
-# library(plyr)
-# library(psych)
-# library(RColorBrewer)
-# library(reshape2)
-# library(shiny)
-# library(shinyBS)
-# library(shinyjs)
-# library(shinyTree)
-# library(V8)
-# library(pheatmap)
 source('./lib/make_frequency_matrix.R')
 
 bigData <- read.csv('./data/article_ephys_metadata_curated.csv',sep = '\t',row.names = 1,stringsAsFactors = FALSE, na.strings = c('NA',''))
