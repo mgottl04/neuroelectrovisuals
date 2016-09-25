@@ -1,7 +1,4 @@
-libs <- c('dplyr','ggvis','ggplot2',
-        'RColorBrewer',
-        'reshape2','shiny','DT','shinyBS',
-        'shinyjs','shinyTree','V8','pheatmap')
+libs <- c('dplyr','ggvis','RColorBrewer','reshape2','shiny','DT','shinyBS','shinyjs','shinyTree','pheatmap')
 for (L in libs){
 if(!require(L,character.only=TRUE)){
   install.packages(L)
