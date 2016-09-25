@@ -33,13 +33,6 @@ for (x in rownames(ephys_info)) {
   ephys_info[x,"Max.Range"] <- ceiling(max(na.omit(bigData[,x])))
 }
 
-# Add NA to levels for some reason?
-for (i in 1:ncol(bigData)){
-  if( is.factor(bigData[,i])){
-    levels(bigData[,i]) <- c(levels(bigData[,i]),NA)
-    }
-}
-
 # *** End data clean-up
 
 # Get names to put on axes
